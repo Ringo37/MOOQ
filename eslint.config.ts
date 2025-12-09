@@ -8,7 +8,12 @@ import { configs as tseslintConfigs } from "typescript-eslint";
 
 export default [
   {
-    ignores: [".react-router/**", "build/**", "node_modules/**"],
+    ignores: [
+      ".react-router/**",
+      "build/**",
+      "node_modules/**",
+      "generated/prisma/**",
+    ],
   },
   js.configs.recommended,
   ...tseslintConfigs.recommended,
