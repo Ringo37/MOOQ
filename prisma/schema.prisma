@@ -54,6 +54,8 @@ model Course {
   name        String
   slug        String @unique
   description String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   cover      File?      @relation(fields: [fileId], references: [id])
   fileId     String?
