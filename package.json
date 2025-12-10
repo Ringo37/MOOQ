@@ -16,6 +16,7 @@
     "**/*": "prettier --write --ignore-unknown"
   },
   "dependencies": {
+    "@blocknote/code-block": "^0.44.1",
     "@blocknote/core": "^0.44.1",
     "@blocknote/mantine": "^0.44.1",
     "@blocknote/react": "^0.44.1",
