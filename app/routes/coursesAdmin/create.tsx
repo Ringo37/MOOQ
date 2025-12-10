@@ -9,11 +9,14 @@ import {
   Title,
   Text,
   Center,
+  FileInput,
+  Image,
 } from "@mantine/core";
 import { useState } from "react";
 import { data, Form, redirect } from "react-router";
 
 import { createCourse, getCourseBySlug } from "~/models/course.server";
+import { uploadPublicFile } from "~/models/file.server";
 import { requireUser } from "~/services/auth.server";
 
 import type { Route } from "../coursesAdmin/+types/create";
@@ -27,6 +30,7 @@ export async function action({ request }: Route.ActionArgs) {
   const name = formData.get("name") as string;
   const slug = formData.get("slug") as string;
   const description = formData.get("description") as string;
+  const coverFile = formData.get("cover");
 
   if (!name || !slug) {
     return data({ error: "INVALID_FORM" }, { status: 400 });
@@ -36,6 +40,10 @@ export async function action({ request }: Route.ActionArgs) {
     const exists = await getCourseBySlug(slug);
     if (exists) {
       return data({ error: "SLUG_EXISTS" }, { status: 400 });
+    }
+
+    if (coverFile instanceof File) {
+      await uploadPublicFile(coverFile, "cover", slug);
     }
 
     const course = createCourse(name, slug, description, user.id);
@@ -55,6 +63,7 @@ export default function CoursesAdminCreate({
   const [slug, setSlug] = useState("");
   const [checking, setChecking] = useState(false);
   const [slugOk, setSlugOk] = useState<boolean | null>(null);
+  const [coverPreview, setCoverPreview] = useState<string | null>(null);
 
   async function checkSlug() {
     if (!slug) return;
@@ -85,7 +94,7 @@ export default function CoursesAdminCreate({
             </Text>
           )}
 
-          <Form method="post">
+          <Form method="post" encType="multipart/form-data">
             <Stack>
               <TextInput name="name" label="コース名" required />
 
@@ -115,6 +124,30 @@ export default function CoursesAdminCreate({
                 <Text c="red" size="sm">
                   このスラグは既に使われています
                 </Text>
+              )}
+
+              <FileInput
+                name="cover"
+                label="カバー画像"
+                accept="image/png,image/jpeg,image/webp"
+                clearable
+                onChange={(file) => {
+                  if (file) {
+                    setCoverPreview(URL.createObjectURL(file));
+                  } else {
+                    setCoverPreview(null);
+                  }
+                }}
+              />
+              {coverPreview && (
+                <Box mt="sm">
+                  <Text size="sm" mb={4}>
+                    プレビュー
+                  </Text>
+                  <Center>
+                    <Image src={coverPreview} alt="Cover preview" maw={300} />
+                  </Center>
+                </Box>
               )}
 
               <Textarea name="description" label="説明" minRows={4} />

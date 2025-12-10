@@ -4,6 +4,9 @@ import {
   GetObjectCommand,
   DeleteObjectCommand,
   type PutObjectCommandInput,
+  HeadBucketCommand,
+  CreateBucketCommand,
+  PutBucketPolicyCommand,
 } from "@aws-sdk/client-s3";
 
 export function createS3Client(): S3Client {
@@ -11,9 +14,10 @@ export function createS3Client(): S3Client {
     region: process.env.STORAGE_REGION || "auto",
     endpoint: process.env.STORAGE_ENDPOINT,
     credentials: {
-      accessKeyId: process.env.STORAGE_ACCESS_KEY_ID!,
-      secretAccessKey: process.env.STORAGE_SECRET_ACCESS_KEY!,
+      accessKeyId: process.env.STORAGE_ACCESS_KEY!,
+      secretAccessKey: process.env.STORAGE_SECRET_KEY!,
     },
+    forcePathStyle: true,
   });
 }
 
@@ -51,6 +55,41 @@ export async function deleteObject(bucket: string, key: string) {
     new DeleteObjectCommand({
       Bucket: bucket,
       Key: key,
+    }),
+  );
+}
+
+export async function ensureBucket(bucket: string) {
+  try {
+    await s3.send(new HeadBucketCommand({ Bucket: bucket }));
+  } catch {
+    await s3.send(new CreateBucketCommand({ Bucket: bucket }));
+  }
+}
+
+export async function ensurePublicBucket(bucket: string) {
+  try {
+    await s3.send(new HeadBucketCommand({ Bucket: bucket }));
+  } catch {
+    await s3.send(new CreateBucketCommand({ Bucket: bucket }));
+  }
+  const policy = {
+    Version: "2012-10-17",
+    Statement: [
+      {
+        Sid: "PublicReadGetObject",
+        Effect: "Allow",
+        Principal: { AWS: ["*"] },
+        Action: ["s3:GetObject"],
+        Resource: [`arn:aws:s3:::${bucket}/*`],
+      },
+    ],
+  };
+
+  await s3.send(
+    new PutBucketPolicyCommand({
+      Bucket: bucket,
+      Policy: JSON.stringify(policy),
     }),
   );
 }

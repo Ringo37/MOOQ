@@ -5,6 +5,12 @@ export async function getAllCourses() {
   return prisma.course.findMany();
 }
 
+export async function getAllOwnedCourses(userId: string) {
+  return prisma.course.findMany({
+    where: { owners: { some: { id: userId } } },
+  });
+}
+
 export async function getCoursesForUser(userId: string) {
   return prisma.course.findMany({
     where: {
@@ -33,6 +39,7 @@ export async function createCourse(
   description: string | null,
   ownerId: string,
   visibility = CourseVisibility.UNLISTED,
+  coverId?: string | null,
 ) {
   return prisma.course.create({
     data: {
@@ -41,6 +48,7 @@ export async function createCourse(
       description,
       visibility,
       owners: { connect: { id: ownerId } },
+      fileId: coverId,
     },
   });
 }
