@@ -4,10 +4,9 @@ WORKDIR /app
 RUN npm ci
 
 FROM node:22.19-alpine AS production-dependencies-env
-ENV HUSKY=0
 COPY ./package.json package-lock.json /app/
 WORKDIR /app
-RUN npm ci --omit=dev
+RUN npm ci --omit=dev --ignore-scripts
 
 FROM node:22.19-alpine AS build-env
 COPY . /app/
