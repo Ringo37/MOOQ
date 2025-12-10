@@ -49,13 +49,20 @@ model File {
   answers Answer[]
 }
 
+enum CourseVisibility {
+  PUBLIC
+  PRIVATE
+  UNLISTED
+}
+
 model Course {
-  id          String @id @default(cuid())
+  id          String           @id @default(cuid())
   name        String
-  slug        String @unique
-  description String
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  slug        String           @unique
+  description String?
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  visibility  CourseVisibility @default(UNLISTED)
 
   cover      File?      @relation(fields: [fileId], references: [id])
   fileId     String?

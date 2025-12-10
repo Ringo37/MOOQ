@@ -25,6 +25,7 @@ export function NavUser({
               borderLeft: "4px solid transparent",
             },
             section: {
+              width: 30,
               marginRight: opened ? 10 : 0,
               transition: `margin-right ${transitionDuration}ms ease`,
             },

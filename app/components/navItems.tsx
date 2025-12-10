@@ -50,7 +50,6 @@ export function NavItems({
             },
             section: {
               width: 30,
-              minWidth: 30,
               display: "flex",
               marginRight: opened ? 10 : 0,
               transition: `all ${transitionDuration}ms ease`,

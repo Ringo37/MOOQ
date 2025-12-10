@@ -12,8 +12,24 @@ export default [
   route("logout", "routes/auth/logout.ts"),
   layout("routes/layout.tsx", [
     ...prefix("courses", [
-      index("routes/course/index.tsx"),
-      route(":year", "routes/course/year.tsx"),
+      index("routes/courses/index.tsx"),
+      route(":slug", "routes/courses/detail.tsx"),
     ]),
+    ...prefix("admin", [
+      layout("routes/admin/layout.tsx", [
+        index("routes/admin/index.tsx"),
+        route("user", "routes/admin/user.tsx"),
+      ]),
+    ]),
+    ...prefix("courses-admin", [
+      layout("routes/coursesAdmin/layout.tsx", [
+        index("routes/coursesAdmin/index.tsx"),
+        route("course", "routes/coursesAdmin/course.tsx"),
+        route("create", "routes/coursesAdmin/create.tsx"),
+      ]),
+    ]),
+  ]),
+  ...prefix("api", [
+    route("check-course-slug", "routes/api/checkCourseSlug.ts"),
   ]),
 ] satisfies RouteConfig;
