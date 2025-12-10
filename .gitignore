@@ -8,3 +8,6 @@
 
 /generated/prisma
 .env
+
+rustfs-logs/
+rustfs-data/
