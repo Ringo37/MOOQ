@@ -14,12 +14,12 @@ export default function CoursesIndex() {
       </Group>
 
       <Grid>
-        <Grid.Col span={{ base: 12, xs: 6, sm: 4, md: 3 }}>{child}</Grid.Col>
-        <Grid.Col span={{ base: 12, xs: 6, sm: 4, md: 3 }}>{child}</Grid.Col>
-        <Grid.Col span={{ base: 12, xs: 6, sm: 4, md: 3 }}>{child}</Grid.Col>
-        <Grid.Col span={{ base: 12, xs: 6, sm: 4, md: 3 }}>{child}</Grid.Col>
-        <Grid.Col span={{ base: 12, xs: 6, sm: 4, md: 3 }}>{child}</Grid.Col>
-        <Grid.Col span={{ base: 12, xs: 6, sm: 4, md: 3 }}>{child}</Grid.Col>
+        <Grid.Col span={{ base: 12, md: 6, lg: 4 }}>{child}</Grid.Col>
+        <Grid.Col span={{ base: 12, md: 6, lg: 4 }}>{child}</Grid.Col>
+        <Grid.Col span={{ base: 12, md: 6, lg: 4 }}>{child}</Grid.Col>
+        <Grid.Col span={{ base: 12, md: 6, lg: 4 }}>{child}</Grid.Col>
+        <Grid.Col span={{ base: 12, md: 6, lg: 4 }}>{child}</Grid.Col>
+        <Grid.Col span={{ base: 12, md: 6, lg: 4 }}>{child}</Grid.Col>
       </Grid>
     </Container>
   );

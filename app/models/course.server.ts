@@ -1,13 +1,19 @@
+import type { Prisma } from "generated/prisma/client";
 import { CourseVisibility } from "generated/prisma/enums";
 import { prisma } from "~/lib/prisma.server";
 
+export type CourseWithCover = Prisma.CourseGetPayload<{
+  include: { cover: true };
+}>;
+
 export async function getAllCourses() {
-  return prisma.course.findMany();
+  return prisma.course.findMany({ include: { cover: true } });
 }
 
 export async function getAllOwnedCourses(userId: string) {
   return prisma.course.findMany({
     where: { owners: { some: { id: userId } } },
+    include: { cover: true },
   });
 }
 
@@ -26,6 +32,7 @@ export async function getCoursesForUser(userId: string) {
       ],
     },
     orderBy: { createdAt: "desc" },
+    include: { cover: true },
   });
 }
 
@@ -38,8 +45,8 @@ export async function createCourse(
   slug: string,
   description: string | null,
   ownerId: string,
-  visibility = CourseVisibility.UNLISTED,
   coverId?: string | null,
+  visibility = CourseVisibility.UNLISTED,
 ) {
   return prisma.course.create({
     data: {
