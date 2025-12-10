@@ -19,4 +19,4 @@ COPY ./package.json package-lock.json /app/
 COPY --from=production-dependencies-env /app/node_modules /app/node_modules
 COPY --from=build-env /app/build /app/build
 WORKDIR /app
-CMD ["npx", "prisma", "deploy", "&&", "npx", "prisma", "generate", "&&", "npm", "run", "start"]
+CMD ["sh", "-c", "npx prisma migrate deploy && npx prisma generate && npm run start"]
