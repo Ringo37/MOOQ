@@ -12,11 +12,11 @@ FROM node:22.19-alpine AS build-env
 COPY . /app/
 COPY --from=development-dependencies-env /app/node_modules /app/node_modules
 WORKDIR /app
-RUN npm run build
+RUN npx prisma generate && npm run build
 
 FROM node:22.19-alpine
 COPY ./package.json package-lock.json /app/
 COPY --from=production-dependencies-env /app/node_modules /app/node_modules
 COPY --from=build-env /app/build /app/build
 WORKDIR /app
-CMD ["sh", "-c", "npx prisma migrate deploy && npx prisma generate && npm run start"]
+CMD ["sh", "-c", "npx prisma migrate deploy && npm run start"]
