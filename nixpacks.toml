@@ -1,5 +1,0 @@
-[phases.setup]
-nixPkgs = ["nodejs_24"]
-
-[start]
-cmd = "npx prisma migrate deploy && npx prisma generate && npm run start"
