@@ -39,6 +39,24 @@ export async function getCoursesForUser(userId: string) {
 export async function getCourseBySlug(slug: string) {
   return prisma.course.findUnique({ where: { slug } });
 }
+export async function getCourseBySlugForUser(slug: string, userId: string) {
+  return prisma.course.findFirst({
+    where: {
+      slug,
+      OR: [
+        { visibility: CourseVisibility.PUBLIC },
+        {
+          visibility: CourseVisibility.PRIVATE,
+          OR: [
+            { owners: { some: { id: userId } } },
+            { users: { some: { id: userId } } },
+          ],
+        },
+      ],
+    },
+    include: { cover: true },
+  });
+}
 
 export async function createCourse(
   name: string,
