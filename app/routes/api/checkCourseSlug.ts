@@ -19,6 +19,13 @@ export async function loader({ request }: Route.LoaderArgs) {
     return data({ ok: false, message: "slug is required" }, { status: 400 });
   }
 
+  if (slug === "create") {
+    return data(
+      { ok: false, message: "Cannot use this word" },
+      { status: 400 },
+    );
+  }
+
   const exists = await getCourseBySlug(slug);
 
   return data({

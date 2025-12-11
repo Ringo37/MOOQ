@@ -4,17 +4,18 @@ import {
   Container,
   Group,
   Stack,
-  Textarea,
   TextInput,
   Title,
   Text,
   Center,
   FileInput,
   Image,
+  InputLabel,
 } from "@mantine/core";
 import { useState } from "react";
 import { data, Form, redirect } from "react-router";
 
+import { Editor } from "~/components/editor";
 import { createCourse, getCourseBySlug } from "~/models/course.server";
 import { uploadPublicFile } from "~/models/file.server";
 import { requireUser } from "~/services/auth.server";
@@ -35,6 +36,9 @@ export async function action({ request }: Route.ActionArgs) {
 
   if (!name || !slug) {
     return data({ error: "INVALID_FORM" }, { status: 400 });
+  }
+  if (slug === "create") {
+    return data({ error: "Cannot use this word" }, { status: 400 });
   }
 
   try {
@@ -84,7 +88,7 @@ export default function CoursesAdminCreate({
   return (
     <Container size="md">
       <Center>
-        <Box maw={600} w="100%">
+        <Box maw={800} w="100%">
           <Title order={2} mb="md">
             コース作成
           </Title>
@@ -142,16 +146,17 @@ export default function CoursesAdminCreate({
               />
               {coverPreview && (
                 <Box mt="sm">
-                  <Text size="sm" mb={4}>
-                    プレビュー
-                  </Text>
+                  <Text>プレビュー</Text>
                   <Center>
                     <Image src={coverPreview} alt="Cover preview" maw={300} />
                   </Center>
                 </Box>
               )}
 
-              <Textarea name="description" label="説明" minRows={4} />
+              <InputLabel size="sm" mb={4}>
+                説明
+                <Editor name="description" />
+              </InputLabel>
 
               <Group justify="flex-end">
                 <Button type="submit" disabled={slugOk === false}>

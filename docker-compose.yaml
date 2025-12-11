@@ -21,7 +21,6 @@ services:
     environment:
       RUSTFS_ACCESS_KEY: ${STORAGE_ACCESS_KEY}
       RUSTFS_SECRET_KEY: ${STORAGE_SECRET_KEY}
-    restart: unless-stopped
 
 volumes:
   postgres-data:

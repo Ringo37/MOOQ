@@ -1,9 +1,19 @@
-import { Container, Grid, Skeleton, Button, Group, Title } from "@mantine/core";
+import { Container, Grid, Button, Group, Title } from "@mantine/core";
 import { Filter } from "lucide-react";
 
-const child = <Skeleton height={140} radius="md" animate={false} />;
+import { CourseCard } from "~/components/courseCard";
+import { getCoursesForUser } from "~/models/course.server";
+import { requireUserId } from "~/services/auth.server";
 
-export default function CoursesIndex() {
+import type { Route } from "../courses/+types/index";
+
+export async function loader({ request }: Route.LoaderArgs) {
+  const userId = await requireUserId(request);
+  const courses = await getCoursesForUser(userId);
+  return { courses };
+}
+
+export default function CoursesIndex({ loaderData }: Route.ComponentProps) {
   return (
     <Container fluid>
       <Group justify="space-between" mb="md">
@@ -14,12 +24,11 @@ export default function CoursesIndex() {
       </Group>
 
       <Grid>
-        <Grid.Col span={{ base: 12, md: 6, lg: 4 }}>{child}</Grid.Col>
-        <Grid.Col span={{ base: 12, md: 6, lg: 4 }}>{child}</Grid.Col>
-        <Grid.Col span={{ base: 12, md: 6, lg: 4 }}>{child}</Grid.Col>
-        <Grid.Col span={{ base: 12, md: 6, lg: 4 }}>{child}</Grid.Col>
-        <Grid.Col span={{ base: 12, md: 6, lg: 4 }}>{child}</Grid.Col>
-        <Grid.Col span={{ base: 12, md: 6, lg: 4 }}>{child}</Grid.Col>
+        {loaderData.courses.map((course) => (
+          <Grid.Col key={course.id} span={{ base: 12, md: 6, lg: 4 }}>
+            <CourseCard course={course} />
+          </Grid.Col>
+        ))}
       </Grid>
     </Container>
   );

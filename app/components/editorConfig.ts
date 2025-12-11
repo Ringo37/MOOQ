@@ -1,0 +1,27 @@
+export const SUPPORTED_LANGUAGES: Record<
+  string,
+  { name: string; aliases?: string[] }
+> = {
+  text: { name: "Text" },
+  c: { name: "C" },
+  cpp: { name: "C++" },
+  typescript: { name: "TypeScript" },
+  javascript: { name: "JavaScript" },
+  tsx: { name: "TSX" },
+  jsx: { name: "JSX" },
+  html: { name: "HTML" },
+  css: { name: "CSS" },
+  python: { name: "Python" },
+  json: { name: "JSON" },
+  sql: { name: "SQL" },
+  rust: { name: "Rust" },
+  go: { name: "Go" },
+  java: { name: "Java" },
+  kotlin: { name: "Kotlin" },
+  ocaml: { name: "OCaml" },
+  ruby: { name: "Ruby" },
+  bash: { name: "Bash" },
+  shell: { name: "Shell" },
+  php: { name: "PHP" },
+  swift: { name: "Swift" },
+};

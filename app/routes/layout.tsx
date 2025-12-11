@@ -20,8 +20,7 @@ const data = [
 ];
 
 export default function Layout({ loaderData }: Route.ComponentProps) {
-  const matches = useMatches();
-  console.log(matches);
+  useMatches();
   return (
     <Sidebar initialOpen={loaderData.initialOpen} data={data}>
       <Outlet />

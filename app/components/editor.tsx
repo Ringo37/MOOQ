@@ -1,58 +1,69 @@
-import { codeBlockOptions } from "@blocknote/code-block";
-import { BlockNoteSchema, createCodeBlockSpec } from "@blocknote/core";
+import {
+  BlockNoteSchema,
+  createCodeBlockSpec,
+  type Block,
+} from "@blocknote/core";
 import { BlockNoteView } from "@blocknote/mantine";
 import { useCreateBlockNote } from "@blocknote/react";
-import { useComputedColorScheme } from "@mantine/core";
+import { Center, Loader, useComputedColorScheme } from "@mantine/core";
+import { useState } from "react";
+import { ClientOnly } from "remix-utils/client-only";
+import { createHighlighter } from "shiki";
 
 import "@blocknote/core/fonts/inter.css";
 import "@blocknote/mantine/style.css";
+import { SUPPORTED_LANGUAGES } from "./editorConfig";
 
-export default function Editor() {
+interface EditorProps {
+  initialContent?: Block[];
+  name?: string;
+}
+
+function EditorClient({ initialContent, name }: EditorProps) {
+  const [blocks, setBlocks] = useState<Block[]>([]);
   const colorScheme = useComputedColorScheme("light");
   const editor = useCreateBlockNote({
     schema: BlockNoteSchema.create().extend({
       blockSpecs: {
-        codeBlock: createCodeBlockSpec(codeBlockOptions),
+        codeBlock: createCodeBlockSpec({
+          indentLineWithTab: true,
+          defaultLanguage: "text",
+          supportedLanguages: SUPPORTED_LANGUAGES,
+          createHighlighter: () =>
+            createHighlighter({
+              themes: ["dark-plus", "light-plus"],
+              langs: [],
+            }) as any, // eslint-disable-line
+        }),
       },
     }),
-    initialContent: [
-      {
-        type: "codeBlock",
-        props: {
-          language: "typescript",
-        },
-        content: [
-          {
-            type: "text",
-            text: "const x = 3 * 4;",
-            styles: {},
-          },
-        ],
-      },
-      {
-        type: "paragraph",
-      },
-      {
-        type: "heading",
-        props: {
-          textColor: "default",
-          backgroundColor: "default",
-          textAlignment: "left",
-          level: 3,
-        },
-        content: [
-          {
-            type: "text",
-            text: 'Click on "Typescript" above to see the different supported languages',
-            styles: {},
-          },
-        ],
-      },
-      {
-        type: "paragraph",
-      },
-    ],
+    initialContent,
   });
 
-  return <BlockNoteView editor={editor} theme={colorScheme} />;
+  return (
+    <>
+      <BlockNoteView
+        editor={editor}
+        theme={colorScheme}
+        onChange={() => {
+          setBlocks(editor.document);
+        }}
+      />
+      <input name={name} value={JSON.stringify(blocks)} hidden readOnly />
+    </>
+  );
+}
+
+export function Editor(props: EditorProps) {
+  return (
+    <ClientOnly
+      fallback={
+        <Center>
+          <Loader color="blue" size={25} />
+        </Center>
+      }
+    >
+      {() => <EditorClient {...props} />}
+    </ClientOnly>
+  );
 }

@@ -17,7 +17,7 @@ interface CourseCardProps {
   course: CourseWithCover;
 }
 
-export const AdminCourseCard = ({ course }: CourseCardProps) => {
+export const CourseCard = ({ course }: CourseCardProps) => {
   return (
     <Card shadow="sm" padding="md" radius="md" withBorder>
       <Group gap="md" align="start" wrap="nowrap">
@@ -52,9 +52,9 @@ export const AdminCourseCard = ({ course }: CourseCardProps) => {
           </Text>
 
           <Box>
-            <Link to={`/courses-admin/${course.slug}`}>
+            <Link to={`/courses/${course.slug}`}>
               <Button variant="light" size="xs">
-                編集
+                コースを見る
               </Button>
             </Link>
           </Box>
