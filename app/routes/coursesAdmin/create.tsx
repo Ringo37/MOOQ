@@ -10,7 +10,6 @@ import {
   Center,
   FileInput,
   Image,
-  InputLabel,
 } from "@mantine/core";
 import { useState } from "react";
 import { data, Form, redirect } from "react-router";
@@ -153,10 +152,8 @@ export default function CoursesAdminCreate({
                 </Box>
               )}
 
-              <InputLabel size="sm" mb={4}>
-                説明
-                <Editor name="description" />
-              </InputLabel>
+              <Text size="sm">説明</Text>
+              <Editor name="description" />
 
               <Group justify="flex-end">
                 <Button type="submit" disabled={slugOk === false}>
