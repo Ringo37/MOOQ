@@ -8,7 +8,10 @@ import {
   BackgroundImage,
   Overlay,
 } from "@mantine/core";
+import "@blocknote/core/fonts/inter.css";
+import "@blocknote/mantine/style.css";
 
+import { blockToHTML } from "~/lib/blocknote.server";
 import { getCourseBySlugForUser } from "~/models/course.server";
 import { requireUserId } from "~/services/auth.server";
 import { formatDate } from "~/utils/formatDate";
@@ -19,12 +22,13 @@ export async function loader({ request, params }: Route.LoaderArgs) {
   const userId = await requireUserId(request);
   const courseSlug = params.slug;
   const course = await getCourseBySlugForUser(courseSlug, userId);
+  const description = await blockToHTML(course?.description);
 
-  return { course };
+  return { course, description };
 }
 
 export default function CourseDetail({ loaderData }: Route.ComponentProps) {
-  const { course } = loaderData;
+  const { course, description } = loaderData;
 
   if (!course) {
     return (
@@ -106,11 +110,13 @@ export default function CourseDetail({ loaderData }: Route.ComponentProps) {
       )}
 
       {course.description && (
-        <Box>
-          <Text size="md" style={{ whiteSpace: "pre-wrap" }}>
-            {course.description}
-          </Text>
-        </Box>
+        <div className="bn-container bn-mantine" style={{ padding: 0 }}>
+          <div
+            className="ProseMirror bn-editor  bn-default-styles"
+            dangerouslySetInnerHTML={{ __html: description }}
+            style={{ padding: 1 }}
+          />
+        </div>
       )}
     </Container>
   );

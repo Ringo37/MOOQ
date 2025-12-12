@@ -21,7 +21,7 @@ interface EditorProps {
 
 function EditorClient({ initialContent, name }: EditorProps) {
   const [blocks, setBlocks] = useState<Block[]>([]);
-  const colorScheme = useComputedColorScheme("light");
+  const colorScheme = useComputedColorScheme();
   const editor = useCreateBlockNote({
     schema: BlockNoteSchema.create().extend({
       blockSpecs: {
