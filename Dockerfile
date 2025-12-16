@@ -20,5 +20,6 @@ COPY ./package.json package-lock.json prisma.config.ts /app/
 COPY ./prisma /app/prisma
 COPY --from=production-dependencies-env /app/node_modules /app/node_modules
 COPY --from=build-env /app/build /app/build
+COPY --from=build-env /app/generated /app/generated
 WORKDIR /app
 CMD ["sh", "-c", "npx prisma migrate deploy && npm run start"]
