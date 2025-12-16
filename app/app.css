@@ -11,6 +11,10 @@
   border-radius: 5px;
 }
 
+[data-mantine-color-scheme="light"] .bn-render .shiki {
+  background-color: var(--mantine-color-gray-0) !important;
+}
+
 [data-mantine-color-scheme="dark"] .bn-render .shiki {
   color: var(--shiki-dark) !important;
   background-color: var(--shiki-dark-bg) !important;
