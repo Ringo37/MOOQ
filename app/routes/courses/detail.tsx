@@ -7,6 +7,7 @@ import {
   Group,
   BackgroundImage,
   Overlay,
+  Typography,
 } from "@mantine/core";
 import "@blocknote/core/fonts/inter.css";
 import "@blocknote/mantine/style.css";
@@ -110,13 +111,13 @@ export default function CourseDetail({ loaderData }: Route.ComponentProps) {
       )}
 
       {course.description && (
-        <div className="bn-container bn-mantine" style={{ padding: 0 }}>
+        <Typography>
           <div
-            className="ProseMirror bn-editor  bn-default-styles"
+            className="bn-render"
             dangerouslySetInnerHTML={{ __html: description }}
             style={{ padding: 1 }}
           />
-        </div>
+        </Typography>
       )}
     </Container>
   );

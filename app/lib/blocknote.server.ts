@@ -52,14 +52,13 @@ export async function blockToHTML(
 
           return highlighter.codeToHtml(code, {
             lang: shikiLang,
-            theme: "dark-plus",
+            themes: {
+              light: "light-plus",
+              dark: "dark-plus",
+            },
           });
         } catch (e) {
           console.error("Shiki conversion error:", e);
-          return highlighter.codeToHtml(code, {
-            lang: "text",
-            theme: "dark-plus",
-          });
         }
       } else {
         return editor.blocksToHTMLLossy([block]);
