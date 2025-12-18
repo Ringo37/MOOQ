@@ -125,7 +125,7 @@ export default function CoursesAdminEdit({
       <Center>
         <Box maw={800} w="100%">
           <Title order={2} mb="md">
-            コース更新
+            コース編集
           </Title>
 
           {actionData?.error === "SLUG_EXISTS" && (
