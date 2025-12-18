@@ -25,7 +25,7 @@ export async function uploadPublicFile(
 ) {
   const buffer = Buffer.from(await file.arrayBuffer());
   const mimeType = file.type || "application/octet-stream";
-  const url = `api/file/${bucket}/${key}`;
+  const url = `/api/file/${bucket}/${key}`;
 
   await ensureBucket(bucket);
   await uploadObject(bucket, key, buffer, mimeType);

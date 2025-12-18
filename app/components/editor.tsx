@@ -19,6 +19,16 @@ interface EditorProps {
   name?: string;
 }
 
+async function uploadFile(file: File) {
+  const body = new FormData();
+  body.append("file", file);
+  const ret = await fetch("/api/file-upload", {
+    method: "POST",
+    body: body,
+  });
+  return (await ret.json()).url;
+}
+
 function EditorClient({ initialContent, name }: EditorProps) {
   const [blocks, setBlocks] = useState<Block[]>([]);
   const colorScheme = useComputedColorScheme();
@@ -38,6 +48,7 @@ function EditorClient({ initialContent, name }: EditorProps) {
       },
     }),
     initialContent,
+    uploadFile,
   });
 
   return (

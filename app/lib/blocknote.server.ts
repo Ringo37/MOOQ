@@ -65,6 +65,7 @@ export async function blockToHTML(
       }
     }),
   );
+  const html = htmlBlocks.join("");
 
-  return htmlBlocks.join("");
+  return html.replace(/<audio\b(?![^>]*\bcontrols\b)/g, "<audio controls");
 }

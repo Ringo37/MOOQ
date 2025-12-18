@@ -47,7 +47,8 @@ export async function action({ request }: Route.ActionArgs) {
     }
 
     if (coverFile instanceof File) {
-      file = await uploadPublicFile(coverFile, "cover", slug);
+      const ext = coverFile.name.split(".").pop();
+      file = await uploadPublicFile(coverFile, "cover", `slug.${ext}`);
     }
 
     const course = createCourse(name, slug, description, user.id, file?.id);
@@ -133,6 +134,7 @@ export default function CoursesAdminCreate({
               <FileInput
                 name="cover"
                 label="カバー画像"
+                placeholder="画像をアップロード"
                 accept="image/png,image/jpeg,image/webp"
                 clearable
                 onChange={(file) => {
@@ -145,7 +147,6 @@ export default function CoursesAdminCreate({
               />
               {coverPreview && (
                 <Box mt="sm">
-                  <Text>プレビュー</Text>
                   <Center>
                     <Image src={coverPreview} alt="Cover preview" maw={300} />
                   </Center>

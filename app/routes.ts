@@ -32,5 +32,6 @@ export default [
   ...prefix("api", [
     route("check-course-slug", "routes/api/checkCourseSlug.ts"),
     route("file/:bucket/:key", "routes/api/file.ts"),
+    route("file-upload", "routes/api/fileUpload.ts"),
   ]),
 ] satisfies RouteConfig;

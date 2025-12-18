@@ -25,6 +25,18 @@
   background-color: var(--shiki-dark-bg) !important;
 }
 
+.bn-render > * {
+  margin-top: 16px;
+}
+
 .bn-render code {
   background-color: transparent;
+}
+
+.bn-render audio {
+  width: 100%;
+}
+
+.bn-render img {
+  border-radius: 5px;
 }

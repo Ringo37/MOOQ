@@ -1,3 +1,5 @@
+import { redirect } from "react-router";
+
 import { requireUser } from "~/services/auth.server";
 import { createPresignedGetUrl } from "~/services/storage.server";
 
@@ -12,5 +14,5 @@ export async function loader({ request, params }: Route.LoaderArgs) {
   }
   const url = await createPresignedGetUrl(bucket, key);
 
-  return url;
+  return redirect(url);
 }
