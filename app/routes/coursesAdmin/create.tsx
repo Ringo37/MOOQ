@@ -31,7 +31,7 @@ export async function action({ request }: Route.ActionArgs) {
   const slug = formData.get("slug") as string;
   const description = formData.get("description") as string;
   const coverFile = formData.get("cover");
-  let file = null;
+  let fileId: string | null = null;
 
   if (!name || !slug) {
     return data({ error: "INVALID_FORM" }, { status: 400 });
@@ -48,10 +48,11 @@ export async function action({ request }: Route.ActionArgs) {
 
     if (coverFile instanceof File) {
       const ext = coverFile.name.split(".").pop();
-      file = await uploadPublicFile(coverFile, "cover", `slug.${ext}`);
+      const file = await uploadPublicFile(coverFile, "cover", `slug.${ext}`);
+      fileId = file.id;
     }
 
-    const course = createCourse(name, slug, description, user.id, file?.id);
+    const course = createCourse(name, slug, description, user.id, fileId);
     if (!course) {
       return data(null, { status: 500 });
     }
