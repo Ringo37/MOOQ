@@ -14,7 +14,7 @@ export async function blockToHTML(
     typeof blocks === "string"
       ? JSON.parse(blocks)
       : blocks === null
-        ? "[]"
+        ? []
         : blocks;
 
   const htmlBlocks = await Promise.all(

@@ -42,7 +42,8 @@ export async function loader({ request }: Route.LoaderArgs) {
 }
 
 export function Layout({ children }: { children: React.ReactNode }) {
-  const { colorScheme } = useLoaderData<typeof loader>();
+  const data = useLoaderData<typeof loader>();
+  const colorScheme = data?.colorScheme ?? "light";
   return (
     <html lang="ja" {...mantineHtmlProps}>
       <head>
