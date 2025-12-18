@@ -57,7 +57,7 @@ export async function createPresignedGetUrl(bucket: string, key: string) {
   });
 
   const url = await getSignedUrl(s3, command, {
-    expiresIn: 60,
+    expiresIn: 60 * 60,
   });
 
   return url;

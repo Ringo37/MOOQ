@@ -17,42 +17,49 @@ export async function blockToHTML(
         ? []
         : blocks;
 
-  const htmlBlocks = await Promise.all(
-    parsedBlocks.map(async (block) => {
-      if (block.type === "codeBlock") {
-        let code = "";
+  let finalHtml = "";
+  let numberedIndex = 1;
 
-        if (Array.isArray(block.content)) {
-          code = block.content.map((c: any) => c.text || "").join(""); //eslint-disable-line
-        } else if (typeof block.content === "string") {
-          code = block.content;
-        }
+  for (const block of parsedBlocks) {
+    if (block.type === "numberedListItem") {
+      let html = await editor.blocksToFullHTML([block]);
 
-        const lang = block.props?.language || "text";
+      html = html.replace(
+        'data-content-type="numberedListItem"',
+        `data-content-type="numberedListItem" data-index="${numberedIndex++}"`,
+      );
 
-        try {
-          const shikiLang = Object.keys(SUPPORTED_LANGUAGES).includes(
-            lang as string,
-          )
-            ? (lang as string)
-            : "text";
+      finalHtml += html;
+      continue;
+    }
 
-          return highlighter.codeToHtml(code, {
-            lang: shikiLang,
-            themes: {
-              light: "light-plus",
-              dark: "dark-plus",
-            },
-          });
-        } catch (e) {
-          console.error("Shiki conversion error:", e);
-        }
-      } else {
-        return editor.blocksToFullHTML([block]);
+    numberedIndex = 1;
+
+    if (block.type === "codeBlock") {
+      let code = "";
+      if (Array.isArray(block.content)) {
+        code = block.content.map((c: any) => c.text || "").join(""); // eslint-disable-line
+      } else if (typeof block.content === "string") {
+        code = block.content;
       }
-    }),
-  );
-  const html = htmlBlocks.join("");
 
-  return html.replace(/<audio\b(?![^>]*\bcontrols\b)/g, "<audio controls");
+      const lang = (block.props?.language as string) || "text";
+      const shikiLang = Object.keys(SUPPORTED_LANGUAGES).includes(lang)
+        ? lang
+        : "text";
+
+      try {
+        finalHtml += highlighter.codeToHtml(code, {
+          lang: shikiLang,
+          themes: { light: "light-plus", dark: "dark-plus" },
+        });
+      } catch (e) {
+        console.error("Shiki conversion error:", e);
+      }
+    } else {
+      finalHtml += await editor.blocksToFullHTML([block]);
+    }
+  }
+
+  return finalHtml.replace(/<audio\b(?![^>]*\bcontrols\b)/g, "<audio controls");
 }

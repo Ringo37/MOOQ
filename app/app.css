@@ -31,7 +31,7 @@
 }
 
 .bn-render pre {
-  overflow-x: scroll;
+  overflow-x: auto;
   padding: 16px;
 }
 

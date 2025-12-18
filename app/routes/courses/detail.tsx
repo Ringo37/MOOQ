@@ -7,6 +7,7 @@ import {
   Group,
   BackgroundImage,
   Overlay,
+  useMantineColorScheme,
 } from "@mantine/core";
 import "@blocknote/core/fonts/inter.css";
 import "@blocknote/mantine/style.css";
@@ -15,7 +16,6 @@ import { BlockNoteRender } from "~/components/blockNoteRender";
 import { blockToHTML } from "~/lib/blocknote.server";
 import { getCourseBySlugForUser } from "~/models/course.server";
 import { requireUserId } from "~/services/auth.server";
-import { getColorScheme } from "~/utils/cookieColorScheme";
 import { formatDate } from "~/utils/formatDate";
 
 import type { Route } from "../courses/+types/detail";
@@ -25,13 +25,13 @@ export async function loader({ request, params }: Route.LoaderArgs) {
   const courseSlug = params.slug;
   const course = await getCourseBySlugForUser(courseSlug, userId);
   const description = await blockToHTML(course?.description);
-  const colorScheme = getColorScheme(request);
 
-  return { course, description, colorScheme };
+  return { course, description };
 }
 
 export default function CourseDetail({ loaderData }: Route.ComponentProps) {
-  const { course, description, colorScheme } = loaderData;
+  const { course, description } = loaderData;
+  const { colorScheme } = useMantineColorScheme();
 
   if (!course) {
     return (
