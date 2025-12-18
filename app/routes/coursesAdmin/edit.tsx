@@ -123,7 +123,7 @@ export default function CoursesAdminEdit({
   return (
     <Container size="md">
       <Center>
-        <Box maw={800} w="100%">
+        <Box w="100%">
           <Title order={2} mb="md">
             コース編集
           </Title>

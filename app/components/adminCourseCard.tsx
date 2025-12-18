@@ -8,13 +8,14 @@ import {
   Card,
   Center,
 } from "@mantine/core";
-import { ImageIcon } from "lucide-react";
+import { Edit, ImageIcon, Trash2, User } from "lucide-react";
 import { Link } from "react-router";
 
 import type { CourseWithCover } from "~/models/course.server";
 
 interface CourseCardProps {
   course: CourseWithCover;
+  onDelete?: (courseId: string) => void;
 }
 
 export const AdminCourseCard = ({ course }: CourseCardProps) => {
@@ -51,13 +52,25 @@ export const AdminCourseCard = ({ course }: CourseCardProps) => {
             {course.name}
           </Text>
 
-          <Box>
+          <Group gap="xs">
             <Link to={`/courses-admin/${course.slug}`}>
-              <Button variant="light" size="xs">
+              <Button
+                variant="light"
+                size="xs"
+                leftSection={<Edit size={16} />}
+              >
                 編集
               </Button>
             </Link>
-          </Box>
+
+            <Button color="yellow" size="xs" leftSection={<User size={16} />}>
+              権限設定
+            </Button>
+
+            <Button color="red" size="xs" leftSection={<Trash2 size={16} />}>
+              削除
+            </Button>
+          </Group>
         </Stack>
       </Group>
     </Card>

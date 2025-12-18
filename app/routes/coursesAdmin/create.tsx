@@ -89,7 +89,7 @@ export default function CoursesAdminCreate({
   return (
     <Container size="md">
       <Center>
-        <Box maw={800} w="100%">
+        <Box w="100%">
           <Title order={2} mb="md">
             コース作成
           </Title>
