@@ -7,14 +7,15 @@ import {
   Group,
   BackgroundImage,
   Overlay,
-  Typography,
 } from "@mantine/core";
 import "@blocknote/core/fonts/inter.css";
 import "@blocknote/mantine/style.css";
 
+import { BlockNoteRender } from "~/components/blockNoteRender";
 import { blockToHTML } from "~/lib/blocknote.server";
 import { getCourseBySlugForUser } from "~/models/course.server";
 import { requireUserId } from "~/services/auth.server";
+import { getColorScheme } from "~/utils/cookieColorScheme";
 import { formatDate } from "~/utils/formatDate";
 
 import type { Route } from "../courses/+types/detail";
@@ -24,12 +25,13 @@ export async function loader({ request, params }: Route.LoaderArgs) {
   const courseSlug = params.slug;
   const course = await getCourseBySlugForUser(courseSlug, userId);
   const description = await blockToHTML(course?.description);
+  const colorScheme = getColorScheme(request);
 
-  return { course, description };
+  return { course, description, colorScheme };
 }
 
 export default function CourseDetail({ loaderData }: Route.ComponentProps) {
-  const { course, description } = loaderData;
+  const { course, description, colorScheme } = loaderData;
 
   if (!course) {
     return (
@@ -111,13 +113,7 @@ export default function CourseDetail({ loaderData }: Route.ComponentProps) {
       )}
 
       {course.description && (
-        <Typography>
-          <div
-            className="bn-render"
-            dangerouslySetInnerHTML={{ __html: description }}
-            style={{ padding: 1 }}
-          />
-        </Typography>
+        <BlockNoteRender html={description} theme={colorScheme} />
       )}
     </Container>
   );

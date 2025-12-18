@@ -59,6 +59,7 @@ function EditorClient({ initialContent, name }: EditorProps) {
         onChange={() => {
           setBlocks(editor.document);
         }}
+        className="editor-input"
       />
       <input name={name} value={JSON.stringify(blocks)} hidden readOnly />
     </>

@@ -27,9 +27,9 @@ export function Sidebar({
 }) {
   const [opened, { toggle }] = useDisclosure(initialOpen, {
     onOpen: () =>
-      (document.cookie = `sidebar-open=true; path=/; max-age=31536000`),
+      (document.cookie = `sidebar-open=true; path=/; max-age=31536000; SameSite=Lax`),
     onClose: () =>
-      (document.cookie = `sidebar-open=false; path=/; max-age=31536000`),
+      (document.cookie = `sidebar-open=false; path=/; max-age=31536000; SameSite=Lax`),
   });
   const [active, setActive] = useState(0);
 

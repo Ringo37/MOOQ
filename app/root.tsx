@@ -10,11 +10,16 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useLoaderData,
 } from "react-router";
 
 import type { Route } from "./+types/root";
 import "@mantine/core/styles.css";
 import "./app.css";
+import {
+  getColorScheme,
+  cookieColorSchemeManager,
+} from "./utils/cookieColorScheme";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -29,18 +34,31 @@ export const links: Route.LinksFunction = () => [
   },
 ];
 
+const colorSchemeManager = cookieColorSchemeManager();
+
+export async function loader({ request }: Route.LoaderArgs) {
+  const colorScheme = getColorScheme(request);
+  return { colorScheme };
+}
+
 export function Layout({ children }: { children: React.ReactNode }) {
+  const { colorScheme } = useLoaderData<typeof loader>();
   return (
     <html lang="ja" {...mantineHtmlProps}>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <ColorSchemeScript />
+        <ColorSchemeScript defaultColorScheme={colorScheme} />
         <Meta />
         <Links />
       </head>
       <body>
-        <MantineProvider>{children}</MantineProvider>
+        <MantineProvider
+          colorSchemeManager={colorSchemeManager}
+          defaultColorScheme={colorScheme}
+        >
+          {children}
+        </MantineProvider>
         <ScrollRestoration />
         <Scripts />
       </body>

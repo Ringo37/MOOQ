@@ -6,9 +6,9 @@
     "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 
-.bn-container {
+.editor-input {
   border: 1px solid var(--mantine-color-default-border);
-  border-radius: 5px;
+  border-radius: var(--bn-border-radius-large);
 }
 
 [data-mantine-color-scheme="light"] .bn-render .shiki {
@@ -27,6 +27,12 @@
 
 .bn-render > * {
   margin-top: 16px;
+  background-color: transparent !important;
+}
+
+.bn-render pre {
+  overflow-x: scroll;
+  padding: 16px;
 }
 
 .bn-render code {
@@ -35,8 +41,4 @@
 
 .bn-render audio {
   width: 100%;
-}
-
-.bn-render img {
-  border-radius: 5px;
 }
