@@ -6,8 +6,8 @@ import {
   type PutObjectCommandInput,
   HeadBucketCommand,
   CreateBucketCommand,
-  PutBucketPolicyCommand,
 } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 export function createS3Client(): S3Client {
   return new S3Client({
@@ -50,6 +50,19 @@ export async function getObject(bucket: string, key: string) {
   return res.Body;
 }
 
+export async function createPresignedGetUrl(bucket: string, key: string) {
+  const command = new GetObjectCommand({
+    Bucket: bucket,
+    Key: key,
+  });
+
+  const url = await getSignedUrl(s3, command, {
+    expiresIn: 60,
+  });
+
+  return url;
+}
+
 export async function deleteObject(bucket: string, key: string) {
   await s3.send(
     new DeleteObjectCommand({
@@ -65,31 +78,4 @@ export async function ensureBucket(bucket: string) {
   } catch {
     await s3.send(new CreateBucketCommand({ Bucket: bucket }));
   }
-}
-
-export async function ensurePublicBucket(bucket: string) {
-  try {
-    await s3.send(new HeadBucketCommand({ Bucket: bucket }));
-  } catch {
-    await s3.send(new CreateBucketCommand({ Bucket: bucket }));
-  }
-  const policy = {
-    Version: "2012-10-17",
-    Statement: [
-      {
-        Sid: "PublicReadGetObject",
-        Effect: "Allow",
-        Principal: { AWS: ["*"] },
-        Action: ["s3:GetObject"],
-        Resource: [`arn:aws:s3:::${bucket}/*`],
-      },
-    ],
-  };
-
-  await s3.send(
-    new PutBucketPolicyCommand({
-      Bucket: bucket,
-      Policy: JSON.stringify(policy),
-    }),
-  );
 }

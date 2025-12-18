@@ -36,14 +36,20 @@ model User {
   answers      Answer[]
 }
 
+enum FileVisibility {
+  PUBLIC
+  PRIVATE
+}
+
 model File {
-  id         String   @id @default(cuid())
+  id         String         @id @default(cuid())
   name       String
-  objectName String   @unique
+  key        String         @unique
   bucket     String
   mimeType   String
   url        String?
-  createdAt  DateTime @default(now())
+  visibility FileVisibility @default(PRIVATE)
+  createdAt  DateTime       @default(now())
 
   courses Course[]
   answers Answer[]
@@ -135,8 +141,7 @@ model Block {
 
 enum ProblemType {
   QUIZ
-  ASSIGNMENT
-  EXAM
+  FORM
 }
 
 enum ProblemStatus {
@@ -147,12 +152,14 @@ enum ProblemStatus {
 }
 
 model Problem {
-  id       String        @id @default(cuid())
-  name     String
-  type     ProblemType   @default(QUIZ)
-  status   ProblemStatus @default(HIDDEN)
-  content  String?
-  maxScore Int           @default(100)
+  id        String        @id @default(cuid())
+  name      String
+  type      ProblemType   @default(QUIZ)
+  status    ProblemStatus @default(HIDDEN)
+  content   String?
+  maxScore  Int           @default(100)
+  startTime DateTime?
+  endTime   DateTime?
 
   blocks       Block[]
   assessments  Assessment[]

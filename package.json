@@ -10,13 +10,15 @@
     "format": "prettier . --write",
     "prepare": "husky",
     "lint": "eslint --fix",
-    "test": "vitest run"
+    "test": "vitest run",
+    "check": "npm run typecheck && npm run lint && npm run test && npm run format"
   },
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.948.0",
+    "@aws-sdk/s3-request-presigner": "^3.954.0",
     "@blocknote/code-block": "^0.44.1",
     "@blocknote/core": "^0.44.1",
     "@blocknote/mantine": "^0.44.1",
@@ -35,7 +37,7 @@
     "@mantine/nprogress": "^8.3.9",
     "@mantine/spotlight": "^8.3.9",
     "@prisma/adapter-pg": "^7.1.0",
-    "@prisma/client": "^7.1.0",
+    "@prisma/client": "^7.2.0",
     "@react-router/node": "7.10.1",
     "@react-router/serve": "7.10.1",
     "@remix-run/form-data-parser": "^0.14.0",
@@ -79,7 +81,7 @@
     "postcss-preset-mantine": "^1.18.0",
     "postcss-simple-vars": "^7.0.1",
     "prettier": "3.7.4",
-    "prisma": "^7.1.0",
+    "prisma": "^7.2.0",
     "tailwindcss": "^4.1.13",
     "typescript": "^5.9.2",
     "typescript-eslint": "^8.49.0",
