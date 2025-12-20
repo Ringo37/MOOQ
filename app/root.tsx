@@ -1,6 +1,9 @@
 import {
   ColorSchemeScript,
+  Container,
   MantineProvider,
+  Text,
+  Title,
   mantineHtmlProps,
 } from "@mantine/core";
 import {
@@ -75,9 +78,12 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   let message = "Oops!";
   let details = "An unexpected error occurred.";
   let stack: string | undefined;
+  let errorStatus = "500";
 
   if (isRouteErrorResponse(error)) {
-    message = error.status === 404 ? "404" : "Error";
+    errorStatus = error.status.toString();
+    message =
+      error.status === 404 ? "Nothing to see here" : "Something went wrong";
     details =
       error.status === 404
         ? "The requested page could not be found."
@@ -85,16 +91,40 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   } else if (import.meta.env.DEV && error && error instanceof Error) {
     details = error.message;
     stack = error.stack;
+    errorStatus = "Error";
   }
 
   return (
-    <main className="pt-16 p-4 container mx-auto">
-      <h1>{message}</h1>
-      <p>{details}</p>
+    <main className="relative min-h-screen overflow-hidden flex flex-col justify-center items-center py-16">
+      <div
+        className="
+        absolute top-2/5 left-1/2 z-0
+        -translate-x-1/2 -translate-y-1/2
+        font-black leading-none
+        text-[200px] md:text-[500px]
+        text-gray-200 dark:text-gray-600
+        opacity-60 md:opacity-30
+        select-none pointer-events-none
+      "
+      >
+        {errorStatus}
+      </div>
+
+      <Container className="relative z-10 w-full text-center">
+        <Title className="text-4xl font-black md:text-5xl px-4">
+          {message}
+        </Title>
+
+        <Text c="dimmed" size="lg" mt="md" maw={540} mx="auto" className="px-4">
+          {details}
+        </Text>
+      </Container>
       {stack && (
-        <pre className="w-full p-4 overflow-x-auto">
-          <code>{stack}</code>
-        </pre>
+        <Container mt="xl" className="relative z-20 w-full max-w-4xl px-4">
+          <pre className="w-full p-4 overflow-x-auto bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded text-sm text-red-600 dark:text-red-400 font-mono shadow-sm text-left">
+            <code>{stack}</code>
+          </pre>
+        </Container>
       )}
     </main>
   );
