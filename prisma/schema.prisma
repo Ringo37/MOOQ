@@ -31,6 +31,7 @@ model User {
   password     Password?
   courses      Course[]     @relation("CourseUser")
   ownedCourses Course[]     @relation("CourseOwner")
+  favorite     Course[]     @relation("Favorite")
   assessments  Assessment[]
   answers      Answer[]
 }
@@ -73,6 +74,7 @@ model Course {
   fileId     String?
   owners     User[]     @relation("CourseOwner")
   users      User[]     @relation("CourseUser")
+  favorite   User[]     @relation("Favorite")
   categories Category[]
 }
 
