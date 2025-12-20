@@ -24,6 +24,10 @@ export async function loader({ request, params }: Route.LoaderArgs) {
   const userId = await requireUserId(request);
   const courseSlug = params.slug;
   const course = await getCourseBySlugForUser(courseSlug, userId);
+
+  if (!course) {
+    return new Response(null, { status: 404 });
+  }
   const description = await blockToHTML(course?.description);
 
   return { course, description };
