@@ -14,6 +14,7 @@ import {
 } from "@mantine/core";
 import { useState } from "react";
 import { data, Form, redirect } from "react-router";
+import sharp from "sharp";
 
 import type { CourseVisibility } from "generated/prisma/enums";
 import { Editor } from "~/components/editor";
@@ -78,11 +79,18 @@ export async function action({ request, params }: Route.ActionArgs) {
 
   let fileId: string | undefined = undefined;
   if (coverFile instanceof File && coverFile.size > 0) {
-    const ext = coverFile.name.split(".").pop();
-    const file = await uploadPublicFile(coverFile, "cover", `${slug}.${ext}`);
+    const buffer = await coverFile.arrayBuffer();
+    const webpBuffer = await sharp(Buffer.from(buffer))
+      .resize({ width: 1000, withoutEnlargement: true })
+      .webp({ quality: 80 })
+      .toBuffer();
+    const ext = "webp";
+    const webpFile = new File([new Uint8Array(webpBuffer)], `${slug}.${ext}`, {
+      type: "image/webp",
+    });
+    const file = await uploadPublicFile(webpFile, "cover", `${slug}.${ext}`);
     fileId = file.id;
   }
-
   await updateCourse(originalSlug, name, slug, description, fileId, visibility);
 
   return redirect(`/courses-admin`);

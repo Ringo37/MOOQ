@@ -7,13 +7,17 @@ export type CourseWithCover = Prisma.CourseGetPayload<{
 }>;
 
 export async function getAllCourses() {
-  return prisma.course.findMany({ include: { cover: true } });
+  return prisma.course.findMany({
+    include: { cover: true },
+    orderBy: { updatedAt: "desc" },
+  });
 }
 
 export async function getAllOwnedCourses(userId: string) {
   return prisma.course.findMany({
     where: { owners: { some: { id: userId } } },
     include: { cover: true },
+    orderBy: { updatedAt: "desc" },
   });
 }
 
@@ -31,7 +35,7 @@ export async function getCoursesForUser(userId: string) {
         },
       ],
     },
-    orderBy: { createdAt: "desc" },
+    orderBy: { updatedAt: "desc" },
     include: { cover: true },
   });
 }
