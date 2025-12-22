@@ -43,7 +43,18 @@ export async function loader({ request, params }: Route.LoaderArgs) {
     throw new Response("Not Found", { status: 404 });
   }
 
-  return { course };
+  const sidebarData = [
+    {
+      icon: "link",
+      label: "リンク",
+      items: [
+        { title: "トップ", link: "/courses" },
+        { title: "コース管理", link: "/courses-admin" },
+      ],
+    },
+  ];
+
+  return { course, sidebarData };
 }
 
 export async function action({ request, params }: Route.ActionArgs) {

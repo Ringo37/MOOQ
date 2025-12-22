@@ -1,6 +1,6 @@
-import { Gauge, Home, Settings, User } from "lucide-react";
 import { Outlet, useMatches } from "react-router";
 
+import type { IconName, NavGroup } from "~/components/navItems";
 import { Sidebar } from "~/components/sidebar";
 import { requireUser } from "~/services/auth.server";
 import { getSidebarInitialOpen } from "~/utils/sidebarUtils";
@@ -14,17 +14,24 @@ export async function loader({ request }: Route.LoaderArgs) {
   return { initialOpen };
 }
 
-const data = [
-  { icon: Home, label: "ホーム" },
-  { icon: Gauge, label: "ダッシュボード" },
-  { icon: Settings, label: "設定" },
-  { icon: User, label: "アカウント" },
-];
-
 export default function Layout({ loaderData }: Route.ComponentProps) {
-  useMatches();
+  const matches = useMatches();
+  console.log(matches[matches.length - 1]);
+  const leafRoute = matches[matches.length - 1];
+  const sidebarData = (leafRoute?.loaderData as { sidebarData?: NavGroup[] })
+    ?.sidebarData;
+
+  const defaultData = [
+    {
+      icon: "link" as IconName,
+      label: "リンク",
+      items: [{ title: "トップ", link: "/courses" }],
+    },
+  ];
+
+  const activeData = sidebarData || defaultData;
   return (
-    <Sidebar initialOpen={loaderData.initialOpen} data={data}>
+    <Sidebar initialOpen={loaderData.initialOpen} data={activeData}>
       <Outlet />
     </Sidebar>
   );

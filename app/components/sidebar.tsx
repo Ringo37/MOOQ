@@ -1,18 +1,8 @@
-import {
-  AppShell,
-  Burger,
-  Group,
-  Title,
-  Text,
-  Box,
-  TextInput,
-} from "@mantine/core";
+import { AppShell, Burger, Group, Title } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { Search } from "lucide-react";
-import { useState } from "react";
 import { Link } from "react-router";
 
-import { NavItems, type NavItem } from "./navItems";
+import { NavItems, type NavGroup } from "./navItems";
 import { NavUser } from "./navUser";
 import { ColorSchemeToggle } from "./themeToggle";
 
@@ -23,7 +13,7 @@ export function Sidebar({
 }: {
   initialOpen: boolean;
   children: React.ReactNode;
-  data: NavItem[];
+  data: NavGroup[];
 }) {
   const [opened, { toggle }] = useDisclosure(initialOpen, {
     onOpen: () =>
@@ -31,7 +21,6 @@ export function Sidebar({
     onClose: () =>
       (document.cookie = `sidebar-open=false; path=/; max-age=31536000; SameSite=Lax`),
   });
-  const [active, setActive] = useState(0);
 
   const transitionDuration = 300;
 
@@ -69,58 +58,10 @@ export function Sidebar({
           transition: `width ${transitionDuration}ms ease`,
         }}
       >
-        {/* ===== Search ===== */}
-        <Box
-          style={{
-            height: opened ? "auto" : 0,
-            overflow: "hidden",
-            transition: `height ${transitionDuration}ms ease`,
-          }}
-        >
-          <Box px="sm" py="xs">
-            <TextInput
-              size="sm"
-              placeholder="Search..."
-              leftSection={<Search size={16} />}
-              style={{
-                pointerEvents: opened ? "auto" : "none",
-                opacity: opened ? 1 : 0,
-                transition: `opacity ${transitionDuration}ms ease`,
-              }}
-            />
-          </Box>
-        </Box>
-
-        {/* Menu */}
-        <div
-          style={{
-            height: 20,
-            marginBottom: 10,
-            paddingLeft: 10,
-            overflow: "hidden",
-            transition: `all ${transitionDuration}ms ease`,
-          }}
-        >
-          <Text
-            size="xs"
-            fw={500}
-            c="dimmed"
-            style={{
-              whiteSpace: "nowrap",
-              opacity: opened ? 1 : 0,
-              transition: `opacity ${transitionDuration}ms ease`,
-            }}
-          >
-            Menu
-          </Text>
-        </div>
-
         {/* Items */}
         <NavItems
           data={data}
           opened={opened}
-          active={active}
-          setActive={setActive}
           transitionDuration={transitionDuration}
         />
 

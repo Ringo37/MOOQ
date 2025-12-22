@@ -3,14 +3,29 @@ import { Filter } from "lucide-react";
 
 import { CourseCard } from "~/components/courseCard";
 import { getCoursesForUser } from "~/models/course.server";
-import { requireUserId } from "~/services/auth.server";
+import { requireUser } from "~/services/auth.server";
 
 import type { Route } from "../courses/+types/index";
 
 export async function loader({ request }: Route.LoaderArgs) {
-  const userId = await requireUserId(request);
-  const courses = await getCoursesForUser(userId);
-  return { courses };
+  const user = await requireUser(request);
+  const courses = await getCoursesForUser(user.id);
+
+  const links = [{ title: "トップ", link: "/courses" }];
+  if (user.role === "ADMIN" || user.role === "EDITOR") {
+    links.push({ title: "コース管理", link: "/courses-admin" });
+  }
+  if (user.role === "ADMIN") {
+    links.push({ title: "管理画面", link: "/admin" });
+  }
+  const sidebarData = [
+    {
+      icon: "link",
+      label: "リンク",
+      items: links,
+    },
+  ];
+  return { courses, sidebarData };
 }
 
 export default function CoursesIndex({ loaderData }: Route.ComponentProps) {

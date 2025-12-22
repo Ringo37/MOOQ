@@ -11,7 +11,17 @@ import type { Route } from "../coursesAdmin/+types/index";
 export async function loader({ request }: Route.LoaderArgs) {
   const userId = await requireUserId(request);
   const courses = await getAllOwnedCourses(userId);
-  return { courses };
+  const sidebarData = [
+    {
+      icon: "link",
+      label: "リンク",
+      items: [
+        { title: "トップ", link: "/courses" },
+        { title: "コース管理", link: "/courses-admin" },
+      ],
+    },
+  ];
+  return { courses, sidebarData };
 }
 
 export default function CoursesAdminIndex({
