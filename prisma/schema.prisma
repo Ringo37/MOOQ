@@ -70,15 +70,15 @@ model Course {
   updatedAt   DateTime         @updatedAt
   visibility  CourseVisibility @default(UNLISTED)
 
-  cover      File?      @relation(fields: [fileId], references: [id])
-  fileId     String?
-  owners     User[]     @relation("CourseOwner")
-  users      User[]     @relation("CourseUser")
-  favorite   User[]     @relation("Favorite")
-  categories Category[]
+  cover    File?     @relation(fields: [fileId], references: [id])
+  fileId   String?
+  owners   User[]    @relation("CourseOwner")
+  users    User[]    @relation("CourseUser")
+  favorite User[]    @relation("Favorite")
+  sections Section[]
 }
 
-model Category {
+model Section {
   id    String @id @default(cuid())
   name  String
   order Int    @default(0)
@@ -98,12 +98,12 @@ model Lecture {
   order  Int     @default(0)
   isOpen Boolean @default(false)
 
-  category   Category @relation(fields: [categoryId], references: [id])
-  categoryId String
-  pages      Page[]
+  section   Section @relation(fields: [sectionId], references: [id])
+  sectionId String
+  pages     Page[]
 
-  @@unique([categoryId, slug])
-  @@unique([categoryId, order])
+  @@unique([sectionId, slug])
+  @@unique([sectionId, order])
 }
 
 model Page {
