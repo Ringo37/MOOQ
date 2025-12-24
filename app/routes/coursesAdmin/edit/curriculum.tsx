@@ -118,6 +118,7 @@ export default function CurriculumEditorTab({
     renameSection,
     renameLecture,
     renamePage,
+    reset,
   } = useCurriculumDnd(initialSections);
   const fetcher = useFetcher();
 
@@ -142,6 +143,7 @@ export default function CurriculumEditorTab({
         position: "top-right",
         autoClose: 2000,
       });
+      reset(createInitialSections(course));
     }
   }, [fetcher.state, fetcher.data]);
 

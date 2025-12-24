@@ -504,6 +504,10 @@ export function useCurriculumDnd(initialSections: SectionItem[] = []) {
     );
   };
 
+  const reset = (nextSections: SectionItem[]) => {
+    setSections(nextSections);
+  };
+
   return {
     sections,
     activeItem,
@@ -521,5 +525,6 @@ export function useCurriculumDnd(initialSections: SectionItem[] = []) {
     renameSection,
     renameLecture,
     renamePage,
+    reset,
   };
 }
