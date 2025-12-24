@@ -1,4 +1,4 @@
-import { Container, Group, Tabs, Title } from "@mantine/core";
+import { Button, Container, Group, Tabs, Title } from "@mantine/core";
 import { Book, Info, User } from "lucide-react";
 import { Link, Outlet, useLocation, useParams } from "react-router";
 
@@ -57,7 +57,11 @@ export default function CoursesAdminEditLayout({
     <Container size="md" py="md">
       <Group justify="space-between" mb="lg">
         <Title order={2}>コース編集: {course.name}</Title>
-        <Group></Group>
+        <Group>
+          <Link to="/courses-admin">
+            <Button color="green">コース管理トップ</Button>
+          </Link>
+        </Group>
       </Group>
 
       <Tabs value={activeTab}>

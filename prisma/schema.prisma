@@ -131,8 +131,6 @@ model Block {
   problemId String?
   page      Page     @relation(fields: [pageId], references: [id])
   pageId    String
-
-  @@unique([pageId, order])
 }
 
 enum ProblemType {
