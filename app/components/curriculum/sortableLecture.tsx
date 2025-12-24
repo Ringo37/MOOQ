@@ -68,14 +68,7 @@ export function SortableLecture({
   );
 
   return (
-    <Paper
-      ref={setNodeRef}
-      style={style}
-      withBorder
-      p={0}
-      radius="md"
-      shadow="xs"
-    >
+    <Paper ref={setNodeRef} style={style} withBorder p={0} radius="md">
       <Box p="sm" style={{ borderRadius: "8px 8px 0 0" }}>
         <Group justify="space-between">
           <Group gap="sm">

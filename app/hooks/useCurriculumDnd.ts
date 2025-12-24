@@ -31,7 +31,6 @@ export type SectionItem = {
   id: string;
   name: string;
   order: number;
-  courseId: string;
   lectures: LectureItem[];
 };
 
@@ -80,6 +79,21 @@ export function useCurriculumDnd() {
       }
     }
     return undefined;
+  }
+
+  function normalizeOrders(sections: SectionItem[]): SectionItem[] {
+    return sections.map((sec, secIndex) => ({
+      ...sec,
+      order: secIndex,
+      lectures: sec.lectures.map((lec, lecIndex) => ({
+        ...lec,
+        order: lecIndex,
+        pages: lec.pages.map((page, pageIndex) => ({
+          ...page,
+          order: pageIndex,
+        })),
+      })),
+    }));
   }
 
   // --- Handlers ---
@@ -312,7 +326,7 @@ export function useCurriculumDnd() {
       setSections((items) => {
         const oldIndex = items.findIndex((s) => s.id === active.id);
         const newIndex = items.findIndex((s) => s.id === over.id);
-        return arrayMove(items, oldIndex, newIndex);
+        return normalizeOrders(arrayMove(items, oldIndex, newIndex));
       });
     }
 
@@ -338,7 +352,7 @@ export function useCurriculumDnd() {
             ...newSections[secIndex],
             lectures: arrayMove(lectures, oldIndex, newIndex),
           };
-          return newSections;
+          return normalizeOrders(newSections);
         });
       }
     }
@@ -371,7 +385,7 @@ export function useCurriculumDnd() {
             oldIndex,
             newIndex,
           );
-          return newSections;
+          return normalizeOrders(newSections);
         });
       }
     }
@@ -384,7 +398,6 @@ export function useCurriculumDnd() {
       id: `section-${generateId()}`,
       name: "新規セクション",
       order: sections.length,
-      courseId: "course-1",
       lectures: [],
     };
     setSections((prev) => [...prev, newSection]);

@@ -15,12 +15,44 @@ import { Plus } from "lucide-react";
 import { ItemOverlay } from "~/components/curriculum/itemOverlay";
 import { SortableSection } from "~/components/curriculum/sortableSection";
 import { useCurriculumDnd } from "~/hooks/useCurriculumDnd";
+import { canEditCourseBySlug, getCourseBySlug } from "~/models/course.server";
+import { requireUser } from "~/services/auth.server";
+
+import type { Route } from "../../coursesAdmin/edit/+types/curriculum";
 
 const dropAnimation: DropAnimation = {
   sideEffects: defaultDropAnimationSideEffects({
     styles: { active: { opacity: "0.5" } },
   }),
 };
+
+export async function loader({ request, params }: Route.LoaderArgs) {
+  const user = await requireUser(request);
+  const slug = params.slug;
+
+  const canEdit = await canEditCourseBySlug(slug, user.id);
+  if (!canEdit) {
+    throw new Response("Forbidden", { status: 403 });
+  }
+
+  const course = await getCourseBySlug(slug);
+  if (!course) {
+    throw new Response("Not Found", { status: 404 });
+  }
+
+  const sidebarData = [
+    {
+      icon: "link",
+      label: "リンク",
+      items: [
+        { title: "トップ", link: "/courses" },
+        { title: "コース管理", link: "/courses-admin" },
+      ],
+    },
+  ];
+
+  return { course, sidebarData };
+}
 
 export default function CurriculumEditorTab() {
   const {
