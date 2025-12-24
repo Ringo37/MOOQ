@@ -1,11 +1,9 @@
 import {
   Box,
   Button,
-  Container,
   Group,
   Stack,
   TextInput,
-  Title,
   Text,
   Center,
   FileInput,
@@ -27,7 +25,7 @@ import { uploadPublicFile } from "~/models/file.server";
 import { requireUser } from "~/services/auth.server";
 import { parseInitialContent } from "~/utils/parseInitialContent";
 
-import type { Route } from "../coursesAdmin/+types/edit";
+import type { Route } from "../../coursesAdmin/edit/+types/info";
 
 export async function loader({ request, params }: Route.LoaderArgs) {
   const user = await requireUser(request);
@@ -107,7 +105,7 @@ export async function action({ request, params }: Route.ActionArgs) {
   return redirect(`/courses-admin`);
 }
 
-export default function CoursesAdminEdit({
+export default function CoursesAdminEditInfo({
   actionData,
   loaderData,
 }: Route.ComponentProps) {
@@ -140,99 +138,93 @@ export default function CoursesAdminEdit({
   }
 
   return (
-    <Container size="md">
-      <Center>
-        <Box w="100%">
-          <Title order={2} mb="md">
-            コース編集
-          </Title>
+    <Center>
+      <Box w="100%">
+        {actionData?.error === "SLUG_EXISTS" && (
+          <Text c="red" mb="sm">
+            このスラグは既に使われています
+          </Text>
+        )}
 
-          {actionData?.error === "SLUG_EXISTS" && (
-            <Text c="red" mb="sm">
-              このスラグは既に使われています
-            </Text>
-          )}
+        <Form method="post" encType="multipart/form-data">
+          <Stack>
+            <SegmentedControl
+              value={visibility}
+              onChange={(value) => setVisibility(value as CourseVisibility)}
+              data={[
+                { label: "公開", value: "PUBLIC" },
+                { label: "限定公開", value: "PRIVATE" },
+                { label: "非公開", value: "UNLISTED" },
+              ]}
+              name="visibility"
+            />
 
-          <Form method="post" encType="multipart/form-data">
-            <Stack>
-              <SegmentedControl
-                value={visibility}
-                onChange={(value) => setVisibility(value as CourseVisibility)}
-                data={[
-                  { label: "公開", value: "PUBLIC" },
-                  { label: "限定公開", value: "PRIVATE" },
-                  { label: "非公開", value: "UNLISTED" },
-                ]}
-                name="visibility"
-              />
+            <TextInput
+              name="name"
+              label="コース名"
+              defaultValue={course.name}
+              required
+            />
 
+            <Group align="flex-end">
               <TextInput
-                name="name"
-                label="コース名"
-                defaultValue={course.name}
-                required
-              />
-
-              <Group align="flex-end">
-                <TextInput
-                  name="slug"
-                  label="スラグ"
-                  value={slug}
-                  onChange={(e) => {
-                    setSlug(e.currentTarget.value);
-                    setSlugOk(null);
-                  }}
-                  required
-                  style={{ flex: 1 }}
-                />
-                <Button variant="light" onClick={checkSlug} loading={checking}>
-                  確認
-                </Button>
-              </Group>
-
-              {slugOk === true && (
-                <Text c="green" size="sm">
-                  このスラグは使用できます
-                </Text>
-              )}
-              {slugOk === false && (
-                <Text c="red" size="sm">
-                  このスラグは既に使われています
-                </Text>
-              )}
-
-              <FileInput
-                name="cover"
-                label="カバー画像"
-                accept="image/png,image/jpeg,image/webp"
-                clearable
-                placeholder={course.cover?.name ?? ""}
-                onChange={(file) => {
-                  setCoverPreview(file ? URL.createObjectURL(file) : null);
+                name="slug"
+                label="スラグ"
+                value={slug}
+                onChange={(e) => {
+                  setSlug(e.currentTarget.value);
+                  setSlugOk(null);
                 }}
+                required
+                style={{ flex: 1 }}
               />
+              <Button variant="light" onClick={checkSlug} loading={checking}>
+                確認
+              </Button>
+            </Group>
 
-              {coverPreview && (
-                <Center>
-                  <Image src={coverPreview} maw={300} />
-                </Center>
-              )}
+            {slugOk === true && (
+              <Text c="green" size="sm">
+                このスラグは使用できます
+              </Text>
+            )}
+            {slugOk === false && (
+              <Text c="red" size="sm">
+                このスラグは既に使われています
+              </Text>
+            )}
 
-              <Text size="sm">説明</Text>
-              <Editor
-                name="description"
-                initialContent={parseInitialContent(course.description)}
-              />
+            <FileInput
+              name="cover"
+              label="カバー画像"
+              accept="image/png,image/jpeg,image/webp"
+              clearable
+              placeholder={course.cover?.name ?? ""}
+              onChange={(file) => {
+                setCoverPreview(file ? URL.createObjectURL(file) : null);
+              }}
+            />
 
-              <Group justify="flex-end">
-                <Button type="submit" disabled={slugOk === false}>
-                  更新
-                </Button>
-              </Group>
-            </Stack>
-          </Form>
-        </Box>
-      </Center>
-    </Container>
+            {coverPreview && (
+              <Center>
+                <Image src={coverPreview} maw={300} />
+              </Center>
+            )}
+
+            <Text size="sm">説明</Text>
+            <Editor
+              name="description"
+              initialContent={parseInitialContent(course.description)}
+            />
+
+            <Group justify="flex-end">
+              <Button type="submit" disabled={slugOk === false}>
+                更新
+              </Button>
+            </Group>
+          </Stack>
+        </Form>
+      </Box>
+    </Center>
   );
 }

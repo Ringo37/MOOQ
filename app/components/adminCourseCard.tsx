@@ -8,7 +8,7 @@ import {
   Card,
   Center,
 } from "@mantine/core";
-import { Edit, ImageIcon, Trash2, User } from "lucide-react";
+import { Edit, ImageIcon, Trash2 } from "lucide-react";
 import { Link } from "react-router";
 
 import type { CourseWithCover } from "~/models/course.server";
@@ -62,10 +62,6 @@ export const AdminCourseCard = ({ course }: CourseCardProps) => {
                 編集
               </Button>
             </Link>
-
-            <Button color="yellow" size="xs" leftSection={<User size={16} />}>
-              権限設定
-            </Button>
 
             <Button color="red" size="xs" leftSection={<Trash2 size={16} />}>
               削除

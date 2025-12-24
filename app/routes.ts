@@ -26,7 +26,11 @@ export default [
         index("routes/coursesAdmin/index.tsx"),
         route("course", "routes/coursesAdmin/course.tsx"),
         route("create", "routes/coursesAdmin/create.tsx"),
-        route(":slug", "routes/coursesAdmin/edit.tsx"),
+        layout("routes/coursesAdmin/edit/layout.tsx", [
+          route(":slug", "routes/coursesAdmin/edit/info.tsx"),
+          route(":slug/curriculum", "routes/coursesAdmin/edit/curriculum.tsx"),
+          route(":slug/permission", "routes/coursesAdmin/edit/permission.tsx"),
+        ]),
       ]),
     ]),
   ]),

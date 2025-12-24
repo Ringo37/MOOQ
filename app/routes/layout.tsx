@@ -16,7 +16,6 @@ export async function loader({ request }: Route.LoaderArgs) {
 
 export default function Layout({ loaderData }: Route.ComponentProps) {
   const matches = useMatches();
-  console.log(matches[matches.length - 1]);
   const leafRoute = matches[matches.length - 1];
   const sidebarData = (leafRoute?.loaderData as { sidebarData?: NavGroup[] })
     ?.sidebarData;
