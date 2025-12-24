@@ -17,6 +17,7 @@ import { data, useBlocker, useFetcher } from "react-router";
 
 import { ItemOverlay } from "~/components/curriculum/itemOverlay";
 import { SortableSection } from "~/components/curriculum/sortableSection";
+import type { NavGroup } from "~/components/navItems";
 import { useCurriculumDnd, type SectionItem } from "~/hooks/useCurriculumDnd";
 import {
   canEditCourseBySlug,
@@ -49,7 +50,28 @@ export async function loader({ request, params }: Route.LoaderArgs) {
     throw new Response("Not Found", { status: 404 });
   }
 
-  const sidebarData = [
+  const sidebarDataCourse: NavGroup[] = course.sections.map((section) => ({
+    icon: "book",
+    label: section.name,
+    items: section.lectures.map((lecture) => ({
+      title: lecture.name,
+      link: `/courses/${course.slug}/${section.slug}/${lecture.slug}`,
+    })),
+  }));
+
+  const sidebarDataPages: NavGroup = {
+    icon: "page",
+    label: "ページ一覧",
+    items: course.sections.flatMap((section) =>
+      section.lectures.flatMap((lecture) =>
+        lecture.pages.map((page) => ({
+          title: `${page.name} (${lecture.name})`,
+          link: `/courses-admin/${course.slug}/${section.slug}/${lecture.slug}/${page.slug}`,
+        })),
+      ),
+    ),
+  };
+  const sidebarData: NavGroup[] = [
     {
       icon: "link",
       label: "リンク",
@@ -58,6 +80,8 @@ export async function loader({ request, params }: Route.LoaderArgs) {
         { title: "コース管理", link: "/courses-admin" },
       ],
     },
+    ...sidebarDataCourse,
+    sidebarDataPages,
   ];
 
   return { course, sidebarData };

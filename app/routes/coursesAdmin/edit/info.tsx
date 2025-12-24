@@ -16,9 +16,11 @@ import sharp from "sharp";
 
 import type { CourseVisibility } from "generated/prisma/enums";
 import { Editor } from "~/components/editor";
+import type { NavGroup } from "~/components/navItems";
 import {
   canEditCourseBySlug,
   getCourseBySlug,
+  getCourseBySlugWithCurriculum,
   updateCourse,
 } from "~/models/course.server";
 import { uploadPublicFile } from "~/models/file.server";
@@ -36,12 +38,33 @@ export async function loader({ request, params }: Route.LoaderArgs) {
     throw new Response("Forbidden", { status: 403 });
   }
 
-  const course = await getCourseBySlug(slug);
+  const course = await getCourseBySlugWithCurriculum(slug);
   if (!course) {
     throw new Response("Not Found", { status: 404 });
   }
 
-  const sidebarData = [
+  const sidebarDataCourse: NavGroup[] = course.sections.map((section) => ({
+    icon: "book",
+    label: section.name,
+    items: section.lectures.map((lecture) => ({
+      title: lecture.name,
+      link: `/courses/${course.slug}/${section.slug}/${lecture.slug}`,
+    })),
+  }));
+
+  const sidebarDataPages: NavGroup = {
+    icon: "page",
+    label: "ページ一覧",
+    items: course.sections.flatMap((section) =>
+      section.lectures.flatMap((lecture) =>
+        lecture.pages.map((page) => ({
+          title: `${page.name} (${lecture.name})`,
+          link: `/courses-admin/${course.slug}/${section.slug}/${lecture.slug}/${page.slug}`,
+        })),
+      ),
+    ),
+  };
+  const sidebarData: NavGroup[] = [
     {
       icon: "link",
       label: "リンク",
@@ -50,6 +73,8 @@ export async function loader({ request, params }: Route.LoaderArgs) {
         { title: "コース管理", link: "/courses-admin" },
       ],
     },
+    ...sidebarDataCourse,
+    sidebarDataPages,
   ];
 
   return { course, sidebarData };

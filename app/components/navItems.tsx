@@ -6,6 +6,7 @@ import {
   Settings,
   User,
   Link as LinkIcon,
+  FileText,
 } from "lucide-react";
 import { Link, useLocation } from "react-router";
 
@@ -16,6 +17,7 @@ export const IconMap = {
   book: BookOpen,
   bookmark: Bookmark,
   link: LinkIcon,
+  page: FileText,
 };
 
 export type IconName = keyof typeof IconMap;
