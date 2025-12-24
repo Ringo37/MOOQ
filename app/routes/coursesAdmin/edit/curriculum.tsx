@@ -121,7 +121,7 @@ export default function CurriculumEditorTab({
     reset,
   } = useCurriculumDnd(initialSections);
   const hasUnsavedChanges = () => {
-    return sections !== initialSections;
+    return JSON.stringify(sections) !== JSON.stringify(initialSections);
   };
   const fetcher = useFetcher();
   const blocker = useBlocker(hasUnsavedChanges);

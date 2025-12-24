@@ -139,6 +139,7 @@ export function SortableLecture({
                 非公開
               </Badge>
             )}
+            <Text size="sm">/{lecture.slug}</Text>
           </Group>
 
           <Group gap="xs">

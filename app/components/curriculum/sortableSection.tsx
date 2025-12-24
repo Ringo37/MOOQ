@@ -90,7 +90,6 @@ export function SortableSection({
       >
         <Group justify="space-between">
           <Group gap="xs">
-            {/* 編集中はドラッグ無効 */}
             {!isEditing && (
               <div
                 {...attributes}
@@ -128,6 +127,8 @@ export function SortableSection({
                 {section.name}
               </Text>
             )}
+
+            <Text size="sm">/{section.slug}</Text>
           </Group>
 
           <Group gap="xs">

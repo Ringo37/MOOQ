@@ -412,24 +412,35 @@ export function useCurriculumDnd(initialSections: SectionItem[] = []) {
   const generateId = () => crypto.randomUUID();
 
   const addSection = () => {
-    const newSection: SectionItem = {
-      id: `section-${generateId()}`,
-      name: "新規セクション",
-      slug: String(sections.length),
-      order: sections.length,
-      lectures: [],
-    };
-    setSections((prev) => [...prev, newSection]);
+    setSections((prev) => {
+      const candidateSlug = String(prev.length + 1);
+
+      const uniqueSlug = ensureUniqueSlug(prev, candidateSlug);
+
+      const newSection: SectionItem = {
+        id: `section-${generateId()}`,
+        name: "新規セクション",
+        slug: uniqueSlug,
+        order: prev.length,
+        lectures: [],
+      };
+
+      return [...prev, newSection];
+    });
   };
 
   const addLecture = (sectionId: string) => {
     setSections((prev) => {
       return prev.map((sec) => {
         if (sec.id !== sectionId) return sec;
+
+        const candidateSlug = String(sec.lectures.length + 1);
+        const uniqueSlug = ensureUniqueSlug(sec.lectures, candidateSlug);
+
         const newLecture: LectureItem = {
           id: `lecture-${generateId()}`,
           name: "新規レクチャー",
-          slug: String(sec.lectures.length),
+          slug: uniqueSlug,
           order: sec.lectures.length,
           isOpen: false,
           sectionId: sec.id,
@@ -451,10 +462,13 @@ export function useCurriculumDnd(initialSections: SectionItem[] = []) {
         const newLectures = [...sec.lectures];
         const targetLecture = newLectures[targetLectureIndex];
 
+        const candidateSlug = String(targetLecture.pages.length + 1);
+        const uniqueSlug = ensureUniqueSlug(targetLecture.pages, candidateSlug);
+
         const newPage: PageItem = {
           id: `page-${generateId()}`,
           name: "新規ページ",
-          slug: String(targetLecture.pages.length),
+          slug: uniqueSlug,
           order: targetLecture.pages.length,
           isOpen: false,
           lectureId: targetLecture.id,

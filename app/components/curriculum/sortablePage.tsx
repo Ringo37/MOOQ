@@ -101,6 +101,7 @@ export function SortablePage({
               非公開
             </Badge>
           )}
+          <Text size="sm">/{page.slug}</Text>
         </Group>
 
         <Group gap="xs">
