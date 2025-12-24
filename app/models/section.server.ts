@@ -43,9 +43,7 @@ export async function upsertSectionTree(
 ) {
   return prisma.$transaction(async (tx) => {
     for (const section of sections) {
-      // =========================
       // Section
-      // =========================
       if (section.id) {
         await tx.section.upsert({
           where: { id: section.id },
@@ -69,12 +67,10 @@ export async function upsertSectionTree(
           },
         });
 
-        section.id = createdSection.id; // ★ lecture 用
+        section.id = createdSection.id;
       }
 
-      // =========================
       // Lecture
-      // =========================
       for (const lecture of section.lectures) {
         if (lecture.id) {
           await tx.lecture.upsert({
@@ -103,12 +99,10 @@ export async function upsertSectionTree(
             },
           });
 
-          lecture.id = createdLecture.id; // ★ page 用
+          lecture.id = createdLecture.id;
         }
 
-        // =========================
         // Page
-        // =========================
         for (const page of lecture.pages) {
           if (page.id) {
             await tx.page.upsert({

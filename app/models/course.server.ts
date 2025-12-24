@@ -65,8 +65,12 @@ export async function getCourseBySlugWithCurriculum(slug: string) {
       cover: true,
       sections: {
         include: {
-          lectures: { include: { pages: true } },
+          lectures: {
+            include: { pages: { orderBy: { order: "asc" } } },
+            orderBy: { order: "asc" },
+          },
         },
+        orderBy: { order: "asc" },
       },
     },
   });
