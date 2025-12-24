@@ -11,16 +11,19 @@ import {
 } from "@dnd-kit/sortable";
 import { Box, Group, Title, Text, Button, Stack } from "@mantine/core";
 import { Plus } from "lucide-react";
+import { data, useFetcher } from "react-router";
 
 import { ItemOverlay } from "~/components/curriculum/itemOverlay";
 import { SortableSection } from "~/components/curriculum/sortableSection";
-import { useCurriculumDnd } from "~/hooks/useCurriculumDnd";
+import { useCurriculumDnd, type SectionItem } from "~/hooks/useCurriculumDnd";
 import {
   canEditCourseBySlug,
   getCourseBySlug,
   getCourseBySlugWithCurriculum,
 } from "~/models/course.server";
+import { upsertSectionTree } from "~/models/section.server";
 import { requireUser } from "~/services/auth.server";
+import { createInitialSections } from "~/utils/createInitialSections";
 
 import type { Route } from "../../coursesAdmin/edit/+types/curriculum";
 
@@ -71,9 +74,25 @@ export async function action({ request, params }: Route.ActionArgs) {
   if (!course) {
     throw new Response("Not Found", { status: 404 });
   }
+
+  const formData = await request.formData();
+  const courseId = formData.get("courseId") as string;
+  const sectionRaw = formData.get("section");
+  if (typeof sectionRaw !== "string") {
+    return data({ error: "Invalid payload" }, { status: 400 });
+  }
+
+  const sections: SectionItem[] = JSON.parse(sectionRaw);
+
+  await upsertSectionTree(sections, courseId);
 }
 
-export default function CurriculumEditorTab() {
+export default function CurriculumEditorTab({
+  loaderData,
+}: Route.ComponentProps) {
+  const { course } = loaderData;
+  const initialSections = createInitialSections(course);
+
   const {
     sections,
     activeItem,
@@ -91,7 +110,21 @@ export default function CurriculumEditorTab() {
     renameSection,
     renameLecture,
     renamePage,
-  } = useCurriculumDnd();
+  } = useCurriculumDnd(initialSections);
+  const fetcher = useFetcher();
+
+  const handleSave = () => {
+    fetcher.submit(
+      {
+        section: JSON.stringify(sections),
+        courseId: course.id,
+      },
+      {
+        method: "post",
+        encType: "application/x-www-form-urlencoded",
+      },
+    );
+  };
 
   return (
     <Box mx="auto">
@@ -146,7 +179,7 @@ export default function CurriculumEditorTab() {
         </DragOverlay>
       </DndContext>
       <Group justify="flex-end">
-        <Button>保存</Button>
+        <Button onClick={handleSave}>保存</Button>
       </Group>
     </Box>
   );

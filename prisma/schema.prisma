@@ -87,7 +87,6 @@ model Section {
   courseId String
   lectures Lecture[]
 
-  @@unique([courseId, name])
   @@unique([courseId, order])
 }
 

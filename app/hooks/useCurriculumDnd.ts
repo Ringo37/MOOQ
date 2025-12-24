@@ -13,6 +13,7 @@ import { useState, useMemo } from "react";
 export type PageItem = {
   id: string;
   name: string;
+  slug: string;
   order: number;
   isOpen: boolean;
   lectureId: string;
@@ -21,9 +22,10 @@ export type PageItem = {
 export type LectureItem = {
   id: string;
   name: string;
+  slug: string;
   order: number;
   isOpen: boolean;
-  categoryId: string;
+  sectionId: string;
   pages: PageItem[];
 };
 
@@ -34,10 +36,7 @@ export type SectionItem = {
   lectures: LectureItem[];
 };
 
-// --- Initial Data ---
-const initialSections: SectionItem[] = [];
-
-export function useCurriculumDnd() {
+export function useCurriculumDnd(initialSections: SectionItem[] = []) {
   const [sections, setSections] = useState<SectionItem[]>(initialSections);
 
   const [activeItem, setActiveItem] = useState<
@@ -270,7 +269,7 @@ export function useCurriculumDnd() {
             newIndex =
               newIndex >= 0 ? newIndex + modifier : destSec.lectures.length + 1;
 
-            movedLec.categoryId = destSec.id;
+            movedLec.sectionId = destSec.id;
             destSec.lectures.splice(newIndex, 0, movedLec);
             return newSections;
           });
@@ -303,7 +302,7 @@ export function useCurriculumDnd() {
             const destSec = newSections.find((s) => s.id === overSec.id);
             if (!destSec) return prev;
 
-            movedLec.categoryId = destSec.id;
+            movedLec.sectionId = destSec.id;
             destSec.lectures.push(movedLec);
             return newSections;
           });
@@ -410,9 +409,10 @@ export function useCurriculumDnd() {
         const newLecture: LectureItem = {
           id: `lecture-${generateId()}`,
           name: "新規レクチャー",
+          slug: String(sec.lectures.length),
           order: sec.lectures.length,
           isOpen: true,
-          categoryId: sec.id,
+          sectionId: sec.id,
           pages: [],
         };
         return { ...sec, lectures: [...sec.lectures, newLecture] };
@@ -434,6 +434,7 @@ export function useCurriculumDnd() {
         const newPage: PageItem = {
           id: `page-${generateId()}`,
           name: "新規ページ",
+          slug: String(targetLecture.pages.length),
           order: targetLecture.pages.length,
           isOpen: true,
           lectureId: targetLecture.id,

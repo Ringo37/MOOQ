@@ -6,6 +6,17 @@ export type CourseWithCover = Prisma.CourseGetPayload<{
   include: { cover: true };
 }>;
 
+export type CourseWithCurriculum = Prisma.CourseGetPayload<{
+  include: {
+    cover: true;
+    sections: {
+      include: {
+        lectures: { include: { pages: true } };
+      };
+    };
+  };
+}>;
+
 export async function getAllCourses() {
   return prisma.course.findMany({
     include: { cover: true },
