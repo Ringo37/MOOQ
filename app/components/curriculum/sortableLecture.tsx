@@ -14,6 +14,7 @@ import {
   Stack,
   Button,
   TextInput,
+  Badge,
 } from "@mantine/core";
 import {
   GripVertical,
@@ -106,7 +107,7 @@ export function SortableLecture({
               {opened ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
             </ActionIcon>
 
-            <Folder size={16} color="#40c057" />
+            <Folder size={16} color={lecture.isOpen ? "#40c057" : "gray"} />
 
             {isEditing ? (
               <TextInput
@@ -132,6 +133,11 @@ export function SortableLecture({
               >
                 {lecture.name}
               </Text>
+            )}
+            {!lecture.isOpen && (
+              <Badge size="xs" color="gray" variant="outline">
+                非公開
+              </Badge>
             )}
           </Group>
 
