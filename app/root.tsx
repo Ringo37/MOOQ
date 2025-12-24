@@ -6,6 +6,7 @@ import {
   Title,
   mantineHtmlProps,
 } from "@mantine/core";
+import { Notifications } from "@mantine/notifications";
 import {
   isRouteErrorResponse,
   Links,
@@ -18,6 +19,7 @@ import {
 
 import type { Route } from "./+types/root";
 import "@mantine/core/styles.css";
+import "@mantine/notifications/styles.css";
 import "./app.css";
 import {
   getColorScheme,
@@ -61,6 +63,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
           colorSchemeManager={colorSchemeManager}
           defaultColorScheme={colorScheme}
         >
+          <Notifications />
           {children}
         </MantineProvider>
         <ScrollRestoration />

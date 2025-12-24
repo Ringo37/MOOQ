@@ -10,7 +10,9 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { Box, Group, Title, Text, Button, Stack } from "@mantine/core";
+import { notifications } from "@mantine/notifications";
 import { Plus } from "lucide-react";
+import { useEffect } from "react";
 import { data, useFetcher } from "react-router";
 
 import { ItemOverlay } from "~/components/curriculum/itemOverlay";
@@ -76,15 +78,21 @@ export async function action({ request, params }: Route.ActionArgs) {
   }
 
   const formData = await request.formData();
-  const courseId = formData.get("courseId") as string;
   const sectionRaw = formData.get("section");
+
   if (typeof sectionRaw !== "string") {
     return data({ error: "Invalid payload" }, { status: 400 });
   }
+  let sections: SectionItem[];
+  try {
+    sections = JSON.parse(sectionRaw);
+  } catch (e) {
+    return data({ error: e }, { status: 400 });
+  }
 
-  const sections: SectionItem[] = JSON.parse(sectionRaw);
+  await upsertSectionTree(sections, course.id);
 
-  await upsertSectionTree(sections, courseId);
+  return data({ success: true });
 }
 
 export default function CurriculumEditorTab({
@@ -125,6 +133,18 @@ export default function CurriculumEditorTab({
       },
     );
   };
+
+  useEffect(() => {
+    if (fetcher.state === "idle" && fetcher.data?.success) {
+      notifications.show({
+        title: "保存しました",
+        message: "カリキュラムの更新が完了しました",
+        color: "green",
+        position: "top-right",
+        autoClose: 2000,
+      });
+    }
+  }, [fetcher.state, fetcher.data]);
 
   return (
     <Box mx="auto">
