@@ -32,6 +32,7 @@ export type LectureItem = {
 export type SectionItem = {
   id: string;
   name: string;
+  slug: string;
   order: number;
   lectures: LectureItem[];
 };
@@ -396,6 +397,7 @@ export function useCurriculumDnd(initialSections: SectionItem[] = []) {
     const newSection: SectionItem = {
       id: `section-${generateId()}`,
       name: "新規セクション",
+      slug: String(sections.length),
       order: sections.length,
       lectures: [],
     };

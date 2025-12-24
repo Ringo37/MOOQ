@@ -3,12 +3,14 @@ import { prisma } from "~/lib/prisma.server";
 
 export async function createSection(
   name: string,
+  slug: string,
   courseId: string,
   order: number,
 ) {
   return prisma.section.create({
     data: {
       name,
+      slug,
       courseId,
       order,
     },
@@ -18,6 +20,7 @@ export async function createSection(
 export async function upsertSectionById(
   id: string,
   name: string,
+  slug: string,
   courseId: string,
   order: number,
 ) {
@@ -25,12 +28,14 @@ export async function upsertSectionById(
     where: { id },
     update: {
       name,
+      slug,
       courseId,
       order,
     },
     create: {
       id,
       name,
+      slug,
       courseId,
       order,
     },
@@ -87,11 +92,13 @@ export async function upsertSectionTree(
           where: { id: section.id },
           update: {
             name: section.name,
+            slug: section.slug,
             order: section.order,
           },
           create: {
             id: section.id,
             name: section.name,
+            slug: section.slug,
             order: section.order,
             courseId,
           },
@@ -100,6 +107,7 @@ export async function upsertSectionTree(
         const createdSection = await tx.section.create({
           data: {
             name: section.name,
+            slug: section.slug,
             order: section.order,
             courseId,
           },

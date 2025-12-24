@@ -13,7 +13,7 @@ import { Box, Group, Title, Text, Button, Stack } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { Plus } from "lucide-react";
 import { useEffect, useId } from "react";
-import { data, useFetcher } from "react-router";
+import { data, useBlocker, useFetcher } from "react-router";
 
 import { ItemOverlay } from "~/components/curriculum/itemOverlay";
 import { SortableSection } from "~/components/curriculum/sortableSection";
@@ -120,7 +120,11 @@ export default function CurriculumEditorTab({
     renamePage,
     reset,
   } = useCurriculumDnd(initialSections);
+  const hasUnsavedChanges = () => {
+    return sections !== initialSections;
+  };
   const fetcher = useFetcher();
+  const blocker = useBlocker(hasUnsavedChanges);
   const id = useId();
 
   const handleSave = () => {
@@ -147,6 +151,19 @@ export default function CurriculumEditorTab({
       reset(createInitialSections(course));
     }
   }, [fetcher.state, fetcher.data]);
+
+  useEffect(() => {
+    if (blocker.state === "blocked") {
+      const confirmLeave = window.confirm(
+        "保存されていない変更があります。移動してもよろしいですか？",
+      );
+      if (confirmLeave) {
+        blocker.proceed();
+      } else {
+        blocker.reset();
+      }
+    }
+  }, [blocker]);
 
   return (
     <Box mx="auto">
