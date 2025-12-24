@@ -104,7 +104,7 @@ export const insertGoogleSlideItem = (editor: CustomEditor) => ({
   onItemClick: () =>
     insertOrUpdateBlockForSlashMenu(editor, { type: "googleSlide" }),
   aliases: ["slide", "google", "presentation", "ppt"],
-  group: "media",
+  group: "Custom",
   icon: <Monitor size={18} />,
   subtext: "Googleスライドを埋め込みます",
 });
