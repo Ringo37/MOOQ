@@ -12,7 +12,7 @@ import {
 import { Box, Group, Title, Text, Button, Stack } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { Plus } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useId } from "react";
 import { data, useFetcher } from "react-router";
 
 import { ItemOverlay } from "~/components/curriculum/itemOverlay";
@@ -121,6 +121,7 @@ export default function CurriculumEditorTab({
     reset,
   } = useCurriculumDnd(initialSections);
   const fetcher = useFetcher();
+  const id = useId();
 
   const handleSave = () => {
     fetcher.submit(
@@ -167,6 +168,7 @@ export default function CurriculumEditorTab({
       </Group>
 
       <DndContext
+        id={id}
         sensors={sensors}
         collisionDetection={closestCenter}
         onDragStart={handleDragStart}

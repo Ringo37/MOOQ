@@ -88,7 +88,6 @@ export function SortableLecture({
       <Box p="sm" style={{ borderRadius: "8px 8px 0 0" }}>
         <Group justify="space-between">
           <Group gap="sm">
-            {/* 編集中はドラッグ無効 */}
             {!isEditing && (
               <div
                 {...attributes}

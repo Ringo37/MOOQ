@@ -14,14 +14,14 @@ export function createInitialSections(
       slug: lecture.slug,
       order: lecture.order,
       sectionId: section.id,
-      isOpen: false,
+      isOpen: lecture.isOpen,
       pages: lecture.pages.map((page) => ({
         id: page.id,
         name: page.name,
         slug: page.slug,
         order: page.order,
         lectureId: lecture.id,
-        isOpen: false,
+        isOpen: page.isOpen,
       })),
     })),
   }));
