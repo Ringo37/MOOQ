@@ -5,15 +5,25 @@ import {
   defaultBlockSpecs,
   type Block,
 } from "@blocknote/core";
+import { filterSuggestionItems } from "@blocknote/core/extensions";
 import { BlockNoteView } from "@blocknote/mantine";
-import { useCreateBlockNote } from "@blocknote/react";
+import {
+  getDefaultReactSlashMenuItems,
+  SuggestionMenuController,
+  useCreateBlockNote,
+  type DefaultReactSuggestionItem,
+} from "@blocknote/react";
 import { Center, Loader, useComputedColorScheme } from "@mantine/core";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ClientOnly } from "remix-utils/client-only";
 import { createHighlighter } from "shiki";
 
 import "@blocknote/core/fonts/inter.css";
 import "@blocknote/mantine/style.css";
+import {
+  createGoogleSlideBlock,
+  insertGoogleSlideItem,
+} from "./editor/googleSlide";
 import { SUPPORTED_LANGUAGES } from "./editorConfig";
 
 interface EditorProps {
@@ -49,6 +59,7 @@ const heading = createHeadingBlockSpec({
 
 const schema = BlockNoteSchema.create({
   blockSpecs: {
+    googleSlide: createGoogleSlideBlock(),
     paragraph,
     heading,
     bulletListItem,
@@ -72,14 +83,35 @@ const schema = BlockNoteSchema.create({
   },
 });
 
+export type CustomEditor = typeof schema.BlockNoteEditor;
+export type CustomBlock = typeof schema.Block;
+export type CustomPartialBlock = typeof schema.PartialBlock;
+
 function EditorClient({ initialContent, name }: EditorProps) {
-  const [blocks, setBlocks] = useState<Block[]>([]);
+  const [blocks, setBlocks] = useState<CustomBlock[]>([]);
   const colorScheme = useComputedColorScheme();
   const editor = useCreateBlockNote({
     schema,
-    initialContent,
     uploadFile,
   });
+
+  const [isInitialContentSet, setIsInitialContentSet] = useState(false);
+
+  useEffect(() => {
+    if (editor && initialContent && !isInitialContentSet) {
+      setTimeout(() => {
+        editor.replaceBlocks(editor.document, initialContent as []);
+        setIsInitialContentSet(true);
+      }, 0);
+    }
+  }, [editor, initialContent, isInitialContentSet]);
+
+  const getCustomSlashMenuItems = (
+    editor: CustomEditor,
+  ): DefaultReactSuggestionItem[] => [
+    ...getDefaultReactSlashMenuItems(editor),
+    insertGoogleSlideItem(editor),
+  ];
 
   return (
     <>
@@ -90,7 +122,16 @@ function EditorClient({ initialContent, name }: EditorProps) {
           setBlocks(editor.document);
         }}
         className="editor-input"
-      />
+        style={{ zIndex: 200 }}
+        slashMenu={false}
+      >
+        <SuggestionMenuController
+          triggerCharacter={"/"}
+          getItems={async (query) =>
+            filterSuggestionItems(getCustomSlashMenuItems(editor), query)
+          }
+        />
+      </BlockNoteView>
       <input name={name} value={JSON.stringify(blocks)} hidden readOnly />
     </>
   );

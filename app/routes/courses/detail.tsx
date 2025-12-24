@@ -48,7 +48,7 @@ export default function CourseDetail({ loaderData }: Route.ComponentProps) {
   }
 
   return (
-    <Container size="md" py="md">
+    <Container size="95%" py="md">
       {course.cover?.url ? (
         <Box h={400} pos="relative" mb="xl">
           <BackgroundImage

@@ -1,16 +1,17 @@
-import type { PartialBlock } from "@blocknote/core";
+import type { Block } from "@blocknote/core";
 import { ServerBlockNoteEditor } from "@blocknote/server-util";
 
+import type { CustomBlock, CustomPartialBlock } from "~/components/editor";
 import { SUPPORTED_LANGUAGES } from "~/components/editorConfig";
 
 import { highlighter } from "./shiki.server";
 
 export async function blockToHTML(
-  blocks?: string | PartialBlock[] | null,
+  blocks?: string | CustomBlock[] | null,
 ): Promise<string> {
   const editor = ServerBlockNoteEditor.create();
 
-  const parsedBlocks: PartialBlock[] =
+  const parsedBlocks: CustomPartialBlock[] =
     typeof blocks === "string"
       ? JSON.parse(blocks)
       : blocks === null
@@ -22,7 +23,7 @@ export async function blockToHTML(
 
   for (const block of parsedBlocks) {
     if (block.type === "numberedListItem") {
-      let html = await editor.blocksToFullHTML([block]);
+      let html = await editor.blocksToFullHTML([block as Block]);
 
       html = html.replace(
         'data-content-type="numberedListItem"',
@@ -40,7 +41,7 @@ export async function blockToHTML(
       if (Array.isArray(block.content)) {
         code = block.content.map((c: any) => c.text || "").join(""); // eslint-disable-line
       } else if (typeof block.content === "string") {
-        code = block.content;
+        code = block.content as string;
       }
 
       const lang = (block.props?.language as string) || "text";
@@ -56,8 +57,28 @@ export async function blockToHTML(
       } catch (e) {
         console.error("Shiki conversion error:", e);
       }
+    }
+
+    if (block.type === "googleSlide") {
+      const src = (block.props?.src as string) || "";
+
+      if (src) {
+        finalHtml += `
+          <div class="bn-block" data-content-type="googleSlide">
+            <div style="position: relative; width: 100%; padding-bottom: calc(56.25% + 36px); background-color: #ccc;">
+              <iframe
+                src="${src}"
+                width="100%"
+                height="100%"
+                allowfullscreen="true"
+                style="position: absolute; top: 0; left: 0; border: none;"
+              ></iframe>
+            </div>
+          </div>
+          `;
+      }
     } else {
-      finalHtml += await editor.blocksToFullHTML([block]);
+      finalHtml += await editor.blocksToFullHTML([block as Block]);
     }
   }
 

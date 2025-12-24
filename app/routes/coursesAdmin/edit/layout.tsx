@@ -54,7 +54,7 @@ export default function CoursesAdminEditLayout({
   }
 
   return (
-    <Container size="md" py="md">
+    <Container size="full" py="md">
       <Group justify="space-between" mb="lg">
         <Title order={2}>コース編集: {course.name}</Title>
         <Group>
