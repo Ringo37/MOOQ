@@ -411,7 +411,7 @@ export function useCurriculumDnd(initialSections: SectionItem[] = []) {
           name: "新規レクチャー",
           slug: String(sec.lectures.length),
           order: sec.lectures.length,
-          isOpen: true,
+          isOpen: false,
           sectionId: sec.id,
           pages: [],
         };
@@ -436,7 +436,7 @@ export function useCurriculumDnd(initialSections: SectionItem[] = []) {
           name: "新規ページ",
           slug: String(targetLecture.pages.length),
           order: targetLecture.pages.length,
-          isOpen: true,
+          isOpen: false,
           lectureId: targetLecture.id,
         };
 
