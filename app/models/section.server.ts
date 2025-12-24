@@ -42,6 +42,44 @@ export async function upsertSectionTree(
   courseId: string,
 ) {
   return prisma.$transaction(async (tx) => {
+    const keepSectionIds = sections
+      .map((s) => s.id)
+      .filter((id): id is string => !!id);
+
+    const keepLectureIds = sections
+      .flatMap((s) => s.lectures)
+      .map((l) => l.id)
+      .filter((id): id is string => !!id);
+
+    const keepPageIds = sections
+      .flatMap((s) => s.lectures)
+      .flatMap((l) => l.pages)
+      .map((p) => p.id)
+      .filter((id): id is string => !!id);
+
+    await tx.page.deleteMany({
+      where: {
+        lecture: {
+          section: { courseId: courseId },
+        },
+        id: { notIn: keepPageIds },
+      },
+    });
+
+    await tx.lecture.deleteMany({
+      where: {
+        section: { courseId: courseId },
+        id: { notIn: keepLectureIds },
+      },
+    });
+
+    await tx.section.deleteMany({
+      where: {
+        courseId: courseId,
+        id: { notIn: keepSectionIds },
+      },
+    });
+
     for (const section of sections) {
       // Section
       if (section.id) {

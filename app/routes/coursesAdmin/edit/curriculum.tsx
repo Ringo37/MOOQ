@@ -129,7 +129,6 @@ export default function CurriculumEditorTab({
       },
       {
         method: "post",
-        encType: "application/x-www-form-urlencoded",
       },
     );
   };
