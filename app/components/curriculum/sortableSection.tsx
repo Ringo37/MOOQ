@@ -12,9 +12,10 @@ import {
   ActionIcon,
   Stack,
   Button,
+  TextInput,
 } from "@mantine/core";
 import { GripVertical, Layers, Settings, Trash, Plus } from "lucide-react";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 
 import type { SectionItem } from "~/hooks/useCurriculumDnd";
 
@@ -27,6 +28,9 @@ interface SortableSectionProps {
   onDeleteSection: (sectionId: string) => void;
   onDeleteLecture: (lectureId: string) => void;
   onDeletePage: (pageId: string) => void;
+  onRenameSection: (sectionId: string, name: string) => void;
+  onRenameLecture: (lectureId: string, name: string) => void;
+  onRenamePage: (pageId: string, name: string) => void;
 }
 
 export function SortableSection({
@@ -36,6 +40,9 @@ export function SortableSection({
   onDeleteSection,
   onDeleteLecture,
   onDeletePage,
+  onRenameSection,
+  onRenameLecture,
+  onRenamePage,
 }: SortableSectionProps) {
   const {
     attributes,
@@ -49,6 +56,9 @@ export function SortableSection({
     data: { type: "section", section },
   });
 
+  const [isEditing, setIsEditing] = useState(false);
+  const [name, setName] = useState(section.name);
+
   const style = {
     transform: CSS.Translate.toString(transform),
     transition,
@@ -59,6 +69,15 @@ export function SortableSection({
     () => section.lectures.map((l) => l.id),
     [section.lectures],
   );
+
+  const commitRename = () => {
+    setIsEditing(false);
+    if (name.trim() && name !== section.name) {
+      onRenameSection(section.id, name.trim());
+    } else {
+      setName(section.name);
+    }
+  };
 
   return (
     <Paper ref={setNodeRef} style={style} withBorder p={0} radius="md" mb="sm">
@@ -71,18 +90,46 @@ export function SortableSection({
       >
         <Group justify="space-between">
           <Group gap="xs">
-            <div
-              {...attributes}
-              {...listeners}
-              style={{ cursor: "grab", display: "flex" }}
-            >
-              <GripVertical size={20} color="#868e96" />
-            </div>
+            {/* 編集中はドラッグ無効 */}
+            {!isEditing && (
+              <div
+                {...attributes}
+                {...listeners}
+                style={{ cursor: "grab", display: "flex" }}
+              >
+                <GripVertical size={20} color="#868e96" />
+              </div>
+            )}
+
             <Layers size={18} color="#228be6" />
-            <Text fw={700} size="lg">
-              {section.name}
-            </Text>
+
+            {isEditing ? (
+              <TextInput
+                size="sm"
+                value={name}
+                autoFocus
+                onChange={(e) => setName(e.currentTarget.value)}
+                onBlur={commitRename}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") commitRename();
+                  if (e.key === "Escape") {
+                    setName(section.name);
+                    setIsEditing(false);
+                  }
+                }}
+              />
+            ) : (
+              <Text
+                fw={700}
+                size="lg"
+                onDoubleClick={() => setIsEditing(true)}
+                style={{ cursor: "text" }}
+              >
+                {section.name}
+              </Text>
+            )}
           </Group>
+
           <Group gap="xs">
             <ActionIcon variant="subtle" color="gray">
               <Settings size={16} />
@@ -110,6 +157,8 @@ export function SortableSection({
               onAddPage={() => onAddPage(lecture.id)}
               onDeleteLecture={onDeleteLecture}
               onDeletePage={onDeletePage}
+              onRenameLecture={onRenameLecture}
+              onRenamePage={onRenamePage}
             />
           ))}
         </SortableContext>

@@ -15,7 +15,11 @@ import { Plus } from "lucide-react";
 import { ItemOverlay } from "~/components/curriculum/itemOverlay";
 import { SortableSection } from "~/components/curriculum/sortableSection";
 import { useCurriculumDnd } from "~/hooks/useCurriculumDnd";
-import { canEditCourseBySlug, getCourseBySlug } from "~/models/course.server";
+import {
+  canEditCourseBySlug,
+  getCourseBySlug,
+  getCourseBySlugWithCurriculum,
+} from "~/models/course.server";
 import { requireUser } from "~/services/auth.server";
 
 import type { Route } from "../../coursesAdmin/edit/+types/curriculum";
@@ -35,7 +39,7 @@ export async function loader({ request, params }: Route.LoaderArgs) {
     throw new Response("Forbidden", { status: 403 });
   }
 
-  const course = await getCourseBySlug(slug);
+  const course = await getCourseBySlugWithCurriculum(slug);
   if (!course) {
     throw new Response("Not Found", { status: 404 });
   }
@@ -54,6 +58,21 @@ export async function loader({ request, params }: Route.LoaderArgs) {
   return { course, sidebarData };
 }
 
+export async function action({ request, params }: Route.ActionArgs) {
+  const user = await requireUser(request);
+  const slug = params.slug;
+
+  const canEdit = await canEditCourseBySlug(slug, user.id);
+  if (!canEdit) {
+    throw new Response("Forbidden", { status: 403 });
+  }
+
+  const course = await getCourseBySlug(slug);
+  if (!course) {
+    throw new Response("Not Found", { status: 404 });
+  }
+}
+
 export default function CurriculumEditorTab() {
   const {
     sections,
@@ -69,6 +88,9 @@ export default function CurriculumEditorTab() {
     deleteSection,
     deleteLecture,
     deletePage,
+    renameSection,
+    renameLecture,
+    renamePage,
   } = useCurriculumDnd();
 
   return (
@@ -111,6 +133,9 @@ export default function CurriculumEditorTab() {
                 onDeleteSection={deleteSection}
                 onDeleteLecture={deleteLecture}
                 onDeletePage={deletePage}
+                onRenameSection={renameSection}
+                onRenameLecture={renameLecture}
+                onRenamePage={renamePage}
               />
             ))}
           </SortableContext>
@@ -120,6 +145,9 @@ export default function CurriculumEditorTab() {
           {activeItem && <ItemOverlay item={activeItem} />}
         </DragOverlay>
       </DndContext>
+      <Group justify="flex-end">
+        <Button>保存</Button>
+      </Group>
     </Box>
   );
 }

@@ -7,17 +7,21 @@ import {
   Text,
   Badge,
   ActionIcon,
+  TextInput,
 } from "@mantine/core";
 import { GripVertical, FileText, Settings, Trash } from "lucide-react";
+import { useState } from "react";
 
 import type { PageItem } from "~/hooks/useCurriculumDnd";
 
 export function SortablePage({
   page,
   onDeletePage,
+  onRenamePage,
 }: {
   page: PageItem;
   onDeletePage: (pageId: string) => void;
+  onRenamePage: (pageId: string, name: string) => void;
 }) {
   const {
     attributes,
@@ -31,10 +35,20 @@ export function SortablePage({
     data: { type: "page", page },
   });
 
+  const [isEditing, setIsEditing] = useState(false);
+  const [name, setName] = useState(page.name);
+
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
     opacity: isDragging ? 0.3 : 1,
+  };
+
+  const commitRename = () => {
+    setIsEditing(false);
+    if (name !== page.name) {
+      onRenamePage(page.id, name);
+    }
   };
 
   return (
@@ -57,7 +71,30 @@ export function SortablePage({
             <FileText size={12} />
           </ThemeIcon>
 
-          <Text size="sm">{page.name}</Text>
+          {isEditing ? (
+            <TextInput
+              size="xs"
+              value={name}
+              autoFocus
+              onChange={(e) => setName(e.currentTarget.value)}
+              onBlur={commitRename}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") commitRename();
+                if (e.key === "Escape") {
+                  setName(page.name);
+                  setIsEditing(false);
+                }
+              }}
+            />
+          ) : (
+            <Text
+              size="sm"
+              onDoubleClick={() => setIsEditing(true)}
+              style={{ cursor: "text" }}
+            >
+              {page.name}
+            </Text>
+          )}
 
           {!page.isOpen && (
             <Badge size="xs" color="gray" variant="outline">

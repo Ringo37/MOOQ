@@ -474,6 +474,35 @@ export function useCurriculumDnd() {
     );
   };
 
+  const renameSection = (sectionId: string, name: string) => {
+    setSections((prev) =>
+      prev.map((sec) => (sec.id === sectionId ? { ...sec, name } : sec)),
+    );
+  };
+
+  const renameLecture = (lectureId: string, name: string) => {
+    setSections((prev) =>
+      prev.map((sec) => ({
+        ...sec,
+        lectures: sec.lectures.map((lec) =>
+          lec.id === lectureId ? { ...lec, name } : lec,
+        ),
+      })),
+    );
+  };
+
+  const renamePage = (pageId: string, name: string) => {
+    setSections((prev) =>
+      prev.map((sec) => ({
+        ...sec,
+        lectures: sec.lectures.map((lec) => ({
+          ...lec,
+          pages: lec.pages.map((p) => (p.id === pageId ? { ...p, name } : p)),
+        })),
+      })),
+    );
+  };
+
   return {
     sections,
     activeItem,
@@ -488,5 +517,8 @@ export function useCurriculumDnd() {
     deleteSection,
     deleteLecture,
     deletePage,
+    renameSection,
+    renameLecture,
+    renamePage,
   };
 }

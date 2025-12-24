@@ -47,6 +47,20 @@ export async function getCourseBySlug(slug: string) {
   });
 }
 
+export async function getCourseBySlugWithCurriculum(slug: string) {
+  return prisma.course.findUnique({
+    where: { slug },
+    include: {
+      cover: true,
+      sections: {
+        include: {
+          lectures: { include: { pages: true } },
+        },
+      },
+    },
+  });
+}
+
 export async function getCourseBySlugForUser(slug: string, userId: string) {
   return prisma.course.findFirst({
     where: {

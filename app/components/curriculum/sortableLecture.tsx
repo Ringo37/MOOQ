@@ -13,6 +13,7 @@ import {
   Collapse,
   Stack,
   Button,
+  TextInput,
 } from "@mantine/core";
 import {
   GripVertical,
@@ -34,6 +35,8 @@ interface SortableLectureProps {
   onAddPage: () => void;
   onDeleteLecture: (lectureId: string) => void;
   onDeletePage: (pageId: string) => void;
+  onRenameLecture: (lectureId: string, name: string) => void;
+  onRenamePage: (pageId: string, name: string) => void;
 }
 
 export function SortableLecture({
@@ -41,6 +44,8 @@ export function SortableLecture({
   onAddPage,
   onDeleteLecture,
   onDeletePage,
+  onRenameLecture,
+  onRenamePage,
 }: SortableLectureProps) {
   const {
     attributes,
@@ -55,6 +60,8 @@ export function SortableLecture({
   });
 
   const [opened, setOpened] = useState(true);
+  const [isEditing, setIsEditing] = useState(false);
+  const [name, setName] = useState(lecture.name);
 
   const style = {
     transform: CSS.Translate.toString(transform),
@@ -67,18 +74,31 @@ export function SortableLecture({
     [lecture.pages],
   );
 
+  const commitRename = () => {
+    setIsEditing(false);
+    if (name.trim() && name !== lecture.name) {
+      onRenameLecture(lecture.id, name.trim());
+    } else {
+      setName(lecture.name);
+    }
+  };
+
   return (
     <Paper ref={setNodeRef} style={style} withBorder p={0} radius="md">
       <Box p="sm" style={{ borderRadius: "8px 8px 0 0" }}>
         <Group justify="space-between">
           <Group gap="sm">
-            <div
-              {...attributes}
-              {...listeners}
-              style={{ cursor: "grab", display: "flex" }}
-            >
-              <GripVertical size={18} color="#adb5bd" />
-            </div>
+            {/* 編集中はドラッグ無効 */}
+            {!isEditing && (
+              <div
+                {...attributes}
+                {...listeners}
+                style={{ cursor: "grab", display: "flex" }}
+              >
+                <GripVertical size={18} color="#adb5bd" />
+              </div>
+            )}
+
             <ActionIcon
               variant="transparent"
               size="sm"
@@ -86,11 +106,36 @@ export function SortableLecture({
             >
               {opened ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
             </ActionIcon>
+
             <Folder size={16} color="#40c057" />
-            <Text fw={600} size="sm">
-              {lecture.name}
-            </Text>
+
+            {isEditing ? (
+              <TextInput
+                size="xs"
+                value={name}
+                autoFocus
+                onChange={(e) => setName(e.currentTarget.value)}
+                onBlur={commitRename}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") commitRename();
+                  if (e.key === "Escape") {
+                    setName(lecture.name);
+                    setIsEditing(false);
+                  }
+                }}
+              />
+            ) : (
+              <Text
+                fw={600}
+                size="sm"
+                onDoubleClick={() => setIsEditing(true)}
+                style={{ cursor: "text" }}
+              >
+                {lecture.name}
+              </Text>
+            )}
           </Group>
+
           <Group gap="xs">
             <ActionIcon variant="subtle" color="gray">
               <Settings size={16} />
@@ -117,14 +162,17 @@ export function SortableLecture({
                 key={page.id}
                 page={page}
                 onDeletePage={onDeletePage}
+                onRenamePage={onRenamePage}
               />
             ))}
           </SortableContext>
+
           {lecture.pages.length === 0 && (
             <Text size="xs" c="dimmed" ta="center" py="xs">
               ページがありません
             </Text>
           )}
+
           <Button
             variant="subtle"
             size="xs"
