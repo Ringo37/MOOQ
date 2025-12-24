@@ -30,10 +30,20 @@ export async function uploadPublicFile(
   await ensureBucket(bucket);
   await uploadObject(bucket, key, buffer, mimeType);
 
-  return await prisma.file.create({
-    data: {
+  return await prisma.file.upsert({
+    where: {
+      key,
+    },
+    update: {
       name: file.name,
-      key: key,
+      bucket,
+      mimeType,
+      url,
+      visibility: "PUBLIC",
+    },
+    create: {
+      name: file.name,
+      key,
       bucket,
       mimeType,
       url,

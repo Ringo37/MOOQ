@@ -219,7 +219,7 @@ export default function CoursesAdminEditInfo({
 
             <Group justify="flex-end">
               <Button type="submit" disabled={slugOk === false}>
-                更新
+                保存
               </Button>
             </Group>
           </Stack>
