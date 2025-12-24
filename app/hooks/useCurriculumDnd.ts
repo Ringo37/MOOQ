@@ -96,6 +96,20 @@ export function useCurriculumDnd(initialSections: SectionItem[] = []) {
     }));
   }
 
+  function ensureUniqueSlug(
+    items: { slug: string }[],
+    candidateSlug: string,
+  ): string {
+    let newSlug = candidateSlug;
+    let counter = 1;
+
+    while (items.some((item) => item.slug === newSlug)) {
+      newSlug = `${candidateSlug}-${counter}`;
+      counter++;
+    }
+    return newSlug;
+  }
+
   // --- Handlers ---
   const handleDragStart = (event: DragStartEvent) => {
     const { active } = event;
@@ -173,8 +187,9 @@ export function useCurriculumDnd(initialSections: SectionItem[] = []) {
               newIndex >= 0 ? newIndex + modifier : destLec.pages.length + 1;
 
             movedPage.lectureId = destLec.id;
+            movedPage.slug = ensureUniqueSlug(destLec.pages, movedPage.slug);
             destLec.pages.splice(newIndex, 0, movedPage);
-            return newSections;
+            return normalizeOrders(newSections);
           });
         }
       }
@@ -220,8 +235,9 @@ export function useCurriculumDnd(initialSections: SectionItem[] = []) {
             if (!destLec) return prev;
 
             movedPage.lectureId = destLec.id;
+            movedPage.slug = ensureUniqueSlug(destLec.pages, movedPage.slug);
             destLec.pages.push(movedPage);
-            return newSections;
+            return normalizeOrders(newSections);
           });
         }
       }
@@ -271,8 +287,9 @@ export function useCurriculumDnd(initialSections: SectionItem[] = []) {
               newIndex >= 0 ? newIndex + modifier : destSec.lectures.length + 1;
 
             movedLec.sectionId = destSec.id;
+            movedLec.slug = ensureUniqueSlug(destSec.lectures, movedLec.slug);
             destSec.lectures.splice(newIndex, 0, movedLec);
-            return newSections;
+            return normalizeOrders(newSections);
           });
         }
       }
@@ -304,8 +321,9 @@ export function useCurriculumDnd(initialSections: SectionItem[] = []) {
             if (!destSec) return prev;
 
             movedLec.sectionId = destSec.id;
+            movedLec.slug = ensureUniqueSlug(destSec.lectures, movedLec.slug);
             destSec.lectures.push(movedLec);
-            return newSections;
+            return normalizeOrders(newSections);
           });
         }
       }

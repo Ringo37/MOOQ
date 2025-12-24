@@ -91,7 +91,21 @@ export async function getCourseBySlugForUser(slug: string, userId: string) {
         },
       ],
     },
-    include: { cover: true },
+    include: {
+      cover: true,
+      sections: {
+        include: {
+          lectures: {
+            where: { isOpen: true },
+            include: {
+              pages: { where: { isOpen: true }, orderBy: { order: "asc" } },
+            },
+            orderBy: { order: "asc" },
+          },
+        },
+        orderBy: { order: "asc" },
+      },
+    },
   });
 }
 
