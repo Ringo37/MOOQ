@@ -83,16 +83,6 @@ export const createGoogleSlideBlock = createReactBlockSpec(
               }}
             />
           </div>
-          <Button
-            size="xs"
-            variant="default"
-            style={{ position: "absolute", top: 8, right: 8, opacity: 0.8 }}
-            onClick={() =>
-              props.editor.updateBlock(props.block, { props: { src: "" } })
-            }
-          >
-            編集
-          </Button>
         </Box>
       );
     },

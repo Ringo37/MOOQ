@@ -83,6 +83,7 @@ const schema = BlockNoteSchema.create({
   },
 });
 
+export const customScheme = schema;
 export type CustomEditor = typeof schema.BlockNoteEditor;
 export type CustomBlock = typeof schema.Block;
 export type CustomPartialBlock = typeof schema.PartialBlock;
