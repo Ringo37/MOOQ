@@ -37,7 +37,7 @@ export function Sidebar({
       transitionTimingFunction="ease"
     >
       {/* ===== Header ===== */}
-      <AppShell.Header>
+      <AppShell.Header style={{ zIndex: 300 }}>
         <Group h="100%" px="md" justify="space-between">
           <Group>
             <Burger opened={opened} onClick={toggle} size="sm" />

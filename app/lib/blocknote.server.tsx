@@ -1,5 +1,4 @@
 import { ServerBlockNoteEditor } from "@blocknote/server-util";
-import { MantineProvider } from "@mantine/core";
 
 import type { CustomBlock, CustomPartialBlock } from "~/components/editor";
 import { customScheme } from "~/components/editor";
@@ -16,7 +15,7 @@ export async function blockToHTML(
     typeof blocks === "string" ? JSON.parse(blocks) : (blocks ?? []);
 
   return await editor.withReactContext(
-    ({ children }) => <MantineProvider>{children}</MantineProvider>,
+    ({ children }) => <>{children}</>,
     async () => {
       let finalHtml = "";
       let numberedIndex = 1;

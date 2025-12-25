@@ -62,7 +62,7 @@ export const createGoogleSlideBlock = createReactBlockSpec(
       }
 
       return (
-        <Box style={{ position: "relative", width: "100%" }}>
+        <div style={{ position: "relative", width: "100%" }}>
           <div
             style={{
               position: "relative",
@@ -83,7 +83,7 @@ export const createGoogleSlideBlock = createReactBlockSpec(
               }}
             />
           </div>
-        </Box>
+        </div>
       );
     },
   },
