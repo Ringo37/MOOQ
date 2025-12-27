@@ -7,13 +7,10 @@ import {
   Group,
   BackgroundImage,
   Overlay,
-  useMantineColorScheme,
 } from "@mantine/core";
-import "@blocknote/core/fonts/inter.css";
-import "@blocknote/mantine/style.css";
+import type { YooptaContentValue } from "@yoopta/editor";
 
-import { BlockNoteRender } from "~/components/blockNoteRender";
-import { blockToHTML } from "~/lib/blocknote.server";
+import { Render } from "~/components/editor/render";
 import { getCourseBySlugForUser } from "~/models/course.server";
 import { requireUserId } from "~/services/auth.server";
 import { formatDate } from "~/utils/formatDate";
@@ -28,14 +25,12 @@ export async function loader({ request, params }: Route.LoaderArgs) {
   if (!course) {
     return new Response(null, { status: 404 });
   }
-  const description = await blockToHTML(course?.description);
 
-  return { course, description };
+  return { course };
 }
 
 export default function CourseDetail({ loaderData }: Route.ComponentProps) {
-  const { course, description } = loaderData;
-  const { colorScheme } = useMantineColorScheme();
+  const { course } = loaderData;
 
   if (!course) {
     return (
@@ -117,7 +112,9 @@ export default function CourseDetail({ loaderData }: Route.ComponentProps) {
       )}
 
       {course.description && (
-        <BlockNoteRender html={description} theme={colorScheme} />
+        <Render
+          content={JSON.parse(course.description ?? "") as YooptaContentValue}
+        />
       )}
     </Container>
   );

@@ -10,12 +10,13 @@ import {
   Image,
   SegmentedControl,
 } from "@mantine/core";
+import type { YooptaContentValue } from "@yoopta/editor";
 import { useState } from "react";
 import { data, Form, redirect } from "react-router";
 import sharp from "sharp";
 
 import type { CourseVisibility } from "generated/prisma/enums";
-import { Editor } from "~/components/editor";
+import { Editor } from "~/components/editor/editor";
 import type { NavGroup } from "~/components/navItems";
 import {
   canEditCourseBySlug,
@@ -25,7 +26,6 @@ import {
 } from "~/models/course.server";
 import { uploadPublicFile } from "~/models/file.server";
 import { requireUser } from "~/services/auth.server";
-import { parseInitialContent } from "~/utils/parseInitialContent";
 
 import type { Route } from "../../coursesAdmin/edit/+types/info";
 
@@ -238,8 +238,10 @@ export default function CoursesAdminEditInfo({
 
             <Text size="sm">説明</Text>
             <Editor
+              initialContent={
+                JSON.parse(course.description ?? "") as YooptaContentValue
+              }
               name="description"
-              initialContent={parseInitialContent(course.description)}
             />
 
             <Group justify="flex-end">

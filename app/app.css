@@ -8,37 +8,14 @@
 
 .editor-input {
   border: 1px solid var(--mantine-color-default-border);
-  border-radius: var(--bn-border-radius-large);
+  border-radius: 4px;
 }
 
-[data-mantine-color-scheme="light"] .bn-render .shiki {
-  background-color: var(--mantine-color-gray-0) !important;
+.yoopta-action-menu-list-content {
+  color: black;
 }
 
-[data-mantine-color-scheme="dark"] .bn-render .shiki {
-  color: var(--shiki-dark) !important;
-  background-color: var(--shiki-dark-bg) !important;
-}
-
-[data-mantine-color-scheme="dark"] .bn-render span {
-  color: var(--shiki-dark) !important;
-  background-color: var(--shiki-dark-bg) !important;
-}
-
-.bn-render > * {
-  margin-top: 16px;
-  background-color: transparent !important;
-}
-
-.bn-render pre {
-  overflow-x: auto;
-  padding: 16px;
-}
-
-.bn-render code {
-  background-color: transparent;
-}
-
-.bn-render audio {
-  width: 100%;
+.yoopta-file span,
+svg {
+  color: var(--mantine-color-text);
 }

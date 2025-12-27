@@ -14,7 +14,7 @@ import {
 import { useState } from "react";
 import { data, Form, redirect } from "react-router";
 
-import { Editor } from "~/components/editor";
+import { Editor } from "~/components/editor/editor";
 import { createCourse, getCourseBySlug } from "~/models/course.server";
 import { uploadPublicFile } from "~/models/file.server";
 import { requireUser } from "~/services/auth.server";
