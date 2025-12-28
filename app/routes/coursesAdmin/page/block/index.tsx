@@ -60,7 +60,7 @@ export default function CorsesAdminBlockIndex({
           <Link
             to={`/courses-admin/${params.courseSlug}/${params.sectionSlug}/${params.lectureSlug}/${params.pageSlug}`}
           >
-            <Button color="green">カリキュラム編集</Button>
+            <Button color="green">ページ編集</Button>
           </Link>
         </Group>
       </Group>
