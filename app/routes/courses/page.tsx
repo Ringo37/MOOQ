@@ -1,9 +1,17 @@
-import { Center, Container, Pagination, Title } from "@mantine/core";
+import {
+  Center,
+  Container,
+  Group,
+  Pagination,
+  Title,
+  Tooltip,
+} from "@mantine/core";
 import type { YooptaContentValue } from "@yoopta/editor";
-import { redirect } from "react-router";
+import { Link, redirect } from "react-router";
 
 import { Render } from "~/components/editor/render";
 import type { NavGroup } from "~/components/navItems";
+import { PaginationLink } from "~/components/paginationLink";
 import { getCourseBySlugForUser } from "~/models/course.server";
 import { getLectureBySlugForUser } from "~/models/lecture.server";
 import { getPageBySlugForUser } from "~/models/page.server";
@@ -47,13 +55,60 @@ export async function loader({ request, params }: Route.LoaderArgs) {
   return { page, sidebarData, lecture };
 }
 
-export default function PageIndex({ loaderData }: Route.ComponentProps) {
+export default function PageIndex({
+  loaderData,
+  params,
+}: Route.ComponentProps) {
   const { page, lecture } = loaderData;
+
+  const getPageLink = (order: number) => {
+    const targetPage = lecture.pages.find((p) => p.order === order);
+    if (!targetPage) return "#";
+    return `/courses/${params.courseSlug}/${params.sectionSlug}/${params.lectureSlug}/${targetPage.slug}`;
+  };
+
+  const getPageName = (order: number) => {
+    const targetPage = lecture.pages.find((p) => p.order === order);
+    if (!targetPage) return null;
+    return targetPage.name;
+  };
   return (
     <Container size={"full"}>
       <Title order={3}>{lecture.name}</Title>
       <Center>
-        <Pagination total={10} />
+        <Pagination.Root
+          total={lecture.pages.length}
+          value={page.order + 1}
+          siblings={3}
+          getItemProps={(pageIndex) => ({
+            component: PaginationLink,
+            to: getPageLink(pageIndex - 1),
+            label: getPageName(pageIndex - 1),
+          })}
+          size="xl"
+        >
+          <Group gap={7} justify="center">
+            <Tooltip
+              label={getPageName(page.order - 1)}
+              disabled={page.order === 0}
+            >
+              <Pagination.Previous
+                component={Link}
+                to={getPageLink(page.order - 1)}
+              />
+            </Tooltip>
+            <Pagination.Items />
+            <Tooltip
+              label={getPageName(page.order + 1)}
+              disabled={page.order === lecture.pages.length - 1}
+            >
+              <Pagination.Next
+                component={Link}
+                to={getPageLink(page.order + 1)}
+              />
+            </Tooltip>
+          </Group>
+        </Pagination.Root>
       </Center>
       <Title>{page.name}</Title>
       {page.blocks.map(
