@@ -24,7 +24,7 @@ export const PaginationLink = forwardRef<
   );
 
   return label ? (
-    <Tooltip label={label} withArrow>
+    <Tooltip label={label} withArrow style={{ zIndex: 400 }}>
       <span>{link}</span>
     </Tooltip>
   ) : (
