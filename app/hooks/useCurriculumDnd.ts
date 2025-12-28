@@ -511,30 +511,40 @@ export function useCurriculumDnd(initialSections: SectionItem[] = []) {
     );
   };
 
-  const renameSection = (sectionId: string, name: string) => {
+  const renameSection = (sectionId: string, name: string, slug?: string) => {
     setSections((prev) =>
-      prev.map((sec) => (sec.id === sectionId ? { ...sec, name } : sec)),
+      prev.map((sec) =>
+        sec.id === sectionId
+          ? { ...sec, name, ...(slug !== undefined ? { slug } : {}) }
+          : sec,
+      ),
     );
   };
 
-  const renameLecture = (lectureId: string, name: string) => {
+  const renameLecture = (lectureId: string, name: string, slug?: string) => {
     setSections((prev) =>
       prev.map((sec) => ({
         ...sec,
         lectures: sec.lectures.map((lec) =>
-          lec.id === lectureId ? { ...lec, name } : lec,
+          lec.id === lectureId
+            ? { ...lec, name, ...(slug !== undefined ? { slug } : {}) }
+            : lec,
         ),
       })),
     );
   };
 
-  const renamePage = (pageId: string, name: string) => {
+  const renamePage = (pageId: string, name: string, slug?: string) => {
     setSections((prev) =>
       prev.map((sec) => ({
         ...sec,
         lectures: sec.lectures.map((lec) => ({
           ...lec,
-          pages: lec.pages.map((p) => (p.id === pageId ? { ...p, name } : p)),
+          pages: lec.pages.map((p) =>
+            p.id === pageId
+              ? { ...p, name, ...(slug !== undefined ? { slug } : {}) }
+              : p,
+          ),
         })),
       })),
     );

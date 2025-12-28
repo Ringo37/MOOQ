@@ -22,17 +22,19 @@ import { useState } from "react";
 
 import type { PageItem } from "~/hooks/useCurriculumDnd";
 
+interface SortablePageProps {
+  page: PageItem;
+  onDeletePage: (pageId: string) => void;
+  onRenamePage: (pageId: string, name: string, slug?: string) => void;
+  onTogglePageOpen: (pageId: string, isOpen: boolean) => void;
+}
+
 export function SortablePage({
   page,
   onDeletePage,
   onRenamePage,
   onTogglePageOpen,
-}: {
-  page: PageItem;
-  onDeletePage: (pageId: string) => void;
-  onRenamePage: (pageId: string, name: string) => void;
-  onTogglePageOpen: (pageId: string, isOpen: boolean) => void;
-}) {
+}: SortablePageProps) {
   const {
     attributes,
     listeners,
@@ -48,16 +50,30 @@ export function SortablePage({
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState(page.name);
 
+  const [slugEditing, setSlugEditing] = useState(false);
+  const [slug, setSlug] = useState(page.slug);
+
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
     opacity: isDragging ? 0.3 : 1,
   };
 
-  const commitRename = () => {
+  const commitNameRename = () => {
     setIsEditing(false);
-    if (name !== page.name) {
-      onRenamePage(page.id, name);
+    if (name.trim() && name !== page.name) {
+      onRenamePage(page.id, name.trim(), slug);
+    } else {
+      setName(page.name);
+    }
+  };
+
+  const commitSlugRename = () => {
+    setSlugEditing(false);
+    if (slug.trim() && slug !== page.slug) {
+      onRenamePage(page.id, name, slug.trim());
+    } else {
+      setSlug(page.slug);
     }
   };
 
@@ -65,13 +81,15 @@ export function SortablePage({
     <Paper ref={setNodeRef} style={style} withBorder p="xs" radius="sm">
       <Group justify="space-between">
         <Group gap="sm">
-          <div
-            {...attributes}
-            {...listeners}
-            style={{ cursor: "grab", display: "flex", alignItems: "center" }}
-          >
-            <GripVertical size={16} color="#adb5bd" />
-          </div>
+          {!isEditing && !slugEditing && (
+            <div
+              {...attributes}
+              {...listeners}
+              style={{ cursor: "grab", display: "flex", alignItems: "center" }}
+            >
+              <GripVertical size={16} color="#adb5bd" />
+            </div>
+          )}
 
           <ThemeIcon
             size="sm"
@@ -87,9 +105,9 @@ export function SortablePage({
               value={name}
               autoFocus
               onChange={(e) => setName(e.currentTarget.value)}
-              onBlur={commitRename}
+              onBlur={commitNameRename}
               onKeyDown={(e) => {
-                if (e.key === "Enter") commitRename();
+                if (e.key === "Enter") commitNameRename();
                 if (e.key === "Escape") {
                   setName(page.name);
                   setIsEditing(false);
@@ -113,7 +131,32 @@ export function SortablePage({
           >
             {page.isOpen ? "公開" : "非公開"}
           </Badge>
-          <Text size="sm">/{page.slug}</Text>
+
+          <Text size="sm">/</Text>
+          {slugEditing ? (
+            <TextInput
+              size="xs"
+              value={slug}
+              onChange={(e) => setSlug(e.currentTarget.value)}
+              onBlur={commitSlugRename}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") commitSlugRename();
+                if (e.key === "Escape") {
+                  setSlug(page.slug);
+                  setSlugEditing(false);
+                }
+              }}
+              autoFocus
+            />
+          ) : (
+            <Text
+              size="sm"
+              onDoubleClick={() => setSlugEditing(true)}
+              style={{ cursor: "text" }}
+            >
+              {slug}
+            </Text>
+          )}
         </Group>
 
         <Group gap="xs">

@@ -38,7 +38,7 @@ interface SortableSectionProps {
   onDeleteSection: (sectionId: string) => void;
   onDeleteLecture: (lectureId: string) => void;
   onDeletePage: (pageId: string) => void;
-  onRenameSection: (sectionId: string, name: string) => void;
+  onRenameSection: (sectionId: string, name: string, slug: string) => void;
   onRenameLecture: (lectureId: string, name: string) => void;
   onRenamePage: (pageId: string, name: string) => void;
   onToggleSectionOpen: (sectionId: string, isOpen: boolean) => void;
@@ -74,6 +74,8 @@ export function SortableSection({
 
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState(section.name);
+  const [slugEditing, setSlugEditing] = useState(false);
+  const [slug, setSlug] = useState(section.slug);
 
   const style = {
     transform: CSS.Translate.toString(transform),
@@ -86,12 +88,21 @@ export function SortableSection({
     [section.lectures],
   );
 
-  const commitRename = () => {
+  const commitNameRename = () => {
     setIsEditing(false);
     if (name.trim() && name !== section.name) {
-      onRenameSection(section.id, name.trim());
+      onRenameSection(section.id, name.trim(), slug);
     } else {
       setName(section.name);
+    }
+  };
+
+  const commitSlugRename = () => {
+    setSlugEditing(false);
+    if (slug.trim() && slug !== section.slug) {
+      onRenameSection(section.id, name, slug.trim());
+    } else {
+      setSlug(section.slug);
     }
   };
 
@@ -124,9 +135,9 @@ export function SortableSection({
                 value={name}
                 autoFocus
                 onChange={(e) => setName(e.currentTarget.value)}
-                onBlur={commitRename}
+                onBlur={commitNameRename}
                 onKeyDown={(e) => {
-                  if (e.key === "Enter") commitRename();
+                  if (e.key === "Enter") commitNameRename();
                   if (e.key === "Escape") {
                     setName(section.name);
                     setIsEditing(false);
@@ -152,7 +163,31 @@ export function SortableSection({
               {section.isOpen ? "公開" : "非公開"}
             </Badge>
 
-            <Text size="sm">/{section.slug}</Text>
+            <Text size="sm">/</Text>
+            {slugEditing ? (
+              <TextInput
+                size="sm"
+                value={slug}
+                onChange={(e) => setSlug(e.currentTarget.value)}
+                onBlur={commitSlugRename}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") commitSlugRename();
+                  if (e.key === "Escape") {
+                    setSlug(section.slug);
+                    setSlugEditing(false);
+                  }
+                }}
+                autoFocus
+              />
+            ) : (
+              <Text
+                size="sm"
+                onDoubleClick={() => setSlugEditing(true)}
+                style={{ cursor: "text" }}
+              >
+                {slug}
+              </Text>
+            )}
           </Group>
 
           <Group gap="xs">

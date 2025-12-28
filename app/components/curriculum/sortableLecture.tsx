@@ -39,8 +39,8 @@ interface SortableLectureProps {
   onAddPage: () => void;
   onDeleteLecture: (lectureId: string) => void;
   onDeletePage: (pageId: string) => void;
-  onRenameLecture: (lectureId: string, name: string) => void;
-  onRenamePage: (pageId: string, name: string) => void;
+  onRenameLecture: (lectureId: string, name: string, slug: string) => void;
+  onRenamePage: (pageId: string, name: string, slug?: string) => void;
   onToggleLectureOpen: (lectureId: string, isOpen: boolean) => void;
   onTogglePageOpen: (pageId: string, isOpen: boolean) => void;
 }
@@ -68,8 +68,12 @@ export function SortableLecture({
   });
 
   const [opened, setOpened] = useState(true);
+
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState(lecture.name);
+
+  const [slugEditing, setSlugEditing] = useState(false);
+  const [slug, setSlug] = useState(lecture.slug);
 
   const style = {
     transform: CSS.Translate.toString(transform),
@@ -82,12 +86,21 @@ export function SortableLecture({
     [lecture.pages],
   );
 
-  const commitRename = () => {
+  const commitNameRename = () => {
     setIsEditing(false);
     if (name.trim() && name !== lecture.name) {
-      onRenameLecture(lecture.id, name.trim());
+      onRenameLecture(lecture.id, name.trim(), slug);
     } else {
       setName(lecture.name);
+    }
+  };
+
+  const commitSlugRename = () => {
+    setSlugEditing(false);
+    if (slug.trim() && slug !== lecture.slug) {
+      onRenameLecture(lecture.id, name, slug.trim());
+    } else {
+      setSlug(lecture.slug);
     }
   };
 
@@ -96,7 +109,7 @@ export function SortableLecture({
       <Box p="sm" style={{ borderRadius: "8px 8px 0 0" }}>
         <Group justify="space-between">
           <Group gap="sm">
-            {!isEditing && (
+            {!isEditing && !slugEditing && (
               <div
                 {...attributes}
                 {...listeners}
@@ -122,9 +135,9 @@ export function SortableLecture({
                 value={name}
                 autoFocus
                 onChange={(e) => setName(e.currentTarget.value)}
-                onBlur={commitRename}
+                onBlur={commitNameRename}
                 onKeyDown={(e) => {
-                  if (e.key === "Enter") commitRename();
+                  if (e.key === "Enter") commitNameRename();
                   if (e.key === "Escape") {
                     setName(lecture.name);
                     setIsEditing(false);
@@ -141,6 +154,7 @@ export function SortableLecture({
                 {lecture.name}
               </Text>
             )}
+
             <Badge
               size="xs"
               color={lecture.isOpen ? "green" : "gray"}
@@ -148,7 +162,32 @@ export function SortableLecture({
             >
               {lecture.isOpen ? "公開" : "非公開"}
             </Badge>
-            <Text size="sm">/{lecture.slug}</Text>
+
+            <Text size="sm">/</Text>
+            {slugEditing ? (
+              <TextInput
+                size="xs"
+                value={slug}
+                onChange={(e) => setSlug(e.currentTarget.value)}
+                onBlur={commitSlugRename}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") commitSlugRename();
+                  if (e.key === "Escape") {
+                    setSlug(lecture.slug);
+                    setSlugEditing(false);
+                  }
+                }}
+                autoFocus
+              />
+            ) : (
+              <Text
+                size="sm"
+                onDoubleClick={() => setSlugEditing(true)}
+                style={{ cursor: "text" }}
+              >
+                {slug}
+              </Text>
+            )}
           </Group>
 
           <Group gap="xs">
