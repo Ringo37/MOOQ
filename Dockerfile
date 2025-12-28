@@ -1,25 +1,29 @@
 FROM node:22.19-slim AS development-dependencies-env
+RUN corepack enable
 COPY . /app
 WORKDIR /app
-RUN npm ci
+RUN pnpm install --frozen-lockfile
 
 FROM node:22.19-slim AS production-dependencies-env
-COPY ./package.json package-lock.json /app/
+RUN corepack enable
+COPY ./package.json pnpm-lock.yaml /app/
 WORKDIR /app
-RUN npm ci --omit=dev --ignore-scripts
+RUN pnpm install --prod --frozen-lockfile --ignore-scripts
 
 FROM node:22.19-slim AS build-env
+RUN corepack enable
 COPY . /app/
 COPY --from=development-dependencies-env /app/node_modules /app/node_modules
 WORKDIR /app
 ENV DATABASE_URL="postgresql://dummy:dummy@localhost:5432/dummy"
-RUN npx prisma generate && npm run build
+RUN pnpm prisma generate && pnpm run build
 
 FROM node:22.19-slim
-COPY ./package.json package-lock.json prisma.config.ts /app/
+RUN corepack enable
+COPY ./package.json pnpm-lock.yaml prisma.config.ts /app/
 COPY ./prisma /app/prisma
 COPY --from=production-dependencies-env /app/node_modules /app/node_modules
 COPY --from=build-env /app/build /app/build
 COPY --from=build-env /app/generated /app/generated
 WORKDIR /app
-CMD ["sh", "-c", "npx prisma migrate deploy && npm run start"]
+CMD ["sh", "-c", "pnpm prisma migrate deploy && pnpm run start"]
