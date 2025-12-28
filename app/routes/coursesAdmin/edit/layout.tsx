@@ -53,11 +53,21 @@ export default function CoursesAdminEditLayout({
     if (lastSegment === "permission") activeTab = "permission";
   }
 
+  const formId =
+    activeTab === "curriculum"
+      ? "curriculum-form"
+      : activeTab === "info"
+        ? "info-form"
+        : undefined;
+
   return (
     <Container size="full" py="md">
       <Group justify="space-between" mb="lg">
         <Title order={2}>コース編集: {course.name}</Title>
         <Group>
+          <Button type="submit" form={formId}>
+            保存
+          </Button>
           <Link to="/courses-admin">
             <Button color="green">コース管理トップ</Button>
           </Link>

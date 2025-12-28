@@ -10,9 +10,10 @@ import {
   Image,
   SegmentedControl,
 } from "@mantine/core";
+import { notifications } from "@mantine/notifications";
 import type { YooptaContentValue } from "@yoopta/editor";
-import { useState } from "react";
-import { data, Form, redirect } from "react-router";
+import { useEffect, useState } from "react";
+import { data, useFetcher } from "react-router";
 import sharp from "sharp";
 
 import type { CourseVisibility } from "generated/prisma/enums";
@@ -127,15 +128,14 @@ export async function action({ request, params }: Route.ActionArgs) {
   }
   await updateCourse(originalSlug, name, slug, description, fileId, visibility);
 
-  return redirect(`/courses-admin`);
+  return data({ success: true });
 }
 
 export default function CoursesAdminEditInfo({
-  actionData,
   loaderData,
 }: Route.ComponentProps) {
+  const fetcher = useFetcher<{ success?: boolean; error?: string }>();
   const { course } = loaderData;
-
   const [slug, setSlug] = useState(course.slug);
   const [visibility, setVisibility] = useState(course.visibility);
   const [checking, setChecking] = useState(false);
@@ -162,16 +162,32 @@ export default function CoursesAdminEditInfo({
     setChecking(false);
   }
 
+  useEffect(() => {
+    if (fetcher.state === "idle" && fetcher.data?.success) {
+      notifications.show({
+        title: "保存しました",
+        message: "コース情報の更新が完了しました",
+        color: "green",
+        position: "top-right",
+        autoClose: 2000,
+      });
+    }
+  }, [fetcher.state, fetcher.data]);
+
   return (
     <Center>
       <Box w="100%">
-        {actionData?.error === "SLUG_EXISTS" && (
+        {fetcher.data?.error === "SLUG_EXISTS" && (
           <Text c="red" mb="sm">
             このスラグは既に使われています
           </Text>
         )}
 
-        <Form method="post" encType="multipart/form-data">
+        <fetcher.Form
+          method="post"
+          encType="multipart/form-data"
+          id="info-form"
+        >
           <Stack>
             <SegmentedControl
               value={visibility}
@@ -250,7 +266,7 @@ export default function CoursesAdminEditInfo({
               </Button>
             </Group>
           </Stack>
-        </Form>
+        </fetcher.Form>
       </Box>
     </Center>
   );

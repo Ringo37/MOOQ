@@ -151,18 +151,6 @@ export default function CurriculumEditorTab({
   const blocker = useBlocker(hasUnsavedChanges);
   const id = useId();
 
-  const handleSave = () => {
-    fetcher.submit(
-      {
-        section: JSON.stringify(sections),
-        courseId: course.id,
-      },
-      {
-        method: "post",
-      },
-    );
-  };
-
   useEffect(() => {
     if (fetcher.state === "idle" && fetcher.data?.success) {
       notifications.show({
@@ -172,9 +160,12 @@ export default function CurriculumEditorTab({
         position: "top-right",
         autoClose: 2000,
       });
-      reset(createInitialSections(course));
     }
   }, [fetcher.state, fetcher.data]);
+
+  useEffect(() => {
+    reset(createInitialSections(course));
+  }, [course]);
 
   useEffect(() => {
     if (blocker.state === "blocked") {
@@ -190,61 +181,64 @@ export default function CurriculumEditorTab({
   }, [blocker]);
 
   return (
-    <Box mx="auto">
-      <Group justify="space-between" mb="lg">
-        <div>
-          <Title order={4}>カリキュラム構成</Title>
-          <Text c="dimmed" size="sm">
-            セクション・レクチャー・ページを管理します
-          </Text>
-        </div>
-        <Button
-          leftSection={<Plus size={16} />}
-          variant="light"
-          color="cyan"
-          onClick={addSection}
-        >
-          セクションを追加
-        </Button>
-      </Group>
-
-      <DndContext
-        id={id}
-        sensors={sensors}
-        collisionDetection={closestCenter}
-        onDragStart={handleDragStart}
-        onDragOver={handleDragOver}
-        onDragEnd={handleDragEnd}
-      >
-        <Stack gap="md">
-          <SortableContext
-            items={sectionIds}
-            strategy={verticalListSortingStrategy}
+    <fetcher.Form method="post" id="curriculum-form">
+      <input type="hidden" name="section" value={JSON.stringify(sections)} />
+      <Box mx="auto">
+        <Group justify="space-between" mb="lg">
+          <div>
+            <Title order={4}>カリキュラム構成</Title>
+            <Text c="dimmed" size="sm">
+              セクション・レクチャー・ページを管理します
+            </Text>
+          </div>
+          <Button
+            leftSection={<Plus size={16} />}
+            variant="light"
+            color="cyan"
+            onClick={addSection}
           >
-            {sections.map((section) => (
-              <SortableSection
-                key={section.id}
-                section={section}
-                onAddLecture={() => addLecture(section.id)}
-                onAddPage={addPage}
-                onDeleteSection={deleteSection}
-                onDeleteLecture={deleteLecture}
-                onDeletePage={deletePage}
-                onRenameSection={renameSection}
-                onRenameLecture={renameLecture}
-                onRenamePage={renamePage}
-              />
-            ))}
-          </SortableContext>
-        </Stack>
+            セクションを追加
+          </Button>
+        </Group>
 
-        <DragOverlay dropAnimation={dropAnimation}>
-          {activeItem && <ItemOverlay item={activeItem} />}
-        </DragOverlay>
-      </DndContext>
-      <Group justify="flex-end">
-        <Button onClick={handleSave}>保存</Button>
-      </Group>
-    </Box>
+        <DndContext
+          id={id}
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragStart={handleDragStart}
+          onDragOver={handleDragOver}
+          onDragEnd={handleDragEnd}
+        >
+          <Stack gap="md">
+            <SortableContext
+              items={sectionIds}
+              strategy={verticalListSortingStrategy}
+            >
+              {sections.map((section) => (
+                <SortableSection
+                  key={section.id}
+                  section={section}
+                  onAddLecture={() => addLecture(section.id)}
+                  onAddPage={addPage}
+                  onDeleteSection={deleteSection}
+                  onDeleteLecture={deleteLecture}
+                  onDeletePage={deletePage}
+                  onRenameSection={renameSection}
+                  onRenameLecture={renameLecture}
+                  onRenamePage={renamePage}
+                />
+              ))}
+            </SortableContext>
+          </Stack>
+
+          <DragOverlay dropAnimation={dropAnimation}>
+            {activeItem && <ItemOverlay item={activeItem} />}
+          </DragOverlay>
+        </DndContext>
+        <Group justify="flex-end">
+          <Button type="submit">保存</Button>
+        </Group>
+      </Box>
+    </fetcher.Form>
   );
 }
