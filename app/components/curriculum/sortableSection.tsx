@@ -41,8 +41,16 @@ interface SortableSectionProps {
   onRenameSection: (sectionId: string, name: string, slug: string) => void;
   onRenameLecture: (lectureId: string, name: string) => void;
   onRenamePage: (pageId: string, name: string) => void;
-  onToggleSectionOpen: (sectionId: string, isOpen: boolean) => void;
-  onToggleLectureOpen: (lectureId: string, isOpen: boolean) => void;
+  onToggleSectionOpen: (
+    sectionId: string,
+    isOpen: boolean,
+    recursive?: boolean,
+  ) => void;
+  onToggleLectureOpen: (
+    lectureId: string,
+    isOpen: boolean,
+    recursive?: boolean,
+  ) => void;
   onTogglePageOpen: (pageId: string, isOpen: boolean) => void;
 }
 
@@ -208,6 +216,17 @@ export function SortableSection({
                   }
                 >
                   {section.isOpen ? "非公開にする" : "公開する"}
+                </Menu.Item>
+
+                <Menu.Item
+                  leftSection={
+                    section.isOpen ? <EyeOff size={14} /> : <Eye size={14} />
+                  }
+                  onClick={() =>
+                    onToggleSectionOpen(section.id, !section.isOpen, true)
+                  }
+                >
+                  {section.isOpen ? "すべて非公開にする" : "すべて公開する"}
                 </Menu.Item>
               </Menu.Dropdown>
             </Menu>

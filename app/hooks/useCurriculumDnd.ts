@@ -550,23 +550,56 @@ export function useCurriculumDnd(initialSections: SectionItem[] = []) {
     );
   };
 
-  const toggleSectionOpen = (sectionId: string, isOpen?: boolean) => {
+  const toggleSectionOpen = (
+    sectionId: string,
+    isOpen?: boolean,
+    recursive: boolean = false,
+  ) => {
     setSections((prev) =>
-      prev.map((sec) =>
-        sec.id === sectionId ? { ...sec, isOpen: isOpen ?? !sec.isOpen } : sec,
-      ),
+      prev.map((sec) => {
+        if (sec.id !== sectionId) return sec;
+
+        const nextIsOpen = isOpen ?? !sec.isOpen;
+
+        return {
+          ...sec,
+          isOpen: nextIsOpen,
+          lectures: recursive
+            ? sec.lectures.map((lec) => ({
+                ...lec,
+                isOpen: nextIsOpen,
+                pages: lec.pages.map((page) => ({
+                  ...page,
+                  isOpen: nextIsOpen,
+                })),
+              }))
+            : sec.lectures,
+        };
+      }),
     );
   };
 
-  const toggleLectureOpen = (lectureId: string, isOpen?: boolean) => {
+  const toggleLectureOpen = (
+    lectureId: string,
+    isOpen?: boolean,
+    recursive: boolean = false,
+  ) => {
     setSections((prev) =>
       prev.map((sec) => ({
         ...sec,
-        lectures: sec.lectures.map((lec) =>
-          lec.id === lectureId
-            ? { ...lec, isOpen: isOpen ?? !lec.isOpen }
-            : lec,
-        ),
+        lectures: sec.lectures.map((lec) => {
+          if (lec.id !== lectureId) return lec;
+
+          const nextIsOpen = isOpen ?? !lec.isOpen;
+
+          return {
+            ...lec,
+            isOpen: nextIsOpen,
+            pages: recursive
+              ? lec.pages.map((page) => ({ ...page, isOpen: nextIsOpen }))
+              : lec.pages,
+          };
+        }),
       })),
     );
   };

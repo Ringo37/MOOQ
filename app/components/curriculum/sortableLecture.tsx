@@ -41,7 +41,11 @@ interface SortableLectureProps {
   onDeletePage: (pageId: string) => void;
   onRenameLecture: (lectureId: string, name: string, slug: string) => void;
   onRenamePage: (pageId: string, name: string, slug?: string) => void;
-  onToggleLectureOpen: (lectureId: string, isOpen: boolean) => void;
+  onToggleLectureOpen: (
+    lectureId: string,
+    isOpen: boolean,
+    recursive?: boolean,
+  ) => void;
   onTogglePageOpen: (pageId: string, isOpen: boolean) => void;
 }
 
@@ -208,6 +212,17 @@ export function SortableLecture({
                   }
                 >
                   {lecture.isOpen ? "非公開にする" : "公開する"}
+                </Menu.Item>
+
+                <Menu.Item
+                  leftSection={
+                    lecture.isOpen ? <EyeOff size={14} /> : <Eye size={14} />
+                  }
+                  onClick={() =>
+                    onToggleLectureOpen(lecture.id, !lecture.isOpen, true)
+                  }
+                >
+                  {lecture.isOpen ? "すべて非公開にする" : "すべて公開する"}
                 </Menu.Item>
               </Menu.Dropdown>
             </Menu>
