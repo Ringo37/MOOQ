@@ -15,6 +15,7 @@ import {
   Button,
   TextInput,
   Badge,
+  Menu,
 } from "@mantine/core";
 import {
   GripVertical,
@@ -24,6 +25,8 @@ import {
   Plus,
   Settings,
   Trash,
+  EyeOff,
+  Eye,
 } from "lucide-react";
 import { useState, useMemo } from "react";
 
@@ -38,6 +41,8 @@ interface SortableLectureProps {
   onDeletePage: (pageId: string) => void;
   onRenameLecture: (lectureId: string, name: string) => void;
   onRenamePage: (pageId: string, name: string) => void;
+  onToggleLectureOpen: (lectureId: string, isOpen: boolean) => void;
+  onTogglePageOpen: (pageId: string, isOpen: boolean) => void;
 }
 
 export function SortableLecture({
@@ -47,6 +52,8 @@ export function SortableLecture({
   onDeletePage,
   onRenameLecture,
   onRenamePage,
+  onToggleLectureOpen,
+  onTogglePageOpen,
 }: SortableLectureProps) {
   const {
     attributes,
@@ -134,18 +141,37 @@ export function SortableLecture({
                 {lecture.name}
               </Text>
             )}
-            {!lecture.isOpen && (
-              <Badge size="xs" color="gray" variant="outline">
-                非公開
-              </Badge>
-            )}
+            <Badge
+              size="xs"
+              color={lecture.isOpen ? "green" : "gray"}
+              variant="outline"
+            >
+              {lecture.isOpen ? "公開" : "非公開"}
+            </Badge>
             <Text size="sm">/{lecture.slug}</Text>
           </Group>
 
           <Group gap="xs">
-            <ActionIcon variant="subtle" color="gray">
-              <Settings size={16} />
-            </ActionIcon>
+            <Menu withinPortal position="bottom-end">
+              <Menu.Target>
+                <ActionIcon variant="subtle" color="gray">
+                  <Settings size={16} />
+                </ActionIcon>
+              </Menu.Target>
+
+              <Menu.Dropdown>
+                <Menu.Item
+                  leftSection={
+                    lecture.isOpen ? <EyeOff size={14} /> : <Eye size={14} />
+                  }
+                  onClick={() =>
+                    onToggleLectureOpen(lecture.id, !lecture.isOpen)
+                  }
+                >
+                  {lecture.isOpen ? "非公開にする" : "公開する"}
+                </Menu.Item>
+              </Menu.Dropdown>
+            </Menu>
             <ActionIcon
               variant="subtle"
               color="red"
@@ -169,6 +195,7 @@ export function SortableLecture({
                 page={page}
                 onDeletePage={onDeletePage}
                 onRenamePage={onRenamePage}
+                onTogglePageOpen={onTogglePageOpen}
               />
             ))}
           </SortableContext>

@@ -9,6 +9,7 @@ export function createInitialSections(
     name: section.name,
     slug: section.slug,
     order: section.order,
+    isOpen: section.isOpen,
     lectures: section.lectures.map((lecture) => ({
       id: lecture.id,
       name: lecture.name,

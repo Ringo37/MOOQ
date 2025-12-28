@@ -540,6 +540,43 @@ export function useCurriculumDnd(initialSections: SectionItem[] = []) {
     );
   };
 
+  const toggleSectionOpen = (sectionId: string, isOpen?: boolean) => {
+    setSections((prev) =>
+      prev.map((sec) =>
+        sec.id === sectionId ? { ...sec, isOpen: isOpen ?? !sec.isOpen } : sec,
+      ),
+    );
+  };
+
+  const toggleLectureOpen = (lectureId: string, isOpen?: boolean) => {
+    setSections((prev) =>
+      prev.map((sec) => ({
+        ...sec,
+        lectures: sec.lectures.map((lec) =>
+          lec.id === lectureId
+            ? { ...lec, isOpen: isOpen ?? !lec.isOpen }
+            : lec,
+        ),
+      })),
+    );
+  };
+
+  const togglePageOpen = (pageId: string, isOpen?: boolean) => {
+    setSections((prev) =>
+      prev.map((sec) => ({
+        ...sec,
+        lectures: sec.lectures.map((lec) => ({
+          ...lec,
+          pages: lec.pages.map((page) =>
+            page.id === pageId
+              ? { ...page, isOpen: isOpen ?? !page.isOpen }
+              : page,
+          ),
+        })),
+      })),
+    );
+  };
+
   const reset = (nextSections: SectionItem[]) => {
     setSections(nextSections);
   };
@@ -561,6 +598,9 @@ export function useCurriculumDnd(initialSections: SectionItem[] = []) {
     renameSection,
     renameLecture,
     renamePage,
+    toggleSectionOpen,
+    toggleLectureOpen,
+    togglePageOpen,
     reset,
   };
 }

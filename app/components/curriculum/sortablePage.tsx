@@ -8,8 +8,16 @@ import {
   Badge,
   ActionIcon,
   TextInput,
+  Menu,
 } from "@mantine/core";
-import { GripVertical, FileText, Settings, Trash } from "lucide-react";
+import {
+  GripVertical,
+  FileText,
+  Settings,
+  Trash,
+  EyeOff,
+  Eye,
+} from "lucide-react";
 import { useState } from "react";
 
 import type { PageItem } from "~/hooks/useCurriculumDnd";
@@ -18,10 +26,12 @@ export function SortablePage({
   page,
   onDeletePage,
   onRenamePage,
+  onTogglePageOpen,
 }: {
   page: PageItem;
   onDeletePage: (pageId: string) => void;
   onRenamePage: (pageId: string, name: string) => void;
+  onTogglePageOpen: (pageId: string, isOpen: boolean) => void;
 }) {
   const {
     attributes,
@@ -96,18 +106,35 @@ export function SortablePage({
             </Text>
           )}
 
-          {!page.isOpen && (
-            <Badge size="xs" color="gray" variant="outline">
-              非公開
-            </Badge>
-          )}
+          <Badge
+            size="xs"
+            color={page.isOpen ? "green" : "gray"}
+            variant="outline"
+          >
+            {page.isOpen ? "公開" : "非公開"}
+          </Badge>
           <Text size="sm">/{page.slug}</Text>
         </Group>
 
         <Group gap="xs">
-          <ActionIcon variant="subtle" color="gray">
-            <Settings size={16} />
-          </ActionIcon>
+          <Menu withinPortal position="bottom-end">
+            <Menu.Target>
+              <ActionIcon variant="subtle" color="gray">
+                <Settings size={16} />
+              </ActionIcon>
+            </Menu.Target>
+
+            <Menu.Dropdown>
+              <Menu.Item
+                leftSection={
+                  page.isOpen ? <EyeOff size={14} /> : <Eye size={14} />
+                }
+                onClick={() => onTogglePageOpen(page.id, !page.isOpen)}
+              >
+                {page.isOpen ? "非公開にする" : "公開する"}
+              </Menu.Item>
+            </Menu.Dropdown>
+          </Menu>
           <ActionIcon
             variant="subtle"
             color="red"

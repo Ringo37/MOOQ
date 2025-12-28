@@ -131,6 +131,9 @@ export default function CurriculumEditorTab({
     renameSection,
     renameLecture,
     renamePage,
+    toggleSectionOpen,
+    toggleLectureOpen,
+    togglePageOpen,
     reset,
   } = useCurriculumDnd(initialSections);
   const hasUnsavedChanges = () => {
@@ -215,6 +218,9 @@ export default function CurriculumEditorTab({
                   onRenameSection={renameSection}
                   onRenameLecture={renameLecture}
                   onRenamePage={renamePage}
+                  onToggleSectionOpen={toggleSectionOpen}
+                  onToggleLectureOpen={toggleLectureOpen}
+                  onTogglePageOpen={togglePageOpen}
                 />
               ))}
             </SortableContext>

@@ -94,12 +94,14 @@ export async function upsertSectionTree(
             name: section.name,
             slug: section.slug,
             order: section.order,
+            isOpen: section.isOpen,
           },
           create: {
             id: section.id,
             name: section.name,
             slug: section.slug,
             order: section.order,
+            isOpen: section.isOpen,
             courseId,
           },
         });
@@ -109,6 +111,7 @@ export async function upsertSectionTree(
             name: section.name,
             slug: section.slug,
             order: section.order,
+            isOpen: section.isOpen,
             courseId,
           },
         });
@@ -125,6 +128,7 @@ export async function upsertSectionTree(
               name: lecture.name,
               slug: lecture.slug,
               order: lecture.order,
+              isOpen: lecture.isOpen,
               sectionId: section.id,
             },
             create: {
@@ -132,6 +136,7 @@ export async function upsertSectionTree(
               name: lecture.name,
               slug: lecture.slug,
               order: lecture.order,
+              isOpen: lecture.isOpen,
               sectionId: section.id,
             },
           });
@@ -141,6 +146,7 @@ export async function upsertSectionTree(
               name: lecture.name,
               slug: lecture.slug,
               order: lecture.order,
+              isOpen: lecture.isOpen,
               sectionId: section.id,
             },
           });
@@ -157,6 +163,7 @@ export async function upsertSectionTree(
                 name: page.name,
                 slug: page.slug,
                 order: page.order,
+                isOpen: page.isOpen,
                 lectureId: lecture.id,
               },
               create: {
@@ -164,6 +171,7 @@ export async function upsertSectionTree(
                 name: page.name,
                 slug: page.slug,
                 order: page.order,
+                isOpen: page.isOpen,
                 lectureId: lecture.id,
               },
             });
@@ -173,6 +181,7 @@ export async function upsertSectionTree(
                 name: page.name,
                 slug: page.slug,
                 order: page.order,
+                isOpen: page.isOpen,
                 lectureId: lecture.id,
               },
             });

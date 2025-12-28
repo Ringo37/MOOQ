@@ -14,8 +14,17 @@ import {
   Button,
   TextInput,
   Badge,
+  Menu,
 } from "@mantine/core";
-import { GripVertical, Layers, Settings, Trash, Plus } from "lucide-react";
+import {
+  GripVertical,
+  Layers,
+  Settings,
+  Trash,
+  Plus,
+  EyeOff,
+  Eye,
+} from "lucide-react";
 import { useMemo, useState } from "react";
 
 import type { SectionItem } from "~/hooks/useCurriculumDnd";
@@ -32,6 +41,9 @@ interface SortableSectionProps {
   onRenameSection: (sectionId: string, name: string) => void;
   onRenameLecture: (lectureId: string, name: string) => void;
   onRenamePage: (pageId: string, name: string) => void;
+  onToggleSectionOpen: (sectionId: string, isOpen: boolean) => void;
+  onToggleLectureOpen: (lectureId: string, isOpen: boolean) => void;
+  onTogglePageOpen: (pageId: string, isOpen: boolean) => void;
 }
 
 export function SortableSection({
@@ -44,6 +56,9 @@ export function SortableSection({
   onRenameSection,
   onRenameLecture,
   onRenamePage,
+  onToggleSectionOpen,
+  onToggleLectureOpen,
+  onTogglePageOpen,
 }: SortableSectionProps) {
   const {
     attributes,
@@ -129,19 +144,39 @@ export function SortableSection({
               </Text>
             )}
 
-            {!section.isOpen && (
-              <Badge size="xs" color="gray" variant="outline">
-                非公開
-              </Badge>
-            )}
+            <Badge
+              size="xs"
+              color={section.isOpen ? "green" : "gray"}
+              variant="outline"
+            >
+              {section.isOpen ? "公開" : "非公開"}
+            </Badge>
 
             <Text size="sm">/{section.slug}</Text>
           </Group>
 
           <Group gap="xs">
-            <ActionIcon variant="subtle" color="gray">
-              <Settings size={16} />
-            </ActionIcon>
+            <Menu withinPortal position="bottom-end">
+              <Menu.Target>
+                <ActionIcon variant="subtle" color="gray">
+                  <Settings size={16} />
+                </ActionIcon>
+              </Menu.Target>
+
+              <Menu.Dropdown>
+                <Menu.Item
+                  leftSection={
+                    section.isOpen ? <EyeOff size={14} /> : <Eye size={14} />
+                  }
+                  onClick={() =>
+                    onToggleSectionOpen(section.id, !section.isOpen)
+                  }
+                >
+                  {section.isOpen ? "非公開にする" : "公開する"}
+                </Menu.Item>
+              </Menu.Dropdown>
+            </Menu>
+
             <ActionIcon
               variant="subtle"
               color="red"
@@ -167,6 +202,8 @@ export function SortableSection({
               onDeletePage={onDeletePage}
               onRenameLecture={onRenameLecture}
               onRenamePage={onRenamePage}
+              onToggleLectureOpen={onToggleLectureOpen}
+              onTogglePageOpen={onTogglePageOpen}
             />
           ))}
         </SortableContext>
