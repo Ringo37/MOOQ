@@ -135,6 +135,7 @@ export default function CurriculumEditorTab({
     toggleLectureOpen,
     togglePageOpen,
     reset,
+    validate,
   } = useCurriculumDnd(initialSections);
   const hasUnsavedChanges = () => {
     return JSON.stringify(sections) !== JSON.stringify(initialSections);
@@ -172,8 +173,22 @@ export default function CurriculumEditorTab({
     }
   }, [blocker]);
 
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    const error = validate();
+
+    if (error) {
+      event.preventDefault();
+      notifications.show({
+        title: "保存できません",
+        message: error,
+        color: "red",
+        position: "top-right",
+      });
+    }
+  };
+
   return (
-    <fetcher.Form method="post" id="curriculum-form">
+    <fetcher.Form method="post" id="curriculum-form" onSubmit={handleSubmit}>
       <input type="hidden" name="section" value={JSON.stringify(sections)} />
       <Box mx="auto">
         <Group justify="space-between" mb="lg">

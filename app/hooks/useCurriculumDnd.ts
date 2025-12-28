@@ -591,6 +591,38 @@ export function useCurriculumDnd(initialSections: SectionItem[] = []) {
     setSections(nextSections);
   };
 
+  const validate = (): string | null => {
+    const sectionSlugs = new Set<string>();
+
+    for (const section of sections) {
+      if (!section.slug) return `セクション "${section.name}" のSlugが空です。`;
+      if (sectionSlugs.has(section.slug)) {
+        return `セクションのSlug "${section.slug}" が重複しています。`;
+      }
+      sectionSlugs.add(section.slug);
+
+      const lectureSlugs = new Set<string>();
+      for (const lecture of section.lectures) {
+        if (!lecture.slug)
+          return `レクチャー "${lecture.name}" のSlugが空です。`;
+        if (lectureSlugs.has(lecture.slug)) {
+          return `セクション "${section.name}" 内でレクチャーのSlug "${lecture.slug}" が重複しています。`;
+        }
+        lectureSlugs.add(lecture.slug);
+
+        const pageSlugs = new Set<string>();
+        for (const page of lecture.pages) {
+          if (!page.slug) return `ページ "${page.name}" のSlugが空です。`;
+          if (pageSlugs.has(page.slug)) {
+            return `レクチャー "${lecture.name}" 内でページのSlug "${page.slug}" が重複しています。`;
+          }
+          pageSlugs.add(page.slug);
+        }
+      }
+    }
+    return null;
+  };
+
   return {
     sections,
     activeItem,
@@ -612,5 +644,6 @@ export function useCurriculumDnd(initialSections: SectionItem[] = []) {
     toggleLectureOpen,
     togglePageOpen,
     reset,
+    validate,
   };
 }
