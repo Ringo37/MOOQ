@@ -14,14 +14,14 @@ export default [
     ...prefix("courses", [
       index("routes/courses/index.tsx"),
       route(":courseSlug", "routes/courses/detail.tsx"),
-      route(":courseSlug/:sectionSlug", "routes/courses/section/index.ts"),
+      route(":courseSlug/:sectionSlug", "routes/courses/section.ts"),
       route(
         ":courseSlug/:sectionSlug/:lectureSlug",
-        "routes/courses/section/lecture/index.ts",
+        "routes/courses/lecture.ts",
       ),
       route(
         ":courseSlug/:sectionSlug/:lectureSlug/:pageSlug",
-        "routes/courses/section/lecture/page/index.tsx",
+        "routes/courses/page.tsx",
       ),
     ]),
     ...prefix("admin", [
