@@ -26,6 +26,8 @@ import Table from "@yoopta/table";
 import Toolbar, { DefaultToolbarRender } from "@yoopta/toolbar";
 import Video from "@yoopta/video";
 
+import GoogleSlidePlugin from "./plugins/googleSlide";
+
 async function uploadFile(file: File) {
   const body = new FormData();
   body.append("file", file);
@@ -92,6 +94,7 @@ export const plugins = [
       },
     },
   }),
+  GoogleSlidePlugin,
 ];
 
 export const tools = {
