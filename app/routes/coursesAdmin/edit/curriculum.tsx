@@ -71,18 +71,7 @@ export async function loader({ request, params }: Route.LoaderArgs) {
       ),
     ),
   };
-  const sidebarData: NavGroup[] = [
-    {
-      icon: "link",
-      label: "リンク",
-      items: [
-        { title: "トップ", link: "/courses" },
-        { title: "コース管理", link: "/courses-admin" },
-      ],
-    },
-    ...sidebarDataCourse,
-    sidebarDataPages,
-  ];
+  const sidebarData: NavGroup[] = [...sidebarDataCourse, sidebarDataPages];
 
   return { course, sidebarData };
 }

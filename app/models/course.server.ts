@@ -94,6 +94,7 @@ export async function getCourseBySlugForUser(slug: string, userId: string) {
     include: {
       cover: true,
       sections: {
+        where: { isOpen: true },
         include: {
           lectures: {
             where: { isOpen: true },

@@ -53,7 +53,7 @@ export async function loader({ request }: Route.LoaderArgs) {
   return null;
 }
 
-export default function Login() {
+export default function Login({ actionData }: Route.ComponentProps) {
   const [searchParams] = useSearchParams();
   const redirectTo = searchParams.get("redirectTo") || "/";
   return (
@@ -93,6 +93,11 @@ export default function Login() {
           <Button fullWidth mt="xl" radius="md" type="submit">
             Sign in
           </Button>
+          {actionData?.error && (
+            <Text c="red" size="sm" mb="sm">
+              {actionData.error}
+            </Text>
+          )}
         </Form>
       </Paper>
     </Container>

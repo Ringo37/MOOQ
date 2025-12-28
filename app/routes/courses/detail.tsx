@@ -11,6 +11,7 @@ import {
 import type { YooptaContentValue } from "@yoopta/editor";
 
 import { Render } from "~/components/editor/render";
+import type { NavGroup } from "~/components/navItems";
 import { getCourseBySlugForUser } from "~/models/course.server";
 import { requireUserId } from "~/services/auth.server";
 import { formatDate } from "~/utils/formatDate";
@@ -26,7 +27,16 @@ export async function loader({ request, params }: Route.LoaderArgs) {
     return new Response(null, { status: 404 });
   }
 
-  return { course };
+  const sidebarData: NavGroup[] = course.sections.map((section) => ({
+    icon: "book",
+    label: section.name,
+    items: section.lectures.map((lecture) => ({
+      title: lecture.name,
+      link: `/courses/${course.slug}/${section.slug}/${lecture.slug}`,
+    })),
+  }));
+
+  return { course, sidebarData };
 }
 
 export default function CourseDetail({ loaderData }: Route.ComponentProps) {

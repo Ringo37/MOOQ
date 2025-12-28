@@ -1,7 +1,6 @@
 import {
   Box,
   Button,
-  Container,
   Group,
   Stack,
   TextInput,
@@ -87,85 +86,83 @@ export default function CoursesAdminCreate({
   }
 
   return (
-    <Container size="md">
-      <Center>
-        <Box w="100%">
-          <Title order={2} mb="md">
-            コース作成
-          </Title>
+    <Center>
+      <Box w="100%">
+        <Title order={2} mb="md">
+          コース作成
+        </Title>
 
-          {actionData?.error === "SLUG_EXISTS" && (
-            <Text c="red" mb="sm">
-              このスラグは既に使われています
-            </Text>
-          )}
+        {actionData?.error === "SLUG_EXISTS" && (
+          <Text c="red" mb="sm">
+            このスラグは既に使われています
+          </Text>
+        )}
 
-          <Form method="post" encType="multipart/form-data">
-            <Stack>
-              <TextInput name="name" label="コース名" required />
+        <Form method="post" encType="multipart/form-data">
+          <Stack>
+            <TextInput name="name" label="コース名" required />
 
-              <Group align="flex-end">
-                <TextInput
-                  name="slug"
-                  label="スラグ"
-                  value={slug}
-                  onChange={(e) => {
-                    setSlug(e.currentTarget.value);
-                    setSlugOk(null);
-                  }}
-                  required
-                  style={{ flex: 1 }}
-                />
-                <Button variant="light" onClick={checkSlug} loading={checking}>
-                  確認
-                </Button>
-              </Group>
-
-              {slugOk === true && (
-                <Text c="green" size="sm">
-                  このスラグは使用できます
-                </Text>
-              )}
-              {slugOk === false && (
-                <Text c="red" size="sm">
-                  このスラグは既に使われています
-                </Text>
-              )}
-
-              <FileInput
-                name="cover"
-                label="カバー画像"
-                placeholder="画像をアップロード"
-                accept="image/png,image/jpeg,image/webp"
-                clearable
-                onChange={(file) => {
-                  if (file) {
-                    setCoverPreview(URL.createObjectURL(file));
-                  } else {
-                    setCoverPreview(null);
-                  }
+            <Group align="flex-end">
+              <TextInput
+                name="slug"
+                label="スラグ"
+                value={slug}
+                onChange={(e) => {
+                  setSlug(e.currentTarget.value);
+                  setSlugOk(null);
                 }}
+                required
+                style={{ flex: 1 }}
               />
-              {coverPreview && (
-                <Box mt="sm">
-                  <Center>
-                    <Image src={coverPreview} alt="Cover preview" maw={300} />
-                  </Center>
-                </Box>
-              )}
+              <Button variant="light" onClick={checkSlug} loading={checking}>
+                確認
+              </Button>
+            </Group>
 
-              <Text size="sm">説明</Text>
-              <Editor name="description" />
+            {slugOk === true && (
+              <Text c="green" size="sm">
+                このスラグは使用できます
+              </Text>
+            )}
+            {slugOk === false && (
+              <Text c="red" size="sm">
+                このスラグは既に使われています
+              </Text>
+            )}
 
-              <Group justify="flex-end">
-                <Button type="submit" disabled={slugOk === false}>
-                  作成
-                </Button>
-              </Group>
-            </Stack>
-          </Form>
-        </Box>
-      </Center>
-    </Container>
+            <FileInput
+              name="cover"
+              label="カバー画像"
+              placeholder="画像をアップロード"
+              accept="image/png,image/jpeg,image/webp"
+              clearable
+              onChange={(file) => {
+                if (file) {
+                  setCoverPreview(URL.createObjectURL(file));
+                } else {
+                  setCoverPreview(null);
+                }
+              }}
+            />
+            {coverPreview && (
+              <Box mt="sm">
+                <Center>
+                  <Image src={coverPreview} alt="Cover preview" maw={300} />
+                </Center>
+              </Box>
+            )}
+
+            <Text size="sm">説明</Text>
+            <Editor name="description" />
+
+            <Group justify="flex-end">
+              <Button type="submit" disabled={slugOk === false}>
+                作成
+              </Button>
+            </Group>
+          </Stack>
+        </Form>
+      </Box>
+    </Center>
   );
 }
