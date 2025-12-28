@@ -38,7 +38,7 @@ import { getPageBySlug } from "~/models/page.server";
 import { getSectionBySlug } from "~/models/section.server";
 import { requireUserId } from "~/services/auth.server";
 
-import type { Route } from "../../coursesAdmin/page/+types/index";
+import type { Route } from "./+types/index";
 
 export async function loader({ request, params }: Route.LoaderArgs) {
   const userId = await requireUserId(request);

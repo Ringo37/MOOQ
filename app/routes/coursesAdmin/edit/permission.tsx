@@ -5,7 +5,7 @@ import {
 } from "~/models/course.server";
 import { requireUser } from "~/services/auth.server";
 
-import type { Route } from "../../coursesAdmin/edit/+types/permission";
+import type { Route } from "./+types/permission";
 
 export async function loader({ request, params }: Route.LoaderArgs) {
   const user = await requireUser(request);

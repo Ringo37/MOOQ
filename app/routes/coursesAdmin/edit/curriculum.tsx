@@ -28,7 +28,7 @@ import { upsertSectionTree } from "~/models/section.server";
 import { requireUser } from "~/services/auth.server";
 import { createInitialSections } from "~/utils/createInitialSections";
 
-import type { Route } from "../../coursesAdmin/edit/+types/curriculum";
+import type { Route } from "./+types/curriculum";
 
 const dropAnimation: DropAnimation = {
   sideEffects: defaultDropAnimationSideEffects({

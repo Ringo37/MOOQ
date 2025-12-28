@@ -3,7 +3,7 @@ import { redirect } from "react-router";
 import { requireUser } from "~/services/auth.server";
 import { createPresignedGetUrl } from "~/services/storage.server";
 
-import type { Route } from "../api/+types/file";
+import type { Route } from "./+types/file";
 
 export async function loader({ request, params }: Route.LoaderArgs) {
   await requireUser(request);

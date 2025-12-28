@@ -18,7 +18,7 @@ import { createCourse, getCourseBySlug } from "~/models/course.server";
 import { uploadPublicFile } from "~/models/file.server";
 import { requireUser } from "~/services/auth.server";
 
-import type { Route } from "../coursesAdmin/+types/create";
+import type { Route } from "./+types/create";
 
 export async function action({ request }: Route.ActionArgs) {
   const user = await requireUser(request);

@@ -3,7 +3,7 @@ import { data } from "react-router";
 import { getCourseBySlug } from "~/models/course.server";
 import { requireUser } from "~/services/auth.server";
 
-import type { Route } from "../api/+types/checkCourseSlug";
+import type { Route } from "./+types/checkCourseSlug";
 
 export async function loader({ request }: Route.LoaderArgs) {
   const user = await requireUser(request);

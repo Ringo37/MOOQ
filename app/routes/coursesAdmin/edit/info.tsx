@@ -28,7 +28,7 @@ import {
 import { uploadPublicFile } from "~/models/file.server";
 import { requireUser } from "~/services/auth.server";
 
-import type { Route } from "../../coursesAdmin/edit/+types/info";
+import type { Route } from "./+types/info";
 
 export async function loader({ request, params }: Route.LoaderArgs) {
   const user = await requireUser(request);

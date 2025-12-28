@@ -5,7 +5,7 @@ import { Link, Outlet, useLocation, useParams } from "react-router";
 import { canEditCourseBySlug, getCourseBySlug } from "~/models/course.server";
 import { requireUser } from "~/services/auth.server";
 
-import type { Route } from "../../coursesAdmin/edit/+types/layout";
+import type { Route } from "./+types/layout";
 
 export async function loader({ request, params }: Route.LoaderArgs) {
   const user = await requireUser(request);

@@ -44,6 +44,10 @@ export default [
           ":courseSlug/:sectionSlug/:lectureSlug/:pageSlug",
           "routes/coursesAdmin/page/index.tsx",
         ),
+        route(
+          ":courseSlug/:sectionSlug/:lectureSlug/:pageSlug/:blockId",
+          "routes/coursesAdmin/page/block/index.tsx",
+        ),
       ]),
     ]),
   ]),

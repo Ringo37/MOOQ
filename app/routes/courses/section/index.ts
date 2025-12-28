@@ -4,7 +4,7 @@ import { getCourseBySlugForUser } from "~/models/course.server";
 import { getSectionBySlugForUser } from "~/models/section.server";
 import { requireUserId } from "~/services/auth.server";
 
-import type { Route } from "../../courses/section/+types/index";
+import type { Route } from "./+types/index";
 
 export async function loader({ request, params }: Route.LoaderArgs) {
   const userId = await requireUserId(request);

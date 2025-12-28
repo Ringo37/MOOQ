@@ -6,7 +6,7 @@ import { AdminCourseCard } from "~/components/adminCourseCard";
 import { getAllOwnedCourses } from "~/models/course.server";
 import { requireUserId } from "~/services/auth.server";
 
-import type { Route } from "../coursesAdmin/+types/index";
+import type { Route } from "./+types/index";
 
 export async function loader({ request }: Route.LoaderArgs) {
   const userId = await requireUserId(request);

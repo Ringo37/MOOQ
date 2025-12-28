@@ -3,7 +3,7 @@ import { data } from "react-router";
 import { uploadPublicFile } from "~/models/file.server";
 import { requireUser } from "~/services/auth.server";
 
-import type { Route } from "../api/+types/fileUpload";
+import type { Route } from "./+types/fileUpload";
 
 export async function action({ request }: Route.ActionArgs) {
   await requireUser(request);
