@@ -23,7 +23,7 @@ export function Editor({ initialContent, name }: EditorProps) {
   return (
     <div
       ref={selectionRef}
-      className="pl-15 editor-input"
+      className="px-15 editor-input"
       style={{ zIndex: 200 }}
     >
       <YooptaEditor
