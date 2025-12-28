@@ -4,9 +4,8 @@ import {
   useMantineColorScheme,
 } from "@mantine/core";
 import { Moon, Sun } from "lucide-react";
-import { ClientOnly } from "remix-utils/client-only";
 
-function ColorSchemeToggleClient() {
+export function ColorSchemeToggle() {
   const { setColorScheme } = useMantineColorScheme();
   const colorScheme = useComputedColorScheme();
 
@@ -19,8 +18,4 @@ function ColorSchemeToggleClient() {
       {colorScheme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
     </ActionIcon>
   );
-}
-
-export function ColorSchemeToggle() {
-  return <ClientOnly>{() => <ColorSchemeToggleClient />}</ClientOnly>;
 }
