@@ -52,7 +52,7 @@ export default function CoursesAdminEditLayout({
   return (
     <Container size="full" py="md">
       <Group justify="space-between" mb="lg">
-        <Title order={2}>コース編集: {course.name}</Title>
+        <Title order={2}>コース編集 : {course.name}</Title>
         <Group>
           <Button type="submit" form={formId}>
             保存

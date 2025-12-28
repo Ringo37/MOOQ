@@ -25,6 +25,15 @@ export async function getPageBySlugForUser(slug: string, lectureId: string) {
   });
 }
 
+export async function getPageBySlug(slug: string, lectureId: string) {
+  return prisma.page.findUnique({
+    where: { lectureId_slug: { lectureId, slug } },
+    include: {
+      blocks: { orderBy: { order: "asc" }, include: { problem: true } },
+    },
+  });
+}
+
 export async function upsertPageById(
   id: string,
   name: string,

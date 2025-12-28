@@ -40,6 +40,10 @@ export default [
           route(":slug/curriculum", "routes/coursesAdmin/edit/curriculum.tsx"),
           route(":slug/permission", "routes/coursesAdmin/edit/permission.tsx"),
         ]),
+        route(
+          ":courseSlug/:sectionSlug/:lectureSlug/:pageSlug",
+          "routes/coursesAdmin/page/index.tsx",
+        ),
       ]),
     ]),
   ]),

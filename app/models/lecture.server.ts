@@ -23,6 +23,13 @@ export async function getLectureBySlugForUser(slug: string, sectionId: string) {
   });
 }
 
+export async function getLectureBySlug(slug: string, sectionId: string) {
+  return prisma.lecture.findUnique({
+    where: { sectionId_slug: { sectionId, slug } },
+    include: { pages: { orderBy: { order: "asc" } } },
+  });
+}
+
 export async function upsertLectureById(
   id: string,
   name: string,

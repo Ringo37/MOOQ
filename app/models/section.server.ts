@@ -26,6 +26,15 @@ export async function getSectionBySlugForUser(slug: string, courseId: string) {
   });
 }
 
+export async function getSectionBySlug(slug: string, courseId: string) {
+  return prisma.section.findUnique({
+    where: { courseId_slug: { courseId, slug } },
+    include: {
+      lectures: { orderBy: { order: "asc" } },
+    },
+  });
+}
+
 export async function upsertSectionById(
   id: string,
   name: string,
