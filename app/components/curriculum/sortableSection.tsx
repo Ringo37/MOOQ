@@ -13,6 +13,7 @@ import {
   Stack,
   Button,
   TextInput,
+  Badge,
 } from "@mantine/core";
 import { GripVertical, Layers, Settings, Trash, Plus } from "lucide-react";
 import { useMemo, useState } from "react";
@@ -126,6 +127,12 @@ export function SortableSection({
               >
                 {section.name}
               </Text>
+            )}
+
+            {!section.isOpen && (
+              <Badge size="xs" color="gray" variant="outline">
+                非公開
+              </Badge>
             )}
 
             <Text size="sm">/{section.slug}</Text>

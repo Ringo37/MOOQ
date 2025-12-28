@@ -34,6 +34,7 @@ export type SectionItem = {
   name: string;
   slug: string;
   order: number;
+  isOpen: boolean;
   lectures: LectureItem[];
 };
 
@@ -422,6 +423,7 @@ export function useCurriculumDnd(initialSections: SectionItem[] = []) {
         name: "新規セクション",
         slug: uniqueSlug,
         order: prev.length,
+        isOpen: false,
         lectures: [],
       };
 
