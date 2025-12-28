@@ -228,6 +228,7 @@ export default function CurriculumEditorTab({
               {sections.map((section) => (
                 <SortableSection
                   key={section.id}
+                  courseSlug={course.slug}
                   section={section}
                   onAddLecture={() => addLecture(section.id)}
                   onAddPage={addPage}

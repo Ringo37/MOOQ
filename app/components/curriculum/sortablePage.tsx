@@ -17,13 +17,18 @@ import {
   Trash,
   EyeOff,
   Eye,
+  Edit,
 } from "lucide-react";
 import { useState } from "react";
+import { Link } from "react-router";
 
 import type { PageItem } from "~/hooks/useCurriculumDnd";
 
 interface SortablePageProps {
   page: PageItem;
+  courseSlug: string;
+  sectionSlug: string;
+  lectureSlug: string;
   onDeletePage: (pageId: string) => void;
   onRenamePage: (pageId: string, name: string, slug?: string) => void;
   onTogglePageOpen: (pageId: string, isOpen: boolean) => void;
@@ -31,6 +36,9 @@ interface SortablePageProps {
 
 export function SortablePage({
   page,
+  courseSlug,
+  sectionSlug,
+  lectureSlug,
   onDeletePage,
   onRenamePage,
   onTogglePageOpen,
@@ -176,6 +184,13 @@ export function SortablePage({
               >
                 {page.isOpen ? "非公開にする" : "公開する"}
               </Menu.Item>
+              <Link
+                to={`/courses-admin/${courseSlug}/${sectionSlug}/${lectureSlug}/${page.slug}`}
+              >
+                <Menu.Item leftSection={<Edit size={14} />}>
+                  ページを編集
+                </Menu.Item>
+              </Link>
             </Menu.Dropdown>
           </Menu>
           <ActionIcon

@@ -36,6 +36,8 @@ import { SortablePage } from "./sortablePage";
 
 interface SortableLectureProps {
   lecture: LectureItem;
+  courseSlug: string;
+  sectionSlug: string;
   onAddPage: () => void;
   onDeleteLecture: (lectureId: string) => void;
   onDeletePage: (pageId: string) => void;
@@ -51,6 +53,8 @@ interface SortableLectureProps {
 
 export function SortableLecture({
   lecture,
+  courseSlug,
+  sectionSlug,
   onAddPage,
   onDeleteLecture,
   onDeletePage,
@@ -250,6 +254,9 @@ export function SortableLecture({
                 onDeletePage={onDeletePage}
                 onRenamePage={onRenamePage}
                 onTogglePageOpen={onTogglePageOpen}
+                courseSlug={courseSlug}
+                sectionSlug={sectionSlug}
+                lectureSlug={lecture.slug}
               />
             ))}
           </SortableContext>

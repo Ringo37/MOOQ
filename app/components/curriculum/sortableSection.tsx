@@ -33,6 +33,7 @@ import { SortableLecture } from "./sortableLecture";
 
 interface SortableSectionProps {
   section: SectionItem;
+  courseSlug: string;
   onAddLecture: () => void;
   onAddPage: (lectureId: string) => void;
   onDeleteSection: (sectionId: string) => void;
@@ -56,6 +57,7 @@ interface SortableSectionProps {
 
 export function SortableSection({
   section,
+  courseSlug,
   onAddLecture,
   onAddPage,
   onDeleteSection,
@@ -251,6 +253,8 @@ export function SortableSection({
             <SortableLecture
               key={lecture.id}
               lecture={lecture}
+              courseSlug={courseSlug}
+              sectionSlug={section.slug}
               onAddPage={() => onAddPage(lecture.id)}
               onDeleteLecture={onDeleteLecture}
               onDeletePage={onDeletePage}
