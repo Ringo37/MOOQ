@@ -86,6 +86,16 @@ function NavItemHeader({
   );
 }
 
+function isActive(itemLink: string, pathname: string) {
+  if (itemLink.startsWith("/courses/")) {
+    return pathname.startsWith(itemLink);
+  } else if (itemLink === "/courses") {
+    return pathname === itemLink;
+  } else {
+    return pathname === itemLink;
+  }
+}
+
 export function NavItems({
   data,
   opened,
@@ -96,10 +106,59 @@ export function NavItems({
   transitionDuration: number;
 }) {
   const location = useLocation();
+  const pathname = location.pathname;
 
   const ITEM_HEIGHT = 44;
   const ICON_SIZE = 20;
   const CONTENT_PADDING_LEFT = 12;
+
+  if (!opened) {
+    return (
+      <Box py={10}>
+        {data.map((group) => {
+          const Icon = group.icon;
+          return (
+            <Menu
+              key={group.label}
+              trigger="hover"
+              position="right-start"
+              withArrow
+              offset={10}
+            >
+              <Menu.Target>
+                <Box>
+                  <NavItemHeader
+                    icon={Icon}
+                    label={group.label}
+                    showLabel={false}
+                    isActive={group.items.some((item) =>
+                      isActive(item.link, pathname),
+                    )}
+                    height={ITEM_HEIGHT}
+                    iconSize={ICON_SIZE}
+                    paddingLeft={CONTENT_PADDING_LEFT}
+                  />
+                </Box>
+              </Menu.Target>
+
+              <Menu.Dropdown>
+                <Menu.Label>{group.label}</Menu.Label>
+                {group.items.map((item) => (
+                  <Link
+                    to={item.link}
+                    key={item.link}
+                    style={{ textDecoration: "none" }}
+                  >
+                    <Menu.Item>{item.title}</Menu.Item>
+                  </Link>
+                ))}
+              </Menu.Dropdown>
+            </Menu>
+          );
+        })}
+      </Box>
+    );
+  }
 
   return (
     <Accordion
@@ -109,96 +168,54 @@ export function NavItems({
     >
       {data.map((group, index) => {
         const Icon = group.icon;
-        const isActive = group.items.some(
-          (item) => location.pathname === item.link,
-        );
-
-        if (opened) {
-          return (
-            <Accordion.Item
-              value={String(index)}
-              key={group.label}
-              style={{ border: "none" }}
-            >
-              <Accordion.Control
-                styles={{
-                  control: {
-                    color: "var(--mantine-color-text)",
-                    height: ITEM_HEIGHT,
-                    padding: 0,
-                    backgroundColor: "transparent",
-                  },
-                  chevron: {
-                    marginRight: 15,
-                  },
-                }}
-              >
-                <NavItemHeader
-                  icon={Icon}
-                  label={group.label}
-                  showLabel
-                  isActive={isActive}
-                  height={ITEM_HEIGHT}
-                  iconSize={ICON_SIZE}
-                  paddingLeft={CONTENT_PADDING_LEFT}
-                />
-              </Accordion.Control>
-
-              <Accordion.Panel>
-                {group.items.map((item) => (
-                  <NavLink
-                    label={item.title}
-                    component={Link}
-                    key={item.link}
-                    to={item.link}
-                    variant="subtle"
-                    active={location.pathname === item.link}
-                    styles={{
-                      root: { whiteSpace: "nowrap", overflow: "hidden" },
-                      label: { whiteSpace: "nowrap" },
-                    }}
-                  />
-                ))}
-              </Accordion.Panel>
-            </Accordion.Item>
-          );
-        }
 
         return (
-          <Menu
-            key={group.label}
-            trigger="hover"
-            position="right-start"
-            withArrow
-            offset={10}
+          <Accordion.Item
+            value={String(index)}
+            key={`${index}-${group.label}`}
+            style={{ border: "none" }}
           >
-            <Menu.Target>
-              <Box>
-                <NavItemHeader
-                  icon={Icon}
-                  label={group.label}
-                  showLabel={false}
-                  isActive={isActive}
-                  height={ITEM_HEIGHT}
-                  iconSize={ICON_SIZE}
-                  paddingLeft={CONTENT_PADDING_LEFT}
-                />
-              </Box>
-            </Menu.Target>
+            <Accordion.Control
+              styles={{
+                control: {
+                  color: "var(--mantine-color-text)",
+                  height: ITEM_HEIGHT,
+                  padding: 0,
+                  backgroundColor: "transparent",
+                },
+                chevron: { marginRight: 15 },
+              }}
+            >
+              <NavItemHeader
+                icon={Icon}
+                label={group.label}
+                showLabel
+                isActive={group.items.some((item) =>
+                  isActive(item.link, pathname),
+                )}
+                height={ITEM_HEIGHT}
+                iconSize={ICON_SIZE}
+                paddingLeft={CONTENT_PADDING_LEFT}
+              />
+            </Accordion.Control>
 
-            <Menu.Dropdown>
-              <Menu.Label>{group.label}</Menu.Label>
+            <Accordion.Panel>
               {group.items.map((item) => (
-                <Link
-                  to={item.link}
+                <NavLink
+                  label={item.title}
+                  component={Link}
                   key={item.link}
-                  style={{ textDecoration: "none" }}
-                >
-                  <Menu.Item>{item.title}</Menu.Item>
-                </Link>
+                  to={item.link}
+                  variant="subtle"
+                  active={isActive(item.link, pathname)}
+                  styles={{
+                    root: { whiteSpace: "nowrap", overflow: "hidden" },
+                    label: { whiteSpace: "nowrap" },
+                  }}
+                />
               ))}
-            </Menu.Dropdown>
-          </Menu>
+            </Accordion.Panel>
+          </Accordion.Item>
         );
       })}
     </Accordion>

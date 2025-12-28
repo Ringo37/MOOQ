@@ -46,9 +46,9 @@ const GoogleSlide = ({
   };
 
   return (
-    <div {...attributes} className="relative my-4" contentEditable={false}>
+    <div {...attributes} className="my-4" contentEditable={false}>
       {!src ? (
-        <div className="rounded-lg border bg-muted p-4">
+        <div className="rounded-lg border p-4">
           {!editor.readOnly && (
             <div className="flex items-center gap-2">
               <input
@@ -73,7 +73,7 @@ const GoogleSlide = ({
             src={embedUrl}
             title="Google Slide"
             allowFullScreen
-            className="absolute inset-0 h-full w-full"
+            className="absolute w-full h-full border-0"
           />
         </div>
       )}

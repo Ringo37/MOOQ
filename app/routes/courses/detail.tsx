@@ -9,6 +9,7 @@ import {
   Overlay,
 } from "@mantine/core";
 import type { YooptaContentValue } from "@yoopta/editor";
+import { redirect } from "react-router";
 
 import { Render } from "~/components/editor/render";
 import type { NavGroup } from "~/components/navItems";
@@ -20,11 +21,11 @@ import type { Route } from "../courses/+types/detail";
 
 export async function loader({ request, params }: Route.LoaderArgs) {
   const userId = await requireUserId(request);
-  const courseSlug = params.slug;
+  const courseSlug = params.courseSlug;
   const course = await getCourseBySlugForUser(courseSlug, userId);
 
   if (!course) {
-    return new Response(null, { status: 404 });
+    return redirect("/courses");
   }
 
   const sidebarData: NavGroup[] = course.sections.map((section) => ({

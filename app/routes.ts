@@ -13,7 +13,16 @@ export default [
   layout("routes/layout.tsx", [
     ...prefix("courses", [
       index("routes/courses/index.tsx"),
-      route(":slug", "routes/courses/detail.tsx"),
+      route(":courseSlug", "routes/courses/detail.tsx"),
+      route(":courseSlug/:sectionSlug", "routes/courses/section/index.ts"),
+      route(
+        ":courseSlug/:sectionSlug/:lectureSlug",
+        "routes/courses/section/lecture/index.ts",
+      ),
+      route(
+        ":courseSlug/:sectionSlug/:lectureSlug/:pageSlug",
+        "routes/courses/section/lecture/page/index.ts",
+      ),
     ]),
     ...prefix("admin", [
       layout("routes/admin/layout.tsx", [
