@@ -21,7 +21,7 @@ export default [
       ),
       route(
         ":courseSlug/:sectionSlug/:lectureSlug/:pageSlug",
-        "routes/courses/section/lecture/page/index.ts",
+        "routes/courses/section/lecture/page/index.tsx",
       ),
     ]),
     ...prefix("admin", [

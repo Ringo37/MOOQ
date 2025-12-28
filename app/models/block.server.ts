@@ -7,6 +7,22 @@ export type SubmittedBlock = {
   content: string | null;
 };
 
+export async function getBlockById(id: string) {
+  return prisma.block.findUnique({
+    where: { id },
+    include: { problem: true },
+  });
+}
+
+export async function updateBlock(id: string, content: string | null) {
+  return prisma.block.update({
+    where: { id },
+    data: {
+      content,
+    },
+  });
+}
+
 export async function savePageBlocks(
   pageId: string,
   submittedBlocks: SubmittedBlock[],

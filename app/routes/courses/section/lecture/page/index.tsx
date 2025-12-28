@@ -1,5 +1,8 @@
+import { Center, Container, Pagination, Title } from "@mantine/core";
+import type { YooptaContentValue } from "@yoopta/editor";
 import { redirect } from "react-router";
 
+import { Render } from "~/components/editor/render";
 import type { NavGroup } from "~/components/navItems";
 import { getCourseBySlugForUser } from "~/models/course.server";
 import { getLectureBySlugForUser } from "~/models/lecture.server";
@@ -29,6 +32,9 @@ export async function loader({ request, params }: Route.LoaderArgs) {
     return redirect(`/courses/${courseSlug}`);
   }
   const page = await getPageBySlugForUser(pageSlug, lecture.id);
+  if (!page) {
+    return redirect(`/courses/${courseSlug}`);
+  }
 
   const sidebarData: NavGroup[] = course.sections.map((section) => ({
     icon: "book",
@@ -38,9 +44,27 @@ export async function loader({ request, params }: Route.LoaderArgs) {
       link: `/courses/${course.slug}/${section.slug}/${lecture.slug}`,
     })),
   }));
-  return { page, sidebarData };
+  return { page, sidebarData, lecture };
 }
 
-export default function PageIndex() {
-  return;
+export default function PageIndex({ loaderData }: Route.ComponentProps) {
+  const { page, lecture } = loaderData;
+  return (
+    <Container size={"full"}>
+      <Title order={3}>{lecture.name}</Title>
+      <Center>
+        <Pagination total={10} />
+      </Center>
+      <Title>{page.name}</Title>
+      {page.blocks.map(
+        (block) =>
+          block.type === "CONTENT" && (
+            <Render
+              key={block.id}
+              content={JSON.parse(block.content || "{}") as YooptaContentValue}
+            />
+          ),
+      )}
+    </Container>
+  );
 }

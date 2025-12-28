@@ -124,7 +124,7 @@ export default function CourseDetail({ loaderData }: Route.ComponentProps) {
 
       {course.description && (
         <Render
-          content={JSON.parse(course.description ?? "") as YooptaContentValue}
+          content={JSON.parse(course.description ?? "{}") as YooptaContentValue}
         />
       )}
     </Container>

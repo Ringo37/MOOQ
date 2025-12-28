@@ -244,7 +244,9 @@ export default function CoursesAdminEditInfo({
             <Text size="sm">説明</Text>
             <Editor
               initialContent={
-                JSON.parse(course.description ?? "") as YooptaContentValue
+                course.description
+                  ? (JSON.parse(course.description) as YooptaContentValue)
+                  : undefined
               }
               name="description"
             />
