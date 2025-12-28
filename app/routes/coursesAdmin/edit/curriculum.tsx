@@ -103,7 +103,11 @@ export async function action({ request, params }: Route.ActionArgs) {
     return data({ error: e }, { status: 400 });
   }
 
-  await upsertSectionTree(sections, course.id);
+  try {
+    await upsertSectionTree(sections, course.id);
+  } catch (e) {
+    return data({ error: e }, { status: 500 });
+  }
 
   return data({ success: true });
 }
