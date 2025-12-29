@@ -8,7 +8,7 @@ import { getBlockById, updateBlock } from "~/models/block.server";
 import { canEditCourseBySlug } from "~/models/course.server";
 import { requireUserId } from "~/services/auth.server";
 
-import type { Route } from "./+types";
+import type { Route } from "./+types/block";
 
 export async function loader({ request, params }: Route.LoaderArgs) {
   const userId = await requireUserId(request);

@@ -42,11 +42,11 @@ export default [
         ]),
         route(
           ":courseSlug/:sectionSlug/:lectureSlug/:pageSlug",
-          "routes/coursesAdmin/page/index.tsx",
+          "routes/coursesAdmin/page.tsx",
         ),
         route(
           ":courseSlug/:sectionSlug/:lectureSlug/:pageSlug/:blockId",
-          "routes/coursesAdmin/page/block/index.tsx",
+          "routes/coursesAdmin/block.tsx",
         ),
       ]),
     ]),
