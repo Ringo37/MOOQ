@@ -9,6 +9,7 @@ import {
 import type { YooptaContentValue } from "@yoopta/editor";
 import { Link, redirect } from "react-router";
 
+import { ProblemRender } from "~/components/editor/problemRender";
 import { Render } from "~/components/editor/render";
 import type { NavGroup } from "~/components/navItems";
 import { PaginationLink } from "~/components/paginationLink";
@@ -111,15 +112,43 @@ export default function PageIndex({
         </Pagination.Root>
       </Center>
       <Title>{page.name}</Title>
-      {page.blocks.map(
-        (block) =>
-          block.type === "CONTENT" && (
+      {page.blocks.map((block) => {
+        // CONTENT ブロック
+        if (block.type === "CONTENT") {
+          return (
             <Render
               key={block.id}
               content={JSON.parse(block.content || "{}") as YooptaContentValue}
             />
-          ),
-      )}
+          );
+        }
+        if (block.type === "PROBLEM") {
+          return (
+            <div key={block.id}>
+              {block.problem ? (
+                <ProblemRender
+                  content={
+                    JSON.parse(
+                      block.problem.content || "{}",
+                    ) as YooptaContentValue
+                  }
+                  disabled={
+                    block.problem.status === "CLOSED" ||
+                    block.problem.status === "GRADED"
+                  }
+                />
+              ) : (
+                <Render
+                  content={
+                    JSON.parse(block.content || "{}") as YooptaContentValue
+                  }
+                />
+              )}
+            </div>
+          );
+        }
+        return null;
+      })}
     </Container>
   );
 }

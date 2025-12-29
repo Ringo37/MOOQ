@@ -1,4 +1,4 @@
-import type { BlockType, Prisma } from "generated/prisma/client";
+import type { BlockType, Prisma, ProblemStatus } from "generated/prisma/client";
 import { prisma } from "~/lib/prisma.server";
 
 export type SubmittedBlock = {
@@ -14,11 +14,34 @@ export async function getBlockById(id: string) {
   });
 }
 
-export async function updateBlock(id: string, content: string | null) {
+export async function updateBlock(
+  id: string,
+  content: string | null,
+  problemName?: string | null,
+  problemContent?: string | null,
+  problemStatus?: ProblemStatus,
+) {
   return prisma.block.update({
     where: { id },
     data: {
       content,
+      problem:
+        problemContent && problemName
+          ? {
+              upsert: {
+                update: {
+                  name: problemName,
+                  content: problemContent,
+                  status: problemStatus,
+                },
+                create: {
+                  name: problemName,
+                  content: problemContent,
+                  status: problemStatus,
+                },
+              },
+            }
+          : undefined,
     },
   });
 }

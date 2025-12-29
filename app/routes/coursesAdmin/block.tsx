@@ -1,7 +1,17 @@
-import { Button, Container, Divider, Group, Text, Title } from "@mantine/core";
+import {
+  Button,
+  Container,
+  Divider,
+  Group,
+  SegmentedControl,
+  Text,
+  TextInput,
+  Title,
+} from "@mantine/core";
 import type { YooptaContentValue } from "@yoopta/editor";
 import { Form, Link } from "react-router";
 
+import type { ProblemStatus } from "generated/prisma/enums";
 import { Editor } from "~/components/editor/editor";
 import { ProblemEditor } from "~/components/editor/problemEditor";
 import { getBlockById, updateBlock } from "~/models/block.server";
@@ -35,7 +45,11 @@ export async function action({ request, params }: Route.ActionArgs) {
   }
   const formData = await request.formData();
   const content = formData.get("content") as string;
-  await updateBlock(blockId, content);
+  const problem = formData.get("problem") as string;
+  const problemName = formData.get("problemName") as string;
+  const problemStatus = formData.get("status") as ProblemStatus;
+
+  await updateBlock(blockId, content, problemName, problem, problemStatus);
   return { success: true };
 }
 
@@ -45,28 +59,51 @@ export default function CorsesAdminBlockIndex({
 }: Route.ComponentProps) {
   const { block } = loaderData;
   const isProblem = block.type === "PROBLEM";
+
   return (
     <Container size="full" py="md">
-      <Group justify="space-between" mb="lg">
-        <Group>
-          <Title order={2}>{isProblem ? "問題" : "コンテンツ"}編集</Title>
-          <Text size="xs" c="dimmed">
-            ID: {block.id}
-          </Text>
-        </Group>
-        <Group>
-          <Button form="block-form" type="submit">
-            保存
-          </Button>
-          <Link
-            to={`/courses-admin/${params.courseSlug}/${params.sectionSlug}/${params.lectureSlug}/${params.pageSlug}`}
-          >
-            <Button color="green">ページ編集</Button>
-          </Link>
-        </Group>
-      </Group>
-      <Divider mb="md" />
       <Form method="post" id="block-form">
+        <Group justify="space-between" mb="lg">
+          <Group>
+            <Title order={2}>{isProblem ? "問題" : "コンテンツ"}編集</Title>
+            {isProblem && (
+              <>
+                {" "}
+                <TextInput
+                  name="problemName"
+                  placeholder="問題名"
+                  defaultValue={block.problem?.name}
+                  required
+                />
+                <SegmentedControl
+                  defaultValue={block.problem?.status}
+                  data={[
+                    { label: "オープン", value: "OPEN" },
+                    { label: "クローズ", value: "CLOSED" },
+                    { label: "採点済み", value: "GRADED" },
+                    { label: "非公開", value: "HIDDEN" },
+                  ]}
+                  name="status"
+                />
+              </>
+            )}
+            <Text size="xs" c="dimmed">
+              ID: {block.id}
+            </Text>
+          </Group>
+          <Group>
+            <Button form="block-form" type="submit">
+              保存
+            </Button>
+            <Link
+              to={`/courses-admin/${params.courseSlug}/${params.sectionSlug}/${params.lectureSlug}/${params.pageSlug}`}
+            >
+              <Button color="green">ページ編集</Button>
+            </Link>
+          </Group>
+        </Group>
+        <Divider mb="md" />
+
         {isProblem && <Title order={3}>カバー</Title>}
         <Editor
           initialContent={
@@ -79,7 +116,14 @@ export default function CorsesAdminBlockIndex({
         {isProblem && (
           <>
             <Title order={3}>問題</Title>
-            <ProblemEditor name="problem"></ProblemEditor>
+            <ProblemEditor
+              initialContent={
+                block.problem?.content
+                  ? (JSON.parse(block.problem.content) as YooptaContentValue)
+                  : undefined
+              }
+              name="problem"
+            ></ProblemEditor>
           </>
         )}
       </Form>

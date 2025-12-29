@@ -20,7 +20,18 @@ export async function getPageBySlugForUser(slug: string, lectureId: string) {
   return prisma.page.findUnique({
     where: { lectureId_slug: { lectureId, slug }, isOpen: true },
     include: {
-      blocks: { orderBy: { order: "asc" }, include: { problem: true } },
+      blocks: {
+        orderBy: { order: "asc" },
+        include: {
+          problem: {
+            where: {
+              status: {
+                not: "HIDDEN",
+              },
+            },
+          },
+        },
+      },
     },
   });
 }
