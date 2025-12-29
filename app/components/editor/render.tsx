@@ -20,7 +20,7 @@ export function Render({ content }: EditorProps) {
         plugins={plugins as any} // eslint-disable-line
         value={content}
         autoFocus
-        className="w-full!"
+        className="w-full! py-3!"
         readOnly
       />
     </div>

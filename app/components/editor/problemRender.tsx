@@ -21,7 +21,7 @@ export function ProblemRender({ content, disabled }: EditorProps) {
   const editor = useMemo(() => createYooptaEditor(), []);
 
   return (
-    <Paper shadow="xs" p="md">
+    <Paper shadow="xs" p="md" withBorder>
       <fieldset disabled={disabled}>
         <YooptaEditor
           editor={editor}
