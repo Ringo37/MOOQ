@@ -1,7 +1,7 @@
 import { Accordion, Menu, Box, Text, NavLink } from "@mantine/core";
 import {
   Bookmark,
-  BookOpen,
+  BookText,
   Home,
   Settings,
   User,
@@ -14,7 +14,7 @@ export const IconMap = {
   home: Home,
   settings: Settings,
   user: User,
-  book: BookOpen,
+  book: BookText,
   bookmark: Bookmark,
   link: LinkIcon,
   page: FileText,

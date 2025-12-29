@@ -3,6 +3,7 @@ import type { YooptaContentValue } from "@yoopta/editor";
 import { Form, Link } from "react-router";
 
 import { Editor } from "~/components/editor/editor";
+import { ProblemEditor } from "~/components/editor/problemEditor";
 import { getBlockById, updateBlock } from "~/models/block.server";
 import { canEditCourseBySlug } from "~/models/course.server";
 import { requireUserId } from "~/services/auth.server";
@@ -75,7 +76,12 @@ export default function CorsesAdminBlockIndex({
           }
           name="content"
         />
-        {isProblem && <Title order={3}>問題</Title>}
+        {isProblem && (
+          <>
+            <Title order={3}>問題</Title>
+            <ProblemEditor name="problem"></ProblemEditor>
+          </>
+        )}
       </Form>
     </Container>
   );

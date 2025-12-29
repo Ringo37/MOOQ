@@ -1,20 +1,12 @@
-import { Button } from "@mantine/core";
+import { Button, Group, TextInput } from "@mantine/core";
 import {
   YooptaPlugin,
   type PluginElementRenderProps,
-  type SlateElement,
   useYooptaEditor,
   Elements,
 } from "@yoopta/editor";
-import { Monitor } from "lucide-react";
+import { CheckCircle2, Monitor } from "lucide-react";
 import { useState } from "react";
-
-export type GoogleSlideElement = SlateElement<
-  "google-slide",
-  {
-    src?: string;
-  }
->;
 
 function toEmbedUrl(src: string) {
   if (src.includes("pubembed")) return src;
@@ -46,24 +38,23 @@ const GoogleSlide = ({
   };
 
   return (
-    <div {...attributes} className="my-4" contentEditable={false}>
-      {!src ? (
-        <div className="rounded-lg border p-4">
-          {!editor.readOnly && (
-            <div className="flex items-center gap-2">
-              <input
-                className="flex-1 rounded border px-3 py-2 text-sm"
-                placeholder="Google Slides のURLを入力してください"
-                value={inputUrl}
-                onChange={(e) => setInputUrl(e.target.value)}
-              />
-
-              <Button onClick={onEmbed} disabled={!inputUrl}>
-                埋め込む
-              </Button>
-            </div>
-          )}
-        </div>
+    <div {...attributes} contentEditable={false}>
+      {!src && !editor.readOnly ? (
+        <Group align="center" gap="sm">
+          <TextInput
+            className="flex-1 py-2"
+            placeholder="Google Slides のURLを入力してください"
+            value={inputUrl}
+            onChange={(e) => setInputUrl(e.target.value)}
+          />
+          <Button
+            onClick={onEmbed}
+            disabled={!inputUrl}
+            leftSection={<CheckCircle2 size={16} />}
+          >
+            確定
+          </Button>
+        </Group>
       ) : (
         <div
           className="relative w-full bg-gray-200"

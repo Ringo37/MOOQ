@@ -11,7 +11,7 @@
     "prepare": "husky",
     "lint": "eslint --fix",
     "test": "vitest run",
-    "check": "npm run typecheck && npm run lint && npm run test && npm run format"
+    "check": "pnpm run typecheck && pnpm run lint && pnpm run test && pnpm run format"
   },
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown"
