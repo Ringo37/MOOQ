@@ -6,11 +6,11 @@ import { useMemo } from "react";
 
 import { plugins } from "./config";
 
-interface EditorProps {
+interface RenderProps {
   content: YooptaContentValue;
 }
 
-export function Render({ content }: EditorProps) {
+export function Render({ content }: RenderProps) {
   const editor = useMemo(() => createYooptaEditor(), []);
 
   return (

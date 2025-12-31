@@ -1,5 +1,11 @@
 import { prisma } from "~/lib/prisma.server";
 
+export async function getAnswerField(problemId: string, name: string) {
+  return prisma.answerField.findUnique({
+    where: { problemId_name: { problemId, name } },
+  });
+}
+
 export async function upsertAnswerField(problemId: string, name: string) {
   return prisma.answerField.upsert({
     where: {

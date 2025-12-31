@@ -15,6 +15,7 @@ import {
 } from "@yoopta/editor";
 import { FileUp, CheckCircle2 } from "lucide-react";
 import { useState } from "react";
+import { Link } from "react-router";
 
 const ProblemFileInput = ({
   element,
@@ -39,6 +40,9 @@ const ProblemFileInput = ({
       },
     });
   };
+
+  const fileName = element.props?.fileName ?? "";
+  const fileUrl = element.props?.fileUrl ?? "";
 
   return (
     <div {...attributes}>
@@ -83,13 +87,18 @@ const ProblemFileInput = ({
           <FileInput
             name={name}
             accept={accept}
-            placeholder="ファイルを選択"
+            placeholder="ファイルをアップロード"
             leftSection={<FileUp size={18} strokeWidth={1.5} />}
             radius="md"
             size="md"
             className="problem-file-input"
             style={{ pointerEvents: editor.readOnly ? "auto" : "none" }}
           />
+          {fileUrl && (
+            <Link to={fileUrl} target="_blank">
+              {fileName}
+            </Link>
+          )}
         </Box>
       )}
       {children}
@@ -106,6 +115,8 @@ const ProblemFileInputPlugin = new YooptaPlugin({
       props: {
         name: "",
         accept: "",
+        fileUrl: "",
+        fileName: "",
         nodeType: "void",
       },
     },

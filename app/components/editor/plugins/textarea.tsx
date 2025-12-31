@@ -40,6 +40,8 @@ const ProblemTextarea = ({
     });
   };
 
+  const value = element.props?.value ?? "";
+
   return (
     <div {...attributes} contentEditable={false}>
       {!name && !editor.readOnly ? (
@@ -81,12 +83,14 @@ const ProblemTextarea = ({
           )}
           <Textarea
             name={name}
+            defaultValue={value}
             placeholder="ここに回答を入力してください"
             radius="md"
             size="md"
             autosize
             minRows={rows || 5}
             className="problem-input"
+            style={{ pointerEvents: editor.readOnly ? "auto" : "none" }}
           />
         </Box>
       )}
@@ -104,6 +108,7 @@ const ProblemTextareaPlugin = new YooptaPlugin({
       props: {
         name: "",
         rows: 5,
+        value: "",
         nodeType: "void",
       },
     },

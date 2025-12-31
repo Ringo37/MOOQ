@@ -1,5 +1,7 @@
 import type { YooptaContentValue } from "@yoopta/editor";
 
+import type { AnswerWithAnswerField } from "~/models/answer.server";
+
 export function extractAnswerFieldNames(content: YooptaContentValue): string[] {
   const names = new Set<string>();
 
@@ -40,4 +42,46 @@ export function validateAnswerFieldNames(content: YooptaContentValue): void {
       }
     }
   }
+}
+
+export function injectAnswer(
+  content: YooptaContentValue,
+  answers: AnswerWithAnswerField[],
+): YooptaContentValue {
+  const answerMap = new Map<string, AnswerWithAnswerField>();
+
+  for (const a of answers) {
+    if (answerMap.has(a.answerField.name)) {
+      throw new Error(`Duplicate answerFieldId found: ${a.answerField.name}`);
+    }
+    answerMap.set(a.answerField.name, a);
+  }
+
+  Object.values(content).forEach((block) => {
+    block.value?.forEach((node) => {
+      if (
+        typeof node === "object" &&
+        node !== null &&
+        "type" in node &&
+        typeof node.type === "string" &&
+        node.type.startsWith("problem-")
+      ) {
+        const props = (node as any).props; // eslint-disable-line
+        const name = props?.name;
+        if (!name) return;
+        const answer = answerMap.get(name);
+        if (!answer) return;
+        if (node.type === "problem-file-input") {
+          props.fileName = answer.file?.name;
+          props.fileUrl = answer.file?.url;
+        } else if (node.type === "problem-checkbox") {
+          props.value = Array.from(answer.answer?.split(",") ?? []);
+        } else {
+          props.value = answer.answer;
+        }
+      }
+    });
+  });
+
+  return content;
 }

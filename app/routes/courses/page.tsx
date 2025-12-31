@@ -13,6 +13,7 @@ import { ProblemRender } from "~/components/editor/problemRender";
 import { Render } from "~/components/editor/render";
 import type { NavGroup } from "~/components/navItems";
 import { PaginationLink } from "~/components/paginationLink";
+import { getAnswersByProblemIds } from "~/models/answer.server";
 import { getCourseBySlugForUser } from "~/models/course.server";
 import { getLectureBySlugForUser } from "~/models/lecture.server";
 import { getPageBySlugForUser } from "~/models/page.server";
@@ -45,6 +46,11 @@ export async function loader({ request, params }: Route.LoaderArgs) {
     return redirect(`/courses/${courseSlug}`);
   }
 
+  const problemIds = page.blocks
+    .filter((b) => b.type === "PROBLEM" && b.problemId)
+    .map((b) => b.problemId!);
+  const answers = await getAnswersByProblemIds(problemIds, userId);
+
   const sidebarData: NavGroup[] = course.sections.map((section) => ({
     icon: "book",
     label: section.name,
@@ -53,14 +59,14 @@ export async function loader({ request, params }: Route.LoaderArgs) {
       link: `/courses/${course.slug}/${section.slug}/${lecture.slug}`,
     })),
   }));
-  return { page, sidebarData, lecture };
+  return { page, sidebarData, lecture, answers };
 }
 
 export default function PageIndex({
   loaderData,
   params,
 }: Route.ComponentProps) {
-  const { page, lecture } = loaderData;
+  const { page, lecture, answers } = loaderData;
 
   const getPageLink = (order: number) => {
     const targetPage = lecture.pages.find((p) => p.order === order);
@@ -127,20 +133,13 @@ export default function PageIndex({
           return (
             <div key={block.id}>
               <ProblemRender
-                content={
-                  block.problem?.content
-                    ? (JSON.parse(block.problem.content) as YooptaContentValue)
-                    : null
-                }
+                problem={block.problem}
                 cover={
                   block.content
                     ? (JSON.parse(block.content) as YooptaContentValue)
                     : null
                 }
-                disabled={
-                  block.problem?.status === "CLOSED" ||
-                  block.problem?.status === "GRADED"
-                }
+                answers={answers}
               />
             </div>
           );

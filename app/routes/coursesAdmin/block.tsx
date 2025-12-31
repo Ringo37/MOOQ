@@ -112,7 +112,6 @@ export default function CorsesAdminBlockIndex({
                   name="problemName"
                   placeholder="問題名"
                   defaultValue={block.problem?.name}
-                  required
                 />
                 <SegmentedControl
                   defaultValue={block.problem?.status}

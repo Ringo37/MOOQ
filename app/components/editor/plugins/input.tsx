@@ -30,6 +30,8 @@ const ProblemInput = ({
     });
   };
 
+  const value = element.props?.value ?? "";
+
   return (
     <div {...attributes}>
       {!name && !editor.readOnly ? (
@@ -61,10 +63,12 @@ const ProblemInput = ({
           )}
           <TextInput
             name={name}
+            value={value}
             placeholder="回答を入力してください"
             radius="md"
             size="md"
             className="problem-input"
+            style={{ pointerEvents: editor.readOnly ? "auto" : "none" }}
           />
         </Box>
       )}
@@ -81,6 +85,7 @@ const ProblemInputPlugin = new YooptaPlugin({
       asRoot: true,
       props: {
         name: "",
+        value: "",
         nodeType: "void",
       },
     },

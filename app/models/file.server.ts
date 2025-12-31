@@ -1,19 +1,34 @@
 import { prisma } from "~/lib/prisma.server";
 import { ensureBucket, uploadObject } from "~/services/storage.server";
 
-export async function uploadFile(file: File, bucket: string, key: string) {
+export async function uploadFile(
+  file: File,
+  bucket: string,
+  key: string,
+  url: string,
+) {
   const buffer = Buffer.from(await file.arrayBuffer());
   const mimeType = file.type || "application/octet-stream";
 
   await ensureBucket(bucket);
   await uploadObject(bucket, key, buffer, mimeType);
 
-  return await prisma.file.create({
-    data: {
+  return await prisma.file.upsert({
+    where: {
+      key,
+    },
+    update: {
       name: file.name,
-      key: key,
       bucket,
       mimeType,
+      url,
+    },
+    create: {
+      name: file.name,
+      key,
+      bucket,
+      mimeType,
+      url,
     },
   });
 }

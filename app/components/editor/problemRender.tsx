@@ -1,38 +1,64 @@
-import { Button, Paper, Text } from "@mantine/core";
+import { Button, Fieldset, Text } from "@mantine/core";
 import YooptaEditor, {
   createYooptaEditor,
   type YooptaContentValue,
 } from "@yoopta/editor";
 import { Pencil, Upload } from "lucide-react";
 import { useMemo } from "react";
+import { useFetcher } from "react-router";
+
+import type { Problem } from "generated/prisma/client";
+import type { AnswerWithAnswerField } from "~/models/answer.server";
+import { injectAnswer } from "~/utils/problem";
 
 import { problemPlugins } from "./config";
 
-interface EditorProps {
-  content: YooptaContentValue | null;
+interface RenderProps {
+  problem: Problem | null;
   cover: YooptaContentValue | null;
-  disabled?: boolean;
+  answers: AnswerWithAnswerField[] | null;
 }
 
-export function ProblemRender({ content, cover, disabled }: EditorProps) {
+export function ProblemRender({ problem, cover, answers }: RenderProps) {
   const editor = useMemo(() => createYooptaEditor(), []);
+  const fetcher = useFetcher();
 
   return (
-    <Paper shadow="xs" p="md" withBorder>
-      {content && (
-        <fieldset disabled={disabled}>
+    <Fieldset
+      disabled={problem?.status === "CLOSED" || problem?.status === "GRADED"}
+      legend={problem?.name ?? ""}
+      variant="filled"
+    >
+      {problem && (
+        <fetcher.Form
+          method="post"
+          action={`/api/problem/${problem.id}`}
+          encType="multipart/form-data"
+        >
           <YooptaEditor
             editor={editor}
             plugins={problemPlugins as any} // eslint-disable-line
-            value={content}
+            value={
+              problem?.content
+                ? injectAnswer(
+                    JSON.parse(problem.content) as YooptaContentValue,
+                    answers ?? [],
+                  )
+                : undefined
+            }
             autoFocus
             className="w-full! pb-2!"
             readOnly
           />
-          <Button leftSection={<Upload size={14} color="white" />}>提出</Button>
-        </fieldset>
+          <Button
+            leftSection={<Upload size={14} color="white" />}
+            type="submit"
+          >
+            提出
+          </Button>
+        </fetcher.Form>
       )}
-      {cover && !content && (
+      {cover && !problem && (
         <div>
           <YooptaEditor
             editor={editor}
@@ -51,6 +77,6 @@ export function ProblemRender({ content, cover, disabled }: EditorProps) {
           </Button>
         </div>
       )}
-    </Paper>
+    </Fieldset>
   );
 }

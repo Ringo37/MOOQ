@@ -26,11 +26,11 @@ const ProblemCheckbox = ({
   const editor = useYooptaEditor();
   const { name, options = [] } = element.props || {};
 
-  // 編集用の一時状態
   const [tempName, setTempName] = useState(name || "");
   const [tempOptions, setTempOptions] = useState<string[]>(
     options.length > 0 ? options : [""],
   );
+  const [value, setValue] = useState<string[]>(element.props.value);
 
   const addOption = () => setTempOptions([...tempOptions, ""]);
 
@@ -124,7 +124,7 @@ const ProblemCheckbox = ({
               [Checkbox: {name}]
             </Text>
           )}
-          <Checkbox.Group label={null}>
+          <Checkbox.Group label={null} value={value} onChange={setValue}>
             <Stack gap="xs">
               {options.map((option: string, index: number) => (
                 <Checkbox
@@ -132,10 +132,12 @@ const ProblemCheckbox = ({
                   value={option}
                   label={option}
                   className="problem-input"
+                  style={{ pointerEvents: editor.readOnly ? "auto" : "none" }}
                 />
               ))}
             </Stack>
           </Checkbox.Group>
+          <input hidden name={name} value={value} readOnly />
         </Box>
       )}
       {children}
@@ -152,6 +154,7 @@ const ProblemCheckboxPlugin = new YooptaPlugin({
       props: {
         name: "",
         options: [],
+        value: [],
         nodeType: "void",
       },
     },

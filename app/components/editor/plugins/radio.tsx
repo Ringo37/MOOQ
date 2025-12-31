@@ -59,6 +59,8 @@ const ProblemRadio = ({
     });
   };
 
+  const value = element.props?.value ?? "";
+
   return (
     <div {...attributes}>
       {!name && !editor.readOnly ? (
@@ -123,7 +125,7 @@ const ProblemRadio = ({
               [Radio: {name}]
             </Text>
           )}
-          <Radio.Group name={name} label={null}>
+          <Radio.Group name={name} label={null} defaultValue={value}>
             <Stack gap="xs">
               {options.map((option: string, index: number) => (
                 <Radio
@@ -131,6 +133,7 @@ const ProblemRadio = ({
                   value={option}
                   label={option}
                   className="problem-input"
+                  style={{ pointerEvents: editor.readOnly ? "auto" : "none" }}
                 />
               ))}
             </Stack>
@@ -151,6 +154,7 @@ const ProblemRadioPlugin = new YooptaPlugin({
       props: {
         name: "",
         options: [],
+        value: "",
         nodeType: "void",
       },
     },
