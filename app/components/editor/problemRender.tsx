@@ -4,8 +4,8 @@ import YooptaEditor, {
   type YooptaContentValue,
 } from "@yoopta/editor";
 import { Pencil, Upload } from "lucide-react";
-import { useMemo } from "react";
-import { useFetcher } from "react-router";
+import { useEffect, useMemo } from "react";
+import { useFetcher, useRevalidator } from "react-router";
 
 import type { Problem } from "generated/prisma/client";
 import type { AnswerWithAnswerField } from "~/models/answer.server";
@@ -22,6 +22,24 @@ interface RenderProps {
 export function ProblemRender({ problem, cover, answers }: RenderProps) {
   const editor = useMemo(() => createYooptaEditor(), []);
   const fetcher = useFetcher();
+  const revalidator = useRevalidator();
+
+  useEffect(() => {
+    if (!problem) return;
+    const evtSource = new EventSource(`/api/problem/${problem.id}/status`);
+    evtSource.onmessage = (event) => {
+      try {
+        if (event.data) {
+          revalidator.revalidate();
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    return () => {
+      evtSource.close();
+    };
+  }, [problem]);
 
   return (
     <Fieldset
@@ -72,6 +90,8 @@ export function ProblemRender({ problem, cover, answers }: RenderProps) {
           <Button
             leftSection={<Pencil size={14} color="white" />}
             color="green"
+            onClick={() => revalidator.revalidate()}
+            loading={revalidator.state === "loading"}
           >
             問題を解く
           </Button>
