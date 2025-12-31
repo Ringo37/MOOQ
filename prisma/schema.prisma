@@ -150,14 +150,15 @@ enum ProblemStatus {
 }
 
 model Problem {
-  id        String        @id @default(cuid())
-  name      String
-  type      ProblemType   @default(QUIZ)
-  status    ProblemStatus @default(HIDDEN)
-  content   String?
-  maxScore  Int           @default(100)
-  startTime DateTime?
-  endTime   DateTime?
+  id           String        @id @default(cuid())
+  name         String
+  type         ProblemType   @default(QUIZ)
+  status       ProblemStatus @default(HIDDEN)
+  content      String?
+  maxScore     Int           @default(100)
+  startTime    DateTime?
+  endTime      DateTime?
+  timeLimitSec Int?
 
   blocks       Block[]
   assessments  Assessment[]

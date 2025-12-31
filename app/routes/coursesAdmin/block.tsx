@@ -8,13 +8,18 @@ import {
   TextInput,
   Title,
 } from "@mantine/core";
+import { notifications } from "@mantine/notifications";
 import type { YooptaContentValue } from "@yoopta/editor";
-import { Form, Link } from "react-router";
+import { useEffect } from "react";
+import { Link, useFetcher } from "react-router";
 
 import type { ProblemStatus } from "generated/prisma/enums";
 import { Editor } from "~/components/editor/editor";
 import { ProblemEditor } from "~/components/editor/problemEditor";
-import { getBlockById, updateBlock } from "~/models/block.server";
+import {
+  getBlockById,
+  updateBlockWithProblemAndAnswers,
+} from "~/models/block.server";
 import { canEditCourseBySlug } from "~/models/course.server";
 import { requireUserId } from "~/services/auth.server";
 
@@ -49,8 +54,21 @@ export async function action({ request, params }: Route.ActionArgs) {
   const problemName = formData.get("problemName") as string;
   const problemStatus = formData.get("status") as ProblemStatus;
 
-  await updateBlock(blockId, content, problemName, problem, problemStatus);
-  return { success: true };
+  try {
+    await updateBlockWithProblemAndAnswers(
+      blockId,
+      content,
+      problemName,
+      problem,
+      problemStatus,
+    );
+    return { success: true };
+  } catch (e) {
+    return {
+      success: false,
+      error: e instanceof Error ? e.message : "Unknown error",
+    };
+  }
 }
 
 export default function CorsesAdminBlockIndex({
@@ -58,11 +76,32 @@ export default function CorsesAdminBlockIndex({
   params,
 }: Route.ComponentProps) {
   const { block } = loaderData;
+  const fetcher = useFetcher();
   const isProblem = block.type === "PROBLEM";
+
+  useEffect(() => {
+    if (fetcher.state === "idle" && fetcher.data?.success) {
+      notifications.show({
+        title: "保存しました",
+        message: "更新が完了しました",
+        color: "green",
+        position: "top-right",
+        autoClose: 2000,
+      });
+    } else if (fetcher.state === "idle" && fetcher.data?.success === false) {
+      notifications.show({
+        title: "保存失敗",
+        message: fetcher.data?.error || "エラーが発生しました",
+        color: "red",
+        position: "top-right",
+        autoClose: 2000,
+      });
+    }
+  }, [fetcher.state, fetcher.data]);
 
   return (
     <Container size="full" py="md">
-      <Form method="post" id="block-form">
+      <fetcher.Form method="post" id="block-form">
         <Group justify="space-between" mb="lg">
           <Group>
             <Title order={2}>{isProblem ? "問題" : "コンテンツ"}編集</Title>
@@ -126,7 +165,7 @@ export default function CorsesAdminBlockIndex({
             ></ProblemEditor>
           </>
         )}
-      </Form>
+      </fetcher.Form>
     </Container>
   );
 }

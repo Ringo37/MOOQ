@@ -1,5 +1,8 @@
+import type { YooptaContentValue } from "@yoopta/editor";
+
 import type { BlockType, Prisma, ProblemStatus } from "generated/prisma/client";
 import { prisma } from "~/lib/prisma.server";
+import { extractAnswerFieldNames } from "~/utils/problem";
 
 export type SubmittedBlock = {
   id: string;
@@ -43,6 +46,70 @@ export async function updateBlock(
             }
           : undefined,
     },
+  });
+}
+
+export async function updateBlockWithProblemAndAnswers(
+  blockId: string,
+  content: string,
+  problemName: string,
+  problemContent: string,
+  problemStatus: ProblemStatus,
+) {
+  return prisma.$transaction(async (tx) => {
+    const block = await tx.block.update({
+      where: { id: blockId },
+      data: {
+        content,
+        problem: {
+          upsert: {
+            create: {
+              name: problemName,
+              content: problemContent,
+              status: problemStatus,
+            },
+            update: {
+              name: problemName,
+              content: problemContent,
+              status: problemStatus,
+            },
+          },
+        },
+      },
+      include: {
+        problem: {
+          include: { answerFields: true },
+        },
+      },
+    });
+
+    if (!block.problem) return block;
+
+    const newNames = extractAnswerFieldNames(
+      JSON.parse(problemContent) as YooptaContentValue,
+    );
+    const existing = block.problem.answerFields.map((a) => a.name);
+    const toCreate = newNames.filter((name) => !existing.includes(name));
+    const toDelete = existing.filter((name) => !newNames.includes(name));
+    if (toDelete.length > 0) {
+      await tx.answerField.deleteMany({
+        where: {
+          problemId: block.problem.id,
+          name: { in: toDelete },
+        },
+      });
+    }
+    if (toCreate.length > 0) {
+      await tx.answerField.createMany({
+        data: toCreate.map((name) => ({
+          problemId: block.problem!.id,
+          name,
+        })),
+        skipDuplicates: true,
+      });
+    }
+
+    return block;
   });
 }
 
