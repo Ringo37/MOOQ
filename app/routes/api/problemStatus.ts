@@ -12,20 +12,17 @@ export async function loader({ params }: Route.LoaderArgs) {
 
       const interval = setInterval(async () => {
         try {
-          const status = await getProblemStatus(problemId);
-
-          const statusStr = JSON.stringify(status);
-          if (statusStr !== lastStatus) {
-            lastStatus = statusStr;
-            const data = `data: ${statusStr}\n\n`;
-            controller.enqueue(encoder.encode(data));
+          const status = (await getProblemStatus(problemId)) as string;
+          if (status !== lastStatus) {
+            lastStatus = status;
+            controller.enqueue(encoder.encode(`data: ${status}\n\n`));
           }
         } catch (err) {
           console.error(err);
         }
       }, 3000);
 
-      return () => clearInterval(interval);
+      this.cancel = () => clearInterval(interval);
     },
   });
 
