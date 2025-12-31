@@ -22,7 +22,12 @@ svg {
   color: var(--mantine-color-text);
 }
 
+.problem-file-input,
 .problem-input input,
 textarea {
   border: 1px solid var(--mantine-color-default-border) !important;
+}
+
+.problem-file-input {
+  border-radius: 8px;
 }

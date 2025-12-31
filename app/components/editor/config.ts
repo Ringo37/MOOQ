@@ -26,7 +26,12 @@ import Table from "@yoopta/table";
 import Toolbar, { DefaultToolbarRender } from "@yoopta/toolbar";
 import Video from "@yoopta/video";
 
+import ProblemCheckboxPlugin from "./plugins/checkbox";
+import ProblemFileInputPlugin from "./plugins/fileInput";
 import GoogleSlidePlugin from "./plugins/googleSlide";
+import ProblemInputPlugin from "./plugins/input";
+import ProblemRadioPlugin from "./plugins/radio";
+import ProblemTextareaPlugin from "./plugins/textarea";
 
 async function uploadFile(file: File) {
   const body = new FormData();
@@ -95,6 +100,15 @@ export const plugins = [
     },
   }),
   GoogleSlidePlugin,
+];
+
+export const problemPlugins = [
+  ...plugins,
+  ProblemInputPlugin,
+  ProblemTextareaPlugin,
+  ProblemRadioPlugin,
+  ProblemCheckboxPlugin,
+  ProblemFileInputPlugin,
 ];
 
 export const tools = {

@@ -6,17 +6,13 @@ import YooptaEditor, {
 import { Pencil, Upload } from "lucide-react";
 import { useMemo } from "react";
 
-import { plugins } from "./config";
-import ProblemInputPlugin from "./plugins/input";
-import ProblemTextareaPlugin from "./plugins/textarea";
+import { problemPlugins } from "./config";
 
 interface EditorProps {
   content: YooptaContentValue | null;
   cover: YooptaContentValue | null;
   disabled?: boolean;
 }
-
-const problemPlugins = [...plugins, ProblemInputPlugin, ProblemTextareaPlugin];
 
 export function ProblemRender({ content, cover, disabled }: EditorProps) {
   const editor = useMemo(() => createYooptaEditor(), []);

@@ -4,16 +4,12 @@ import YooptaEditor, {
 } from "@yoopta/editor";
 import { useMemo, useRef, useState } from "react";
 
-import { marks, plugins, tools } from "./config";
-import ProblemInputPlugin from "./plugins/input";
-import ProblemTextareaPlugin from "./plugins/textarea";
+import { marks, problemPlugins, tools } from "./config";
 
 interface EditorProps {
   initialContent?: YooptaContentValue;
   name?: string;
 }
-
-const problemPlugins = [...plugins, ProblemInputPlugin, ProblemTextareaPlugin];
 
 export function ProblemEditor({ initialContent, name }: EditorProps) {
   const [value, setValue] = useState<YooptaContentValue>(initialContent ?? {});

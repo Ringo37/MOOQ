@@ -43,7 +43,7 @@ const ProblemTextarea = ({
   return (
     <div {...attributes} contentEditable={false}>
       {!name && !editor.readOnly ? (
-        <Group align="flex-end" gap="sm">
+        <Group align="flex-end" gap="sm" contentEditable={false}>
           <TextInput
             style={{ flex: 1 }}
             label="識別名 (name)"
