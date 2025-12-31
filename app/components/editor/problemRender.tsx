@@ -1,9 +1,9 @@
-import { Button, Paper } from "@mantine/core";
+import { Button, Paper, Text } from "@mantine/core";
 import YooptaEditor, {
   createYooptaEditor,
   type YooptaContentValue,
 } from "@yoopta/editor";
-import { Upload } from "lucide-react";
+import { Pencil, Upload } from "lucide-react";
 import { useMemo } from "react";
 
 import { plugins } from "./config";
@@ -11,28 +11,50 @@ import ProblemInputPlugin from "./plugins/input";
 import ProblemTextareaPlugin from "./plugins/textarea";
 
 interface EditorProps {
-  content: YooptaContentValue;
+  content: YooptaContentValue | null;
+  cover: YooptaContentValue | null;
   disabled?: boolean;
 }
 
 const problemPlugins = [...plugins, ProblemInputPlugin, ProblemTextareaPlugin];
 
-export function ProblemRender({ content, disabled }: EditorProps) {
+export function ProblemRender({ content, cover, disabled }: EditorProps) {
   const editor = useMemo(() => createYooptaEditor(), []);
 
   return (
     <Paper shadow="xs" p="md" withBorder>
-      <fieldset disabled={disabled}>
-        <YooptaEditor
-          editor={editor}
-          plugins={problemPlugins as any} // eslint-disable-line
-          value={content}
-          autoFocus
-          className="w-full! pb-2!"
-          readOnly
-        />
-        <Button leftSection={<Upload size={14} color="white" />}>提出</Button>
-      </fieldset>
+      {content && (
+        <fieldset disabled={disabled}>
+          <YooptaEditor
+            editor={editor}
+            plugins={problemPlugins as any} // eslint-disable-line
+            value={content}
+            autoFocus
+            className="w-full! pb-2!"
+            readOnly
+          />
+          <Button leftSection={<Upload size={14} color="white" />}>提出</Button>
+        </fieldset>
+      )}
+      {cover && !content && (
+        <div>
+          <YooptaEditor
+            editor={editor}
+            plugins={problemPlugins as any} // eslint-disable-line
+            value={cover}
+            autoFocus
+            className="w-full! pb-2!"
+            readOnly
+          />
+          <Text className="py-3!">現在この問題は非公開です</Text>
+          <Button
+            leftSection={<Pencil size={14} color="white" />}
+            color="green"
+          >
+            問題を解く
+          </Button>
+        </div>
+      )}
     </Paper>
   );
 }

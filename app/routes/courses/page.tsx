@@ -111,7 +111,7 @@ export default function PageIndex({
           </Group>
         </Pagination.Root>
       </Center>
-      <Title>{page.name}</Title>
+      <Title className="pb-3">{page.name}</Title>
       {page.blocks.map((block) => {
         // CONTENT ブロック
         if (block.type === "CONTENT") {
@@ -122,28 +122,26 @@ export default function PageIndex({
             />
           );
         }
+        // PROBLEM ブロック
         if (block.type === "PROBLEM") {
           return (
             <div key={block.id}>
-              {block.problem ? (
-                <ProblemRender
-                  content={
-                    JSON.parse(
-                      block.problem.content || "{}",
-                    ) as YooptaContentValue
-                  }
-                  disabled={
-                    block.problem.status === "CLOSED" ||
-                    block.problem.status === "GRADED"
-                  }
-                />
-              ) : (
-                <Render
-                  content={
-                    JSON.parse(block.content || "{}") as YooptaContentValue
-                  }
-                />
-              )}
+              <ProblemRender
+                content={
+                  block.problem?.content
+                    ? (JSON.parse(block.problem.content) as YooptaContentValue)
+                    : null
+                }
+                cover={
+                  block.content
+                    ? (JSON.parse(block.content) as YooptaContentValue)
+                    : null
+                }
+                disabled={
+                  block.problem?.status === "CLOSED" ||
+                  block.problem?.status === "GRADED"
+                }
+              />
             </div>
           );
         }
