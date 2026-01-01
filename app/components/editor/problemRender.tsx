@@ -1,4 +1,5 @@
 import { Button, Fieldset, Text } from "@mantine/core";
+import { notifications } from "@mantine/notifications";
 import YooptaEditor, {
   createYooptaEditor,
   type YooptaContentValue,
@@ -40,6 +41,26 @@ export function ProblemRender({ problem, cover, answers }: RenderProps) {
       evtSource.close();
     };
   }, [problem?.id]);
+
+  useEffect(() => {
+    if (fetcher.state === "idle" && fetcher.data?.success) {
+      notifications.show({
+        title: "保存しました",
+        message: "回答を保存しました",
+        color: "green",
+        position: "top-right",
+        autoClose: 2000,
+      });
+    } else if (fetcher.state === "idle" && fetcher.data?.success === false) {
+      notifications.show({
+        title: "保存失敗",
+        message: "保存に失敗しました",
+        color: "red",
+        position: "top-right",
+        autoClose: 2000,
+      });
+    }
+  }, [fetcher.state, fetcher.data]);
 
   return (
     <Fieldset

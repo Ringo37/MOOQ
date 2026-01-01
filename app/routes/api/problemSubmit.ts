@@ -1,3 +1,5 @@
+import { data } from "react-router";
+
 import { upsertAnswer } from "~/models/answer.server";
 import { getAnswerField } from "~/models/answerField.server";
 import { uploadFile } from "~/models/file.server";
@@ -13,13 +15,13 @@ export async function action({ request, params }: Route.ActionArgs) {
   const problem = await getProblemById(problemId);
   if (!problem) return null;
   if (problem.status !== "OPEN") {
-    return null;
+    return data({ success: false });
   }
 
   for (const key of formData.keys()) {
     const values = formData.getAll(key);
     const answerField = await getAnswerField(problemId, key);
-    if (!answerField) continue;
+    if (!answerField) return data({ success: false });
 
     // File
     if (values[0] instanceof File) {
@@ -51,5 +53,5 @@ export async function action({ request, params }: Route.ActionArgs) {
     await upsertAnswer(answerField.id, user.id, value);
   }
 
-  return null;
+  return data({ success: true });
 }
