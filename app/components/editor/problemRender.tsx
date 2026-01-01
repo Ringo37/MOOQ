@@ -39,7 +39,7 @@ export function ProblemRender({ problem, cover, answers }: RenderProps) {
     return () => {
       evtSource.close();
     };
-  }, [problem]);
+  }, [problem?.id]);
 
   return (
     <Fieldset
