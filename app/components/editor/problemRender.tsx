@@ -67,6 +67,7 @@ export function ProblemRender({ problem, cover, answers }: RenderProps) {
       disabled={problem?.status === "CLOSED" || problem?.status === "GRADED"}
       legend={problem?.name ?? ""}
       variant="filled"
+      className="my-3"
     >
       {problem && (
         <fetcher.Form
@@ -82,6 +83,7 @@ export function ProblemRender({ problem, cover, answers }: RenderProps) {
                 ? injectAnswer(
                     JSON.parse(problem.content) as YooptaContentValue,
                     answers ?? [],
+                    problem.id,
                   )
                 : undefined
             }

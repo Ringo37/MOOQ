@@ -47,10 +47,13 @@ export function validateAnswerFieldNames(content: YooptaContentValue): void {
 export function injectAnswer(
   content: YooptaContentValue,
   answers: AnswerWithAnswerField[],
+  problemId: string,
 ): YooptaContentValue {
   const answerMap = new Map<string, AnswerWithAnswerField>();
 
-  for (const a of answers) {
+  for (const a of answers.filter(
+    (a) => a.answerField.problemId === problemId,
+  )) {
     if (answerMap.has(a.answerField.name)) {
       throw new Error(`Duplicate answerFieldId found: ${a.answerField.name}`);
     }

@@ -114,7 +114,7 @@ export default function CorsesAdminBlockIndex({
                   defaultValue={block.problem?.name}
                 />
                 <SegmentedControl
-                  defaultValue={block.problem?.status}
+                  defaultValue={block.problem?.status || "HIDDEN"}
                   data={[
                     { label: "オープン", value: "OPEN" },
                     { label: "クローズ", value: "CLOSED" },
