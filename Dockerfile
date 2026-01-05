@@ -1,5 +1,5 @@
 FROM node:22.19-slim AS base
-RUN apt update -y && apt install -y openssl
+RUN apt-get update -y && apt-get install -y openssl
 RUN corepack enable
 
 FROM  base AS development-dependencies-env
