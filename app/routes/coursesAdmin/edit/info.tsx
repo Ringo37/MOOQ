@@ -13,7 +13,12 @@ import {
 import { notifications } from "@mantine/notifications";
 import type { YooptaContentValue } from "@yoopta/editor";
 import { useEffect, useState } from "react";
-import { data, useFetcher } from "react-router";
+import {
+  data,
+  useFetcher,
+  useNavigate,
+  type ShouldRevalidateFunctionArgs,
+} from "react-router";
 import sharp from "sharp";
 
 import type { CourseVisibility } from "generated/prisma/enums";
@@ -117,13 +122,27 @@ export async function action({ request, params }: Route.ActionArgs) {
   }
   await updateCourse(originalSlug, name, slug, description, fileId, visibility);
 
-  return data({ success: true });
+  return data({ success: true, redirectTo: slug !== originalSlug && slug });
+}
+
+export function shouldRevalidate({
+  actionResult,
+}: ShouldRevalidateFunctionArgs) {
+  if (actionResult?.redirectTo) {
+    return false;
+  }
+  return true;
 }
 
 export default function CoursesAdminEditInfo({
   loaderData,
 }: Route.ComponentProps) {
-  const fetcher = useFetcher<{ success?: boolean; error?: string }>();
+  const fetcher = useFetcher<{
+    success?: boolean;
+    error?: string;
+    redirectTo?: string;
+  }>();
+  const navigate = useNavigate();
   const { course } = loaderData;
   const [slug, setSlug] = useState(course.slug);
   const [visibility, setVisibility] = useState(course.visibility);
@@ -160,6 +179,11 @@ export default function CoursesAdminEditInfo({
         position: "top-right",
         autoClose: 2000,
       });
+      if (fetcher.data?.redirectTo) {
+        navigate(`/courses-admin/${fetcher.data.redirectTo}`, {
+          replace: true,
+        });
+      }
     }
   }, [fetcher.state, fetcher.data]);
 

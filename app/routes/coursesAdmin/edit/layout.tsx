@@ -1,6 +1,12 @@
 import { Button, Container, Group, Tabs, Title } from "@mantine/core";
 import { Book, Info, User } from "lucide-react";
-import { Link, Outlet, useLocation, useParams } from "react-router";
+import {
+  Link,
+  Outlet,
+  useLocation,
+  useParams,
+  type ShouldRevalidateFunctionArgs,
+} from "react-router";
 
 import { canEditCourseBySlug, getCourseBySlug } from "~/models/course.server";
 import { requireUser } from "~/services/auth.server";
@@ -22,6 +28,15 @@ export async function loader({ request, params }: Route.LoaderArgs) {
   }
 
   return { course };
+}
+
+export function shouldRevalidate({
+  actionResult,
+}: ShouldRevalidateFunctionArgs) {
+  if (actionResult?.redirectTo) {
+    return false;
+  }
+  return true;
 }
 
 export default function CoursesAdminEditLayout({
