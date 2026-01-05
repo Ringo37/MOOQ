@@ -134,6 +134,7 @@ export default function PageIndex({
             <div key={block.id}>
               <ProblemRender
                 problem={block.problem}
+                problemId={block.problemId}
                 cover={
                   block.content
                     ? (JSON.parse(block.content) as YooptaContentValue)

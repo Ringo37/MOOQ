@@ -16,18 +16,24 @@ import { problemPlugins } from "./config";
 
 interface RenderProps {
   problem: Problem | null;
+  problemId: string | null;
   cover: YooptaContentValue | null;
   answers: AnswerWithAnswerField[] | null;
 }
 
-export function ProblemRender({ problem, cover, answers }: RenderProps) {
+export function ProblemRender({
+  problem,
+  problemId,
+  cover,
+  answers,
+}: RenderProps) {
   const editor = useMemo(() => createYooptaEditor(), []);
   const fetcher = useFetcher();
   const revalidator = useRevalidator();
 
   useEffect(() => {
-    if (!problem) return;
-    const evtSource = new EventSource(`/api/problem/${problem.id}/status`);
+    if (!problemId) return;
+    const evtSource = new EventSource(`/api/problem/${problemId}/status`);
     evtSource.onmessage = (event) => {
       try {
         if (event.data) {
@@ -40,7 +46,7 @@ export function ProblemRender({ problem, cover, answers }: RenderProps) {
     return () => {
       evtSource.close();
     };
-  }, [problem?.id]);
+  }, [problemId]);
 
   useEffect(() => {
     if (fetcher.state === "idle" && fetcher.data?.success) {
