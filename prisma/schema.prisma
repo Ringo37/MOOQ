@@ -45,7 +45,6 @@ model File {
   id         String         @id @default(cuid())
   name       String
   key        String         @unique
-  bucket     String
   mimeType   String
   url        String?
   visibility FileVisibility @default(PRIVATE)

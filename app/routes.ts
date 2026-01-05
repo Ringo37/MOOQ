@@ -53,7 +53,7 @@ export default [
   ]),
   ...prefix("api", [
     route("check-course-slug", "routes/api/checkCourseSlug.ts"),
-    route("file/:bucket/:key", "routes/api/file.ts"),
+    route("file/*", "routes/api/file.ts"),
     route("file-upload", "routes/api/fileUpload.ts"),
     route("problem/:id", "routes/api/problemSubmit.ts"),
     route("problem/:id/status", "routes/api/problemStatus.ts"),

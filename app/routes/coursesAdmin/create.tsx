@@ -47,7 +47,7 @@ export async function action({ request }: Route.ActionArgs) {
 
     if (coverFile instanceof File && coverFile.size > 0) {
       const ext = coverFile.name.split(".").pop();
-      const file = await uploadPublicFile(coverFile, "cover", `${slug}.${ext}`);
+      const file = await uploadPublicFile(coverFile, `cover/${slug}.${ext}`);
       fileId = file.id;
     }
 

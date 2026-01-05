@@ -29,8 +29,7 @@ export async function action({ request, params }: Route.ActionArgs) {
       if (file.size === 0) continue;
       const uploadedFile = await uploadFile(
         file,
-        "answer",
-        `${user.id}/${problemId}/${key}.${file.name.split(".").pop()}`,
+        `answer/user-${user.id}/problem-${problemId}/${key}}`,
         `/file/answer/${problemId}/${answerField.name}`,
       );
       await upsertAnswer(

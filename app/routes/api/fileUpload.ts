@@ -13,7 +13,7 @@ export async function action({ request }: Route.ActionArgs) {
     return data({ error: "file not found" }, { status: 400 });
   }
   const ext = file.name.split(".").pop();
-  const key = `${crypto.randomUUID()}.${ext}`;
-  const uploaded = await uploadPublicFile(file, "public", key);
+  const key = `public/${crypto.randomUUID()}.${ext}`;
+  const uploaded = await uploadPublicFile(file, key);
   return data({ url: uploaded.url });
 }

@@ -1,17 +1,12 @@
 import { prisma } from "~/lib/prisma.server";
 import { ensureBucket, uploadObject } from "~/services/storage.server";
 
-export async function uploadFile(
-  file: File,
-  bucket: string,
-  key: string,
-  url: string,
-) {
+export async function uploadFile(file: File, key: string, url: string) {
   const buffer = Buffer.from(await file.arrayBuffer());
   const mimeType = file.type || "application/octet-stream";
 
-  await ensureBucket(bucket);
-  await uploadObject(bucket, key, buffer, mimeType);
+  await ensureBucket();
+  await uploadObject(key, buffer, mimeType);
 
   return await prisma.file.upsert({
     where: {
@@ -19,31 +14,25 @@ export async function uploadFile(
     },
     update: {
       name: file.name,
-      bucket,
       mimeType,
       url,
     },
     create: {
       name: file.name,
       key,
-      bucket,
       mimeType,
       url,
     },
   });
 }
 
-export async function uploadPublicFile(
-  file: File,
-  bucket: string,
-  key: string,
-) {
+export async function uploadPublicFile(file: File, key: string) {
   const buffer = Buffer.from(await file.arrayBuffer());
   const mimeType = file.type || "application/octet-stream";
-  const url = `/api/file/${bucket}/${key}`;
+  const url = `/api/file/${key}`;
 
-  await ensureBucket(bucket);
-  await uploadObject(bucket, key, buffer, mimeType);
+  await ensureBucket();
+  await uploadObject(key, buffer, mimeType);
 
   return await prisma.file.upsert({
     where: {
@@ -51,7 +40,6 @@ export async function uploadPublicFile(
     },
     update: {
       name: file.name,
-      bucket,
       mimeType,
       url,
       visibility: "PUBLIC",
@@ -59,7 +47,6 @@ export async function uploadPublicFile(
     create: {
       name: file.name,
       key,
-      bucket,
       mimeType,
       url,
       visibility: "PUBLIC",

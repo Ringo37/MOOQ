@@ -112,7 +112,7 @@ export async function action({ request, params }: Route.ActionArgs) {
     const webpFile = new File([new Uint8Array(webpBuffer)], `${slug}.${ext}`, {
       type: "image/webp",
     });
-    const file = await uploadPublicFile(webpFile, "cover", `${slug}.${ext}`);
+    const file = await uploadPublicFile(webpFile, `cover/${slug}.${ext}`);
     fileId = file.id;
   }
   await updateCourse(originalSlug, name, slug, description, fileId, visibility);

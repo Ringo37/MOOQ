@@ -7,12 +7,11 @@ import type { Route } from "./+types/file";
 
 export async function loader({ request, params }: Route.LoaderArgs) {
   await requireUser(request);
-  const bucket = params.bucket;
-  const key = params.key;
-  if (!bucket || !key) {
+  const { "*": key } = params;
+  if (!key) {
     throw new Response("Bad Request", { status: 400 });
   }
-  const url = await createPresignedGetUrl(bucket, key);
+  const url = await createPresignedGetUrl(key);
 
   return redirect(url);
 }
