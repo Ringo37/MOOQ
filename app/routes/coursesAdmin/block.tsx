@@ -18,6 +18,7 @@ import { Editor } from "~/components/editor/editor";
 import { ProblemEditor } from "~/components/editor/problemEditor";
 import {
   getBlockById,
+  updateBlock,
   updateBlockWithProblemAndAnswers,
 } from "~/models/block.server";
 import { canEditCourseBySlug } from "~/models/course.server";
@@ -55,18 +56,22 @@ export async function action({ request, params }: Route.ActionArgs) {
   const problemStatus = formData.get("status") as ProblemStatus;
 
   try {
-    await updateBlockWithProblemAndAnswers(
-      blockId,
-      content,
-      problemName,
-      problem,
-      problemStatus,
-    );
+    if (problemName && problem && problemName) {
+      await updateBlockWithProblemAndAnswers(
+        blockId,
+        content,
+        problemName,
+        problem,
+        problemStatus,
+      );
+    } else {
+      await updateBlock(blockId, content);
+    }
     return { success: true };
-  } catch (e) {
+  } catch {
     return {
       success: false,
-      error: e instanceof Error ? e.message : "Unknown error",
+      error: "保存に失敗しました。",
     };
   }
 }

@@ -17,34 +17,11 @@ export async function getBlockById(id: string) {
   });
 }
 
-export async function updateBlock(
-  id: string,
-  content: string | null,
-  problemName?: string | null,
-  problemContent?: string | null,
-  problemStatus?: ProblemStatus,
-) {
+export async function updateBlock(id: string, content: string | null) {
   return prisma.block.update({
     where: { id },
     data: {
       content,
-      problem:
-        problemContent && problemName
-          ? {
-              upsert: {
-                update: {
-                  name: problemName,
-                  content: problemContent,
-                  status: problemStatus,
-                },
-                create: {
-                  name: problemName,
-                  content: problemContent,
-                  status: problemStatus,
-                },
-              },
-            }
-          : undefined,
     },
   });
 }
