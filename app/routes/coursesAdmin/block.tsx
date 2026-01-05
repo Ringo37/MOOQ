@@ -11,7 +11,7 @@ import {
 import { notifications } from "@mantine/notifications";
 import type { YooptaContentValue } from "@yoopta/editor";
 import { useEffect } from "react";
-import { Link, useFetcher } from "react-router";
+import { data, Link, useFetcher } from "react-router";
 
 import type { ProblemStatus } from "generated/prisma/enums";
 import { Editor } from "~/components/editor/editor";
@@ -56,7 +56,7 @@ export async function action({ request, params }: Route.ActionArgs) {
   const problemStatus = formData.get("status") as ProblemStatus;
 
   try {
-    if (problemName && problem && problemName) {
+    if (problem && problemStatus) {
       await updateBlockWithProblemAndAnswers(
         blockId,
         content,
@@ -69,10 +69,13 @@ export async function action({ request, params }: Route.ActionArgs) {
     }
     return { success: true };
   } catch {
-    return {
-      success: false,
-      error: "保存に失敗しました。",
-    };
+    return data(
+      {
+        success: false,
+        error: "保存に失敗しました。",
+      },
+      { status: 500 },
+    );
   }
 }
 
@@ -112,11 +115,10 @@ export default function CorsesAdminBlockIndex({
             <Title order={2}>{isProblem ? "問題" : "コンテンツ"}編集</Title>
             {isProblem && (
               <>
-                {" "}
                 <TextInput
                   name="problemName"
                   placeholder="問題名"
-                  defaultValue={block.problem?.name}
+                  defaultValue={block.problem?.name ?? ""}
                 />
                 <SegmentedControl
                   defaultValue={block.problem?.status || "HIDDEN"}

@@ -29,7 +29,7 @@ export async function updateBlock(id: string, content: string | null) {
 export async function updateBlockWithProblemAndAnswers(
   blockId: string,
   content: string,
-  problemName: string,
+  problemName: string | null,
   problemContent: string,
   problemStatus: ProblemStatus,
 ) {

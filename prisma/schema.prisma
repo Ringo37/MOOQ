@@ -150,7 +150,7 @@ enum ProblemStatus {
 
 model Problem {
   id           String        @id @default(cuid())
-  name         String
+  name         String?
   type         ProblemType   @default(QUIZ)
   status       ProblemStatus @default(HIDDEN)
   content      String?
