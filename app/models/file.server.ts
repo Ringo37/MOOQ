@@ -1,11 +1,10 @@
 import { prisma } from "~/lib/prisma.server";
-import { ensureBucket, uploadObject } from "~/services/storage.server";
+import { uploadObject } from "~/services/storage.server";
 
 export async function uploadFile(file: File, key: string, url: string) {
   const buffer = Buffer.from(await file.arrayBuffer());
   const mimeType = file.type || "application/octet-stream";
 
-  await ensureBucket();
   await uploadObject(key, buffer, mimeType);
 
   return await prisma.file.upsert({
@@ -31,7 +30,6 @@ export async function uploadPublicFile(file: File, key: string) {
   const mimeType = file.type || "application/octet-stream";
   const url = `/api/file/${key}`;
 
-  await ensureBucket();
   await uploadObject(key, buffer, mimeType);
 
   return await prisma.file.upsert({
