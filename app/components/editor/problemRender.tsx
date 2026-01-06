@@ -12,7 +12,7 @@ import type { Problem } from "generated/prisma/client";
 import type { AnswerWithAnswerField } from "~/models/answer.server";
 import { injectAnswer } from "~/utils/problem";
 
-import { problemPlugins } from "./config";
+import { marks, problemPlugins } from "./config";
 
 interface RenderProps {
   problem: Problem | null;
@@ -84,6 +84,7 @@ export function ProblemRender({
           <YooptaEditor
             editor={editor}
             plugins={problemPlugins as any} // eslint-disable-line
+            marks={marks}
             value={
               problem?.content
                 ? injectAnswer(
@@ -110,6 +111,7 @@ export function ProblemRender({
           <YooptaEditor
             editor={editor}
             plugins={problemPlugins as any} // eslint-disable-line
+            marks={marks}
             value={cover}
             autoFocus
             className="w-full! pb-2!"

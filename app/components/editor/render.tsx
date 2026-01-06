@@ -4,7 +4,7 @@ import YooptaEditor, {
 } from "@yoopta/editor";
 import { useMemo } from "react";
 
-import { plugins } from "./config";
+import { marks, plugins } from "./config";
 
 interface RenderProps {
   content: YooptaContentValue;
@@ -18,6 +18,7 @@ export function Render({ content }: RenderProps) {
       <YooptaEditor
         editor={editor}
         plugins={plugins as any} // eslint-disable-line
+        marks={marks}
         value={content}
         autoFocus
         className="w-full! py-3!"
